@@ -1,0 +1,220 @@
+@using static FinancialExtensions;
+@using System.Text.Json
+@inject IQuoteManager _quoteManager;
+
+<MudGrid>
+    <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+        <MudGrid>
+            <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+                <MudHidden Breakpoint="Breakpoint.Xs">
+                    @if (CustomsClearanceRequired == false)
+                    {
+                        <MudText Typo="Typo.h4" Color="Color.Primary">DAP (Without Customs Clearance) Quotation (@(DAPQuoteResult.ReferenceNumber))</MudText>
+                    }
+                    else
+                    {
+                        <MudText Typo="Typo.h4" Color="Color.Primary">DAP (With Customs Clearance) Quotation (@(DAPQuoteResult.ReferenceNumber))</MudText>
+                    }
+
+                </MudHidden>
+                <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+                    <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+                        <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center" Class="flex-wrap">
+
+                            @if (CustomsClearanceRequired == false)
+                            {
+                                <MudText Typo="Typo.h6" Color="Color.Primary">DAP (Without Customs Clearance)</MudText>
+                                <MudText Typo="Typo.h6" Color="Color.Primary">Quotation (@(DAPQuoteResult.ReferenceNumber))</MudText>
+                            }
+                            else
+                            {
+                                <MudText Typo="Typo.h6" Color="Color.Primary">DAP (With Customs Clearance)</MudText>
+                                <MudText Typo="Typo.h6" Color="Color.Primary">Quotation (@(DAPQuoteResult.ReferenceNumber))</MudText>
+                            }
+                        </MudStack>
+                    </MudItem>
+                </MudHidden>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+
+    <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+        <MudPaper Class="pa-4">
+            <MudItem xs="12" sm="12" md="12" lg="12" xl="12" Class="mt-1">
+                <MudGrid Class="ms-1 justify-start">
+                    <MudItem xs="6" sm="6" md="4" lg="4" xl="4">
+                        <MudText>Weight</MudText>
+                        <MudText Style="font-weight: bold;">
+                            @DAPInputData.Weight @DAPInputData.WeightType
+                        </MudText>
+                    </MudItem>
+                    <MudItem xs="6" sm="6" md="4" lg="4" xl="4">
+                        <MudText>CBM</MudText>
+                        <MudText Style="font-weight: bold;">@DAPInputData.Cbm</MudText>
+                    </MudItem>
+                    <MudItem xs="12" sm="12" md="4" lg="4" xl="4">
+                        <MudText>Pincode, Location, State</MudText>
+                        <MudText Style="font-weight: bold;">
+                            @DAPInputData.ToPincode,
+                            @DAPQuoteData.Locations.FirstOrDefault()
+                        </MudText>
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+            @foreach (var via in DAPQuoteData.SplittedDataDetails.Vias)
+            {
+                <MudItem Class="pa-2 mt-4" style="border: 1px solid gray; border-radius: var(--mud-default-borderradius);"
+                         xs="12" sm="12" md="12" lg="12" xl="12">
+                    <MudExpansionPanels Dense="true">
+                        <MudExpansionPanel @bind-IsExpanded="@_isPanelOpen" HideIcon="true"
+                                           style="background-color: var(--mud-palette-table-hover);">
+                            <TitleContent>
+                                <MudContainer Class="d-flex justify-start flex-grow-1 gap-4">
+                                    <MudIcon Icon="@(_isPanelOpen ? Icons.Material.Filled.HorizontalRule : Icons.Material.Filled.Add)">
+                                    </MudIcon>
+                                    <MudText Typo="Typo.subtitle1">Via : @via.Name</MudText>
+                                </MudContainer>
+                            </TitleContent>
+                            <ChildContent>
+                                <MudItem Class="mb-1" style="background-color: var(--mud-palette-surface);" xs="12" sm="12"
+                                         md="12" lg="12" xl="12">
+                                    <table style="border: 1px solid lightgrey; border-collapse: collapse; width: 100%;">
+                                        <tr>
+                                            <th class="invoice-table" style="text-align: start">Particulars</th>
+                                            <th class="invoice-table" style="text-align: start">
+                                                <b>&#8377; INR</b>
+                                            </th>
+                                        </tr>
+                                        @if (CustomsClearanceRequired)
+                                        {
+                                            <tr>
+                                                <td class="invoice-table">Customs Clearance per Invoice</td>
+                                                <td class="invoice-table">
+                                                    <MudInput FullWidth DisableUnderLine InputType="InputType.Number"
+                                                              T="string" Value="@FormatNumber(via.Charges.CustomClearance.Rupee)"
+                                                              ValueChanged="x => via.Charges.CustomClearance.Rupee = FormatNumber(x)"/>
+                                                </td>
+                                            </tr>
+                                        }
+                                        <tr>
+                                            <td class="invoice-table">Door delivery Charges</td>
+                                            <td class="invoice-table">
+                                                <MudInput FullWidth DisableUnderLine InputType="InputType.Number"
+                                                          T="string" Value="@FormatNumber(via.Charges.TransportationCost.Rupee)"
+                                                          ValueChanged="x => via.Charges.TransportationCost.Rupee = FormatNumber(x)"/>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="invoice-table">Post Landing Charges</td>
+                                            <td class="invoice-table">
+                                                <MudInput FullWidth DisableUnderLine InputType="InputType.Number"
+                                                          T="string" Value="@FormatNumber(via.Charges.PlcPerWm.Rupee)"
+                                                          ValueChanged="x => via.Charges.PlcPerWm.Rupee = FormatNumber(x)"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </MudItem>
+                            </ChildContent>
+                        </MudExpansionPanel>
+                    </MudExpansionPanels>
+                </MudItem>
+            }
+            <MudItem xs="12" sm="12" md="12" lg="12" xl="12" Class="mt-6">
+                <MudGrid Class="justify-start">
+                    <MudItem xs="12" sm="12" md="6" lg="6" xl="6">
+                        <div class="d-flex flex-row-reverse flex-grow-1">
+                            <MudButton Variant="Variant.Filled" Disabled="false" Color="Color.Primary" OnClick="@ShowFinalResult"
+                                       Size="Size.Small">
+                                Next
+                            </MudButton>
+                        </div>
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem Style="align-items: center">
+        <div style="text-align: center;">
+            <MudButton Variant="Variant.Filled" Disabled="false" Color="Color.Primary" OnClick="@OnNewRequest"
+                       Size="Size.Small">
+                New Request
+            </MudButton>
+        </div>
+    </MudItem>
+</MudGrid>
+
+@code
+{
+    [Parameter]
+    public QuoteResponse DAPQuoteResult { get; set; } = null!;
+
+    [Parameter]
+    public QuoteRequest DAPInputData { get; set; } = null!;
+
+    [Parameter]
+    public QuoteData DAPQuoteData { get; set; } = null!;
+
+    [Parameter]
+    public bool CustomsClearanceRequired { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnNewRequest { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OnUpdate { get; set; }
+
+    bool _isPanelOpen = true;
+
+    // DAP - Without Customs Clearance
+    // DDU - With Customs Clearance
+
+    private async Task ShowFinalResult()
+    {
+        foreach (var via in DAPQuoteData.SplittedDataDetails.Vias)
+        {
+            if (CustomsClearanceRequired)
+            {
+                via.Charges.SubTotal.Rupee = GetTotal(0,
+                    via.Charges.CustomClearance.Rupee,
+                    via.Charges.TransportationCost.Rupee,
+                    via.Charges.PlcPerWm.Rupee);
+                via.Charges.SubTotal.Dollar = GetTotalDollars(DAPQuoteData.ConversionRateInr, via.Charges.SubTotal.Rupee);
+                via.Charges.CustomClearance.Dollar = GetTotalDollars(DAPQuoteData.ConversionRateInr, via.Charges.CustomClearance.Rupee);
+                via.Charges.TransportationCost.Dollar = GetTotalDollars(DAPQuoteData.ConversionRateInr, via.Charges.TransportationCost.Rupee);
+                via.Charges.PlcPerWm.Dollar = GetTotalDollars(DAPQuoteData.ConversionRateInr, via.Charges.PlcPerWm.Rupee);
+                TotalCharges(via);
+            }
+            else
+            {
+                via.Charges.SubTotal.Rupee = GetTotal(0,
+                    via.Charges.TransportationCost.Rupee,
+                    via.Charges.PlcPerWm.Rupee);
+                via.Charges.SubTotal.Dollar = GetTotalDollars(DAPQuoteData.ConversionRateInr, via.Charges.SubTotal.Rupee);
+                via.Charges.CustomClearance.Dollar = GetTotalDollars(DAPQuoteData.ConversionRateInr, via.Charges.CustomClearance.Rupee);
+                via.Charges.TransportationCost.Dollar = GetTotalDollars(DAPQuoteData.ConversionRateInr, via.Charges.TransportationCost.Rupee);
+                TotalCharges(via);
+            }
+        }
+        var charges = DAPQuoteData.SplittedDataDetails.Vias.Select(a => a.Charges).ToArray();
+        var json = JsonSerializer.Serialize(charges);
+        await _quoteManager.UpdateDAPDDUChargesByQuoteID(json, DAPQuoteResult.Id).ConfigureAwait(false);
+        await OnUpdate.InvokeAsync(true).ConfigureAwait(false);
+    }
+
+    private void TotalCharges(Via via)
+    {
+        decimal gstRate = 0;
+        decimal subTotal = 0;
+
+        decimal.TryParse(via.Charges.SubTotal.Rupee, out subTotal);
+        decimal.TryParse(via.Charges.Gst.ToString(), out gstRate);
+        var withGst = Math.Round(subTotal * gstRate / 100, MidpointRounding.AwayFromZero);
+        via.Charges.GstData.Rupee = FormatAmount(withGst.ToString());
+        via.Charges.GstData.Dollar = GetTotalDollars(DAPQuoteData.ConversionRateInr, via.Charges.GstData.Rupee);
+
+        var total = decimal.Parse(via.Charges.SubTotal.Rupee) + withGst;
+        via.Charges.Total.Rupee = FormatAmount(total.ToString());
+        via.Charges.Total.Dollar = GetTotalDollars(DAPQuoteData.ConversionRateInr, via.Charges.Total.Rupee);
+    }
+}

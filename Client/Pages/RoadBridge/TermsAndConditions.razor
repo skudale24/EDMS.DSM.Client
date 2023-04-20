@@ -1,0 +1,108 @@
+﻿@page "/roadbridge/terms"
+
+
+<style>
+    
+    .rz-html-editor-content { padding: 32px !important; }
+</style>
+
+<MudGrid>
+
+    <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+        <MudGrid>
+            <MudItem xs="12" sm="6" md="6" lg="6" xl="6">
+                <MudText Color="Color.Primary" Typo="Typo.h4">Terms And Conditions</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="6" lg="6" xl="6" Class="d-flex flex-row-reverse flex-grow-1">
+                <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Primary" OnClick="@OnSave" Size="Size.Small">Save</MudButton>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+
+    <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+        <MudText Typo="Typo.h6">DAP</MudText>
+    </MudItem>
+
+    @*    <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+    <MudGrid>
+    <MudItem xs="12" sm="6" md="6" lg="6" xl="6">
+    <MudText Typo="Typo.h6">DAP</MudText>
+    </MudItem>
+    <MudItem xs="12" sm="6" md="6" lg="6" xl="6" Class="d-flex flex-row-reverse flex-grow-1">
+    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Primary" OnClick="@OnSave">Save</MudButton>
+    </MudItem>
+    </MudGrid>
+    </MudItem>
+    *@
+    <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+        @*        <RadzenHtmlEditor class="test" @bind-Value=@dapValue style="height: 250px; margin-bottom: 1rem;" Change=@OnChangeDAP>
+            <RadzenHtmlEditorUndo />
+            <RadzenHtmlEditorRedo />
+            <RadzenHtmlEditorSeparator />
+            <RadzenHtmlEditorBold />
+            <RadzenHtmlEditorItalic />
+            <RadzenHtmlEditorUnderline />
+            <RadzenHtmlEditorStrikeThrough />
+            <RadzenHtmlEditorSeparator />
+            <RadzenHtmlEditorAlignLeft />
+            <RadzenHtmlEditorAlignCenter />
+            <RadzenHtmlEditorAlignRight />
+            <RadzenHtmlEditorJustify />
+            <RadzenHtmlEditorSeparator />
+            <RadzenHtmlEditorIndent />
+            <RadzenHtmlEditorOutdent />
+            <RadzenHtmlEditorUnorderedList />
+            <RadzenHtmlEditorOrderedList />
+            <RadzenHtmlEditorSeparator />
+            <RadzenHtmlEditorColor />
+            <RadzenHtmlEditorBackground />
+            <RadzenHtmlEditorRemoveFormat />
+            <RadzenHtmlEditorSeparator />
+            <RadzenHtmlEditorSeparator />
+            <RadzenHtmlEditorLink />
+            <RadzenHtmlEditorUnlink />
+            <RadzenHtmlEditorFontName />
+            <RadzenHtmlEditorFontSize />
+            <RadzenHtmlEditorFormatBlock />
+        </RadzenHtmlEditor>*@
+    </MudItem>
+    <br/><br/>
+
+    <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+        <MudText Typo="Typo.h6">Ex-Works</MudText>
+    </MudItem>
+
+    <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+        @*       <RadzenHtmlEditor @bind-Value=@exWorksValue style="height: 250px; margin-bottom: 1rem;" Change=@OnChangeExWork>
+            <RadzenHtmlEditorUndo />
+            <RadzenHtmlEditorRedo />
+            <RadzenHtmlEditorSeparator />
+            <RadzenHtmlEditorBold />
+            <RadzenHtmlEditorItalic />
+            <RadzenHtmlEditorUnderline />
+            <RadzenHtmlEditorStrikeThrough />
+            <RadzenHtmlEditorSeparator />
+            <RadzenHtmlEditorAlignLeft />
+            <RadzenHtmlEditorAlignCenter />
+            <RadzenHtmlEditorAlignRight />
+            <RadzenHtmlEditorJustify />
+            <RadzenHtmlEditorSeparator />
+            <RadzenHtmlEditorIndent />
+            <RadzenHtmlEditorOutdent />
+            @*<RadzenHtmlEditorUnorderedList />
+            <RadzenHtmlEditorOrderedList />
+            <RadzenHtmlEditorSeparator />
+            <RadzenHtmlEditorColor />
+            <RadzenHtmlEditorBackground />
+            <RadzenHtmlEditorRemoveFormat />
+            <RadzenHtmlEditorSeparator />
+            <RadzenHtmlEditorSeparator />
+            <RadzenHtmlEditorLink />
+            <RadzenHtmlEditorUnlink />
+            <RadzenHtmlEditorFontName />
+            <RadzenHtmlEditorFontSize />
+            <RadzenHtmlEditorFormatBlock />
+        </RadzenHtmlEditor>
+ *@
+    </MudItem>
+</MudGrid>

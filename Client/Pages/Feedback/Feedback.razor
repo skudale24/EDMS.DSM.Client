@@ -1,0 +1,56 @@
+﻿@page "/feedback"
+
+<MudGrid>
+    <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+        <MudGrid>
+            <MudItem xs="12" sm="6" md="6" lg="6" xl="6">
+                <MudHidden Breakpoint="Breakpoint.Xs">
+                    <MudText Typo="Typo.h4" Color="Color.Primary">Feedback</MudText>
+                </MudHidden>
+                <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+                    <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                        <MudIcon Color="Color.Primary" Icon="@Icons.Material.Outlined.Feedback"/>
+                        <MudText Typo="Typo.h6" Color="Color.Primary">Feedback</MudText>
+                    </MudStack>
+                </MudHidden>
+            </MudItem>
+        </MudGrid>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+        <MudGrid>
+
+            <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+                <MudTextField @bind-Value="@_feedbackSubmit.Feedback" T="string" Label="Feedback" Required="true"
+                              For="@(() => _feedbackSubmit.Feedback)" Variant="Variant.Outlined" Lines="5"/>
+            </MudItem>
+            <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+
+                <MudHidden Breakpoint="Breakpoint.Xs">
+                    <MudButton ButtonType="ButtonType.Submit" Class="mr-1" OnClick="SubmitFeedback"
+                               Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" Margin="De">
+                        Submit
+                    </MudButton>
+                    <MudButton OnClick="@ResetFilters" ButtonType="ButtonType.Reset"
+                               Variant="Variant.Filled" Color="Color.Default" Class="mr-1" Size="Size.Small">
+                        Reset
+                    </MudButton>
+                </MudHidden>
+                <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+                    <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                        <MudButton ButtonType="ButtonType.Submit" Class="mr-1"
+                                   OnClick="SubmitFeedback"
+                                   Variant="Variant.Filled" Size="Size.Small" Color="Color.Primary" Margin="De">
+                            Submit
+                        </MudButton>
+                        <MudButton OnClick="@ResetFilters" ButtonType="ButtonType.Reset"
+                                   Variant="Variant.Filled" Color="Color.Default" Class="mr-1" Size="Size.Small">
+                            Reset
+                        </MudButton>
+                    </MudStack>
+                </MudHidden>
+
+            </MudItem>
+
+        </MudGrid>
+    </MudItem>
+</MudGrid>

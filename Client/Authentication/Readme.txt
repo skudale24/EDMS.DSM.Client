@@ -1,0 +1,1 @@
+﻿This folder consists client side authentication related assets.

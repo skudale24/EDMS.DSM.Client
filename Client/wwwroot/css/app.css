@@ -1,0 +1,88 @@
+﻿.pwa-updater-updatenow-button {
+    background-color: transparent;
+    border: solid 2px #ffffff80;
+    border-radius: 4px;
+    color: white;
+    font-family: sans-serif;
+    font-size: 13px;
+    height: 28px;
+    line-height: 26px;
+    margin: 0 0 0 8px;
+    padding: 0 8px;
+    transition: background-color linear 0.2s;
+}
+
+.pwa-updater {
+    background-color: darkorange;
+    color: white;
+    display: inherit;
+    font-family: sans-serif;
+    height: 32px;
+    line-height: 32px;
+    overflow: hidden;
+    padding: 0 12px;
+    position: inherit;
+    transition: top linear 0.5s, bottom linear 0.5s;
+}
+
+b-pwa-updater { color: white; }
+
+.pwa-updater-updatenow-button:hover { background-color: #ffffff40; }
+
+.page-background {
+    background-image: url(/images/graphic.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.pwa-updater-close-button {
+    cursor: pointer;
+    padding: 1%;
+}
+
+.mud-thememanager-button { z-index: 69 !important; }
+
+/* START Loading indicator */
+
+.disable-body { pointer-events: none; }
+
+.tiva-loading {
+    background-color: transparent;
+    display: none;
+    position: absolute;
+    z-index: 696969;
+}
+
+.tiva-loading.show {
+    align-items: center;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    left: 0;
+    right: 0;
+    top: 0;
+}
+
+.tiva-loading-content {
+    align-items: center;
+    border: .5px solid var(--mud-palette-white);
+    border-radius: 2em;
+    box-shadow: 0px 2px 12px 0 rgb(0 0 0 / 36%);
+    display: flex;
+    height: 3em;
+    justify-content: center;
+    visibility: hidden;
+    width: 160px;
+}
+
+.tiva-loading-content .mud-progress-circular.mud-progress-medium {
+    height: 26px;
+    margin-right: 8px;
+    width: 26px;
+}
+
+/* END Loading indicator */
+
+
+.mud-input { font-size: unset; }

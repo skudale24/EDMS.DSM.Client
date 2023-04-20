@@ -1,0 +1,74 @@
+﻿<style>
+    .download-button {
+        position: inherit !important;
+        right: auto !important;
+        text-transform: none;
+        top: auto !important;
+    }
+</style>
+
+<MudDialog>
+    <TitleContent>
+        <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+            <MudGrid>
+                <MudItem xs="12" sm="6" md="6" lg="6" xl="6">
+                    <MudText Color="Color.Primary" Typo="Typo.h4">@Title</MudText>
+                </MudItem>
+                <MudItem xs="12" sm="6" md="6" lg="6" xl="6" Class="d-flex flex-row-reverse flex-grow-1">
+                    <MudButton Class="mt-2 download-button" Variant="Variant.Filled"
+                               StartIcon="@Icons.Material.Filled.Download" Color="Color.Primary"
+                               OnClick="@DownloadSample" Size="Size.Small">
+                        Download sample data
+                    </MudButton>
+                </MudItem>
+                <MudItem xs="12" sm="12" md="@(IsCommon ? 6 : 12)" lg="6" xl="6">
+                    <MudSelect T="Organization" @bind-Value="@SelectedOrganization" ToStringFunc="@converter" Label="Select Organization" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
+                        @foreach (var org in Organizations)
+                        {
+                            <MudSelectItem Value="@org"></MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                @if (IsCommon)
+                {
+                    <MudItem xs="12" sm="12" md="6" lg="6" xl="6">
+                        <MudSelect T="string" @bind-Value="@UploadFor" Label="Select File Type" AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined">
+                            @foreach (var fileType in UploadFileTypesList)
+                            {
+                                <MudSelectItem Value="@fileType.ToLower()">@fileType</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                }
+
+                <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+                    <MudAlert Severity="Severity.Info">@($"Old {UploadFor} data will be deleted and new records will be inserted through CSV upload.")</MudAlert>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+
+    </TitleContent>
+
+    <DialogContent>
+        <InputFile id="fileInput" OnChange="UploadFiles" hidden accept=".csv"/>
+
+        <MudButton HtmlTag="label"
+                   Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   StartIcon="@Icons.Material.Filled.CloudUpload"
+                   for="fileInput" Size="Size.Small">
+            Choose file
+        </MudButton>
+
+        @if (file != null)
+        {
+            <MudText Typo="@Typo.subtitle1">
+                @file.Name <code>@(file.Size / 1000) kb</code>
+            </MudText>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel" Size="Size.Small">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit" Size="Size.Small">Ok</MudButton>
+    </DialogActions>
+</MudDialog>

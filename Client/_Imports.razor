@@ -1,0 +1,29 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using System.IO
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.JSInterop
+@using MudBlazor
+@using EDMS.DSM.Client
+@using EDMS.DSM.Client.Managers.Common
+@using EDMS.DSM.Client.Shared
+@using Blazored.LocalStorage
+
+@using EDMS.DSM.Client.Dto
+@using EDMS.DSM.Client.Authentication
+@using EDMS.Shared.Enums
+
+@using Fluxor
+@using Fluxor.Blazor.Web.Components
+
+@using Variant = Variant
+
+@inject IDialogService DialogService
+@inject ILoadingIndicatorProvider _loadingIndicatorProvider
+@attribute [Authorize]

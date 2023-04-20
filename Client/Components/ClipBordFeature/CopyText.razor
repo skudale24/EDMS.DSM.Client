@@ -1,0 +1,17 @@
+﻿@inject IClipboardService ClipboardService
+
+@*<MudButton @onclick="OnClick" ></MudButton>*@
+<MudIconButton style="bottom: 10px; position: absolute; right: 0px;" Icon="@Icons.Material.Filled.CopyAll" OnClick="OnClick" Color="Color.Info" Size="Size.Small"></MudIconButton>
+
+
+@code {
+
+    [Parameter]
+    public string TextToCopy { get; set; }
+
+    private async Task OnClick()
+    {
+        await ClipboardService.CopyToClipboard(TextToCopy).ConfigureAwait(false);
+    }
+
+}

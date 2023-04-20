@@ -1,0 +1,19 @@
+﻿<MudDialog>
+    <DialogContent>
+        <EditForm Model="@_sendEmailModel" OnValidSubmit="Submit">
+            <DataAnnotationsValidator/>
+            <MudGrid>
+                <MudItem xs="12" sm="12" md="6" lg="6" xl="6">
+                    <MudTextField @bind-Value="_sendEmailModel.Name" Label="Customer Name" For="@(() => _sendEmailModel.Name)" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                </MudItem>
+                <MudItem xs="12" sm="12" md="6" lg="6" xl="6">
+                    <MudTextField @bind-Value="_sendEmailModel.Email" For="@(() => _sendEmailModel.Email)" Label="Email Address" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                </MudItem>
+                <MudItem xs="12" sm="12" md="12" Class="mb-3" lg="12" xl="12">
+                    <MudButton Color="Color.Primary" ButtonType="ButtonType.Submit" Variant="Variant.Filled" Class="mr-1" Size="Size.Small">Send</MudButton>
+                    <MudButton Color="Color.Default" Variant="Variant.Filled" ButtonType="ButtonType.Button" Size="Size.Small" OnClick="Cancel">Cancel</MudButton>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
+    </DialogContent>
+</MudDialog>

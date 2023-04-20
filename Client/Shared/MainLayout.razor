@@ -1,0 +1,97 @@
+﻿@using Toolbelt.Blazor.PWA.Updater
+@inherits LayoutComponentBase
+@inject NavigationManager _navManager
+
+<AuthorizeView>
+    <Authorized>
+        <MudThemeProvider Theme="_theme" DefaultScrollbar="true" @bind-IsDarkMode="@_isDarkMode"/>
+        <MudDialogProvider FullWidth="true" CloseOnEscapeKey="false" DisableBackdropClick="true"
+                           Position="DialogPosition.TopCenter" MaxWidth="MaxWidth.Medium"/>
+        <MudSnackbarProvider/>
+        <MudLayout>
+            <MudDrawer @bind-Open="_drawerOpen" Elevation="25" Width="250px">
+                <NavMenu/>
+            </MudDrawer>
+            <MudAppBar Elevation="25" DisableGutters="true" Dense="true">
+                <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit"
+                               OnClick="@(e => DrawerToggle())" Class="ml-3" Size="Size.Medium"/>
+                <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                </MudHidden>
+                <MudHidden Breakpoint="Breakpoint.Xs">
+                    <MudText Typo="Typo.h6">Welcome to Team Global CMS</MudText>
+
+                </MudHidden>
+                <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+                    <MudText Typo="Typo.subtitle2">Welcome to TIVA</MudText>
+
+                </MudHidden>
+                <MudSpacer/>
+            </MudAppBar>
+            <MudMainContent>
+                <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+
+                    <PWAUpdater/>
+
+                    <ErrorBoundary @ref="_errorBoundary">
+                        <ChildContent>
+                            @Body
+                        </ChildContent>
+                        <ErrorContent Context="Exception">
+                            @if (Exception is HttpRequestException || Exception.InnerException is HttpRequestException)
+                            {
+                                _navManager.NavigateTo("/logout");
+                            }
+                            <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">
+                                Oops something went wrong !!!
+                                <MudButton OnClick="@_errorBoundary.Recover">Reload</MudButton>
+                            </MudAlert>
+                        </ErrorContent>
+                    </ErrorBoundary>
+                </MudContainer>
+            </MudMainContent>
+        </MudLayout>
+    </Authorized>
+    <NotAuthorized>
+        <MudThemeProvider Theme="_theme" DefaultScrollbar="true" @bind-IsDarkMode="@_isDarkMode"/>
+        <MudDialogProvider FullWidth="true" CloseOnEscapeKey="false" DisableBackdropClick="true"
+                           Position="DialogPosition.TopCenter" MaxWidth="MaxWidth.Medium"/>
+        <MudSnackbarProvider/>
+        <MudLayout>
+            <MudAppBar Elevation="25" DisableGutters="true" Dense="true">
+                <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit"
+                               OnClick="@(e => DrawerToggle())" Class="ml-3" Size="Size.Medium"/>
+                <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                </MudHidden>
+                <MudHidden Breakpoint="Breakpoint.Xs">
+                    <MudText Typo="Typo.h6">Welcome to Team Global CMS</MudText>
+
+                </MudHidden>
+                <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+                    <MudText Typo="Typo.subtitle2">Welcome to TIVA</MudText>
+
+                </MudHidden>
+                <MudSpacer/>
+            </MudAppBar>
+            <MudMainContent>
+                <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+                    <PWAUpdater/>
+                    <ErrorBoundary @ref="_errorBoundary">
+                        <ChildContent>
+                            @Body
+                        </ChildContent>
+                        <ErrorContent Context="Exception">
+                            @if (Exception.InnerException is UnauthorizedAccessException)
+                            {
+                                _navManager.NavigateTo("/logout");
+                            }
+                            <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">
+                                Oops something went wrong !!!
+                            </MudAlert>
+                            <MudButton OnClick="@_errorBoundary.Recover"></MudButton>
+                        </ErrorContent>
+                    </ErrorBoundary>
+                </MudContainer>
+            </MudMainContent>
+        </MudLayout>
+    </NotAuthorized>
+</AuthorizeView>

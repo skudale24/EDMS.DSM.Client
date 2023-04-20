@@ -1,0 +1,17 @@
+﻿@page "/home"
+@page "/"
+
+<MudHidden Breakpoint="Breakpoint.Xs">
+    @if (lstbanners != null && lstbanners.Count() > 0)
+    {
+        <MudCarousel Class="mud-width-full" @ref="_carousel" ItemsSource="@lstbanners" Style="height: 800px"
+                     AutoCycle="@_autocycle" ShowArrows="@_arrows" ShowBullets="@_bullets">
+            <ItemTemplate>
+                <MudImage Fluid="true" ObjectFit="ObjectFit.Cover" ObjectPosition="ObjectPosition.Center" Src="@context"
+                          Alt="Tiva" Elevation="0" Height="750"/>
+            </ItemTemplate>
+        </MudCarousel>
+    }
+</MudHidden>
+<MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+</MudHidden>

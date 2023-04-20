@@ -1,0 +1,51 @@
+﻿<AuthorizeView>
+    <Authorized>
+        <MudPaper Width="250px" Elevation="0" Class="py-2">
+            <MudStack Row="true" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                <MudImage Fluid="true" ObjectFit="ObjectFit.Fill" ObjectPosition="ObjectPosition.Center" Src="images/logo.png" Alt="Team Global"/>
+            </MudStack>
+            <MudDivider/>
+            <MudNavMenu Bordered="true" Rounded="true" Margin="Margin.None" Color="Color.Primary" Class="py-2">
+                @if (NavMenus != null && NavMenus.Any())
+                {
+                    @foreach (var navmenu in NavMenus.OrderBy(x => x.Sequence))
+                    {
+                        if (navmenu.Submenus.Any())
+                        {
+                            <MudNavGroup Bordered="true" Rounded="true" Title="@navmenu.MenuName" Icon="@GetIcon(navmenu.Icon)" HideExpandIcon="false" Class="my-1">
+                                @foreach (var submenu in navmenu.Submenus.OrderBy(x => x.Sequence))
+                                {
+                                    <MudNavLink Href="@submenu.LinkUrl" Icon="@GetIcon(submenu.Icon)">@submenu.MenuName</MudNavLink>
+                                }
+                            </MudNavGroup>
+                        }
+                        else
+                        {
+                            <MudNavLink Href="@navmenu.LinkUrl" Icon="@GetIcon(navmenu.Icon)">@navmenu.MenuName</MudNavLink>
+                        }
+                    }
+                }
+                <MudNavLink Href="/logout" Icon="@Icons.Material.Outlined.Logout">Logout</MudNavLink>
+            </MudNavMenu>
+            <MudDivider/>
+            <MudCard Elevation="0">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudStack Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center">
+                            <MudText>Hello, @LoggedUserName</MudText>
+                        </MudStack>
+                        <MudStack Row="true" Justify="Justify.FlexStart" AlignItems="AlignItems.Center">
+                            <MudText>Version-@VersionNo</MudText>
+                        </MudStack>
+
+                    </CardHeaderContent>
+                </MudCardHeader>
+            </MudCard>
+        </MudPaper>
+    </Authorized>
+    <NotAuthorized>
+        <MudPaper Width="250px" Class="py-2">
+            <MudImage Fluid="true" ObjectFit="ObjectFit.Fill" ObjectPosition="ObjectPosition.Center" Src="images/logo.png" Alt="Team Global"/>
+        </MudPaper>
+    </NotAuthorized>
+</AuthorizeView>

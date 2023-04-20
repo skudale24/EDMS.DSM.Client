@@ -1,0 +1,60 @@
+{
+"display_override": ["window-controls-overlay"], 
+"description": "TIVA", 
+  "name": "Team Global - TIVA",
+  "short_name": "TIVA",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0770B4",
+  "orientation": "any",
+  "screenshots" : [
+    {
+      "src": "images/TGScreen1280_720.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpg",
+      "platform": "wide"
+    },
+    {
+      "src": "images/SailingSchedule1280_720.jpg",
+      "sizes": "1280x720",
+      "type": "image/jpg",
+      "platform": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "https://d1uiprsunvej9x.cloudfront.net/public/icon-512.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "https://d1uiprsunvej9x.cloudfront.net/public/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ]
+,
+  "protocol_handlers": [
+    {
+      "protocol":"The protocol you would like to handle. For example: web+myapp",
+      "url":"The url you would like to open when the user chooses this shortcut. This must be a URL local to your PWA. For example: If my start_url is /, this URL must be something like /shortcut"
+    }
+  ]
+,
+  "shortcuts": [
+    {
+      "name":"The name you would like to be displayed for your shortcut",
+      "url":"The url you would like to open when the user chooses this shortcut. This must be a URL local to your PWA. For example: If my start_url is /, this URL must be something like /shortcut",
+      "description":"A description of the functionality of this shortcut"
+    }
+  ]
+,
+  "file_handlers": [
+    {
+      "action": "The url you would like to open when the user chooses to share content to your app. This URL must have code to do something with the returned file."
+    }
+  ]
+}
