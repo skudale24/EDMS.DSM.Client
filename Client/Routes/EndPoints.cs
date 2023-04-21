@@ -2,16 +2,16 @@
 
 public static class EndPoints
 {
-    //public static string Version = "0.9.0014";
-    //public static string ApiBaseUrl => "https://localhost:7112";
-    //public static string LoginPage => "https://localhost:7119";
-    //public static string PhotosBaseUrl => "http://localhost:5119";
+    public static string Version = "0.9.0014";
+    public static string ApiBaseUrl => "https://localhost:5001";
+    public static string LoginPage => "https://localhost:7119";
+    public static string PhotosBaseUrl => "http://localhost:5119";
 
     //iworktech server
-    public static string Version = "0.9.0014";
-    public static string ApiBaseUrl => "https://tivaapi.iworktech.net";
-    public static string LoginPage => "https://logsoft.iworktech.net";
-    public static string PhotosBaseUrl => "https://pwa.iworktech.net";
+    //public static string Version = "0.9.0014";
+    //public static string ApiBaseUrl => "https://tivaapi.iworktech.net";
+    //public static string LoginPage => "https://logsoft.iworktech.net";
+    //public static string PhotosBaseUrl => "https://pwa.iworktech.net";
 }
 
 public static class NavMenuEndPoints
@@ -256,5 +256,5 @@ public static class ReportsEndpoints
 
 public static class CustomerEndpoints
 {
-    public const string GetCommunications = "api/customer/getcommunications";
+    public const string GetCommunications = "api/Customer/List";
 }

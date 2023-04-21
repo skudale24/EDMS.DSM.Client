@@ -352,11 +352,11 @@
 <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 <!--<script src="_content/Fluxor.Blazor.Web/scripts/index.js"></script>-->
 <!--<script>navigator.serviceWorker.register('service-worker.js');</script>-->
-<!--<script src="_content/Toolbelt.Blazor.PWA.Updater.Service/script.min.js"
-        no-register></script>-->
+<script src="_content/Toolbelt.Blazor.PWA.Updater.Service/script.min.js"
+        no-register></script>
 <script>
         navigator.serviceWorker.register('service-worker.js').then(registration => {
-            //Toolbelt.Blazor.PWA.Updater.handleRegistration(registration);
+            Toolbelt.Blazor.PWA.Updater.handleRegistration(registration);
         });
     </script>
 <script>

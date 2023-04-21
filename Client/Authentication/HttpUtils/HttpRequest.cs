@@ -27,17 +27,17 @@ public class HttpRequest
         httpClient.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
         _ = httpClient.EnableIntercept(_serviceProvider);
         var absoluteUrl = $"{EndPoints.ApiBaseUrl}/{uri}";
-        var userToken = await _localStorage.GetItemAsStringAsync(StorageConstants.UserToken).ConfigureAwait(false);
-        var authState = await _authState.GetAuthenticationStateAsync().ConfigureAwait(false);
+        //var userToken = await _localStorage.GetItemAsStringAsync(StorageConstants.UserToken).ConfigureAwait(false);
+        //var authState = await _authState.GetAuthenticationStateAsync().ConfigureAwait(false);
 
-        if (authState.User.HasClaim(x => x.Type == ClaimTypes.UserData))
-        {
-            var aspnetuserId = authState.User.Claims.Single(x => x.Type == ClaimTypes.UserData).Value;
-            httpClient.DefaultRequestHeaders.Add(StorageConstants.AspNetUserId, aspnetuserId);
-        }
+        //if (authState.User.HasClaim(x => x.Type == ClaimTypes.UserData))
+        //{
+        //    var aspnetuserId = authState.User.Claims.Single(x => x.Type == ClaimTypes.UserData).Value;
+        //    httpClient.DefaultRequestHeaders.Add(StorageConstants.AspNetUserId, aspnetuserId);
+        //}
 
-        httpClient.DefaultRequestHeaders.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
-        httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
+        //httpClient.DefaultRequestHeaders.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
+        //httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
         var response = await httpClient.GetAsync(absoluteUrl).ConfigureAwait(false);
 

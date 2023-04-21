@@ -24,6 +24,11 @@ public class ApiResult : IApiResult
     {
         return new ApiResult { Status = false, Message = message };
     }
+
+    public static IApiResult SuccessMessage(string message)
+    {
+        return new ApiResult { Status = true, Message = message };
+    }
 }
 
 public class ApiResult<T> : ApiResult, IApiResult<T>

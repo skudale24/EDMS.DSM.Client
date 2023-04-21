@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+﻿using EDMS.DSM.Server.Models;
+using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +21,9 @@ builder.Services.AddCors(options =>
             policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials(); //set the allowed origin  
         });
 });
+
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")),
+                ServiceLifetime.Transient);
 
 builder.Services.AddPWAUpdater();
 

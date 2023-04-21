@@ -3,9 +3,9 @@ using Telerik.DataSource;
 
 namespace EDMS.DSM.Managers.Customer
 {
-    public interface ICustomerManager
+    public interface ICustomerManager : IManager
     {
         Task<DataSourceResult> GetCommunicationsListAsync(DataSourceRequest gridRequest);
-        Task<IApiResult<List<Communications>>> GetCommunicationsListAsync();
+        Task<IListApiResult<List<Communications>>> GetCommunicationsListAsync();
     }
 }

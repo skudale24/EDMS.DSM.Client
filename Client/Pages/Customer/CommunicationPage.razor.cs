@@ -5,7 +5,7 @@ namespace EDMS.DSM.Client.Pages.Customer;
 
 public partial class CommunicationPage : ComponentBase, IDisposable
 {
-    [Inject] private HttpInterceptorService _interceptor { get; set; } = default!;
+    //    [Inject] private HttpInterceptorService _interceptor { get; set; } = default!;
 
     [Inject] private ICustomerManager _customerManager { get; set; } = default!;
 
@@ -48,13 +48,21 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        _interceptor.RegisterEvent();
+        //_interceptor.RegisterEvent();
     }
 
     protected override async Task OnInitializedAsync()
     {
         var result = await _customerManager.GetCommunicationsListAsync();
+
+        _ = result.Status
+            ? _snackbar.Add(result.Message, Severity.Success)
+            : _snackbar.Add(result.Message, Severity.Error);
+        
         Elements = result.Result;
+        
+        StateHasChanged();
+
     }
 
     // events
@@ -70,30 +78,6 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     void IDisposable.Dispose()
     {
-        _interceptor.DisposeEvent();
+        //_interceptor.DisposeEvent();
     }
-
-    private async Task SubmitFeedback()
-    {
-        //    var userdata = await _customerManager.GetCommunicationsListAsync();
-        //    if (userdata != null)
-        //    {
-        //        _feedbackSubmit.UserEmail = userdata.EmailAddress;
-        //        _feedbackSubmit.Name = userdata.UserName;
-        //        _feedbackSubmit.Mobile = userdata.MobileNumber;
-        //    }
-
-
-        //    await _loadingIndicatorProvider.HoldAsync().ConfigureAwait(false);
-
-        //    var result = await _feedbackManager.FeedbackSubmit(_feedbackSubmit).ConfigureAwait(false);
-
-        //    _ = result.Status
-        //        ? _snackbar.Add(result.Message, Severity.Success)
-        //        : _snackbar.Add(result.Message, Severity.Error);
-        //    StateHasChanged();
-
-        //    await _loadingIndicatorProvider.ReleaseAsync().ConfigureAwait(false);
-    }
-
 }

@@ -36,15 +36,12 @@ namespace EDMS.DSM.Managers.Customer
             return dataToReturn;
         }
 
-        public async Task<IApiResult<List<Communications>>> GetCommunicationsListAsync()
+        public async Task<IListApiResult<List<Communications>>> GetCommunicationsListAsync()
         {
             var urlWithParams = $"{CustomerEndpoints.GetCommunications}";
 
-            IApiResult<List<Communications>> result = await _httpRequest.GetRequestAsync<List<Communications>>(urlWithParams);
-
-            _communications = result.Result;
-
-            return result;
+            return await _httpRequest.GetRequestAsync<List<Communications>>(urlWithParams);
+            //return await response.ToResultAsync<TOut>().ConfigureAwait(false);
         }
     }
 }
