@@ -27,6 +27,7 @@
 		<PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
 		<PackageReference Include="MudBlazor" Version="6.2.2" />
 		<PackageReference Include="SocialMediaSharingBlazor" Version="7.1.0" />
+		<PackageReference Include="Telerik.UI.for.Blazor.Trial" Version="4.1.0" />
 		<PackageReference Include="Toolbelt.Blazor.HttpClientInterceptor" Version="10.2.0" />
 		<PackageReference Include="Toolbelt.Blazor.PWA.Updater" Version="2.1.0.1" />
 		<PackageReference Include="Toolbelt.Blazor.PWA.Updater.Service" Version="2.0.0.1" />

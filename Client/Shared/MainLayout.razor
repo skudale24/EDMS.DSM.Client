@@ -1,9 +1,9 @@
-﻿@using Toolbelt.Blazor.PWA.Updater
+﻿@*@using Toolbelt.Blazor.PWA.Updater*@
 @inherits LayoutComponentBase
 @inject NavigationManager _navManager
 
-<AuthorizeView>
-    <Authorized>
+@*<AuthorizeView>*@
+    @*<Authorized>*@
         <MudThemeProvider Theme="_theme" DefaultScrollbar="true" @bind-IsDarkMode="@_isDarkMode"/>
         <MudDialogProvider FullWidth="true" CloseOnEscapeKey="false" DisableBackdropClick="true"
                            Position="DialogPosition.TopCenter" MaxWidth="MaxWidth.Medium"/>
@@ -18,11 +18,11 @@
                 <MudHidden Breakpoint="Breakpoint.SmAndDown">
                 </MudHidden>
                 <MudHidden Breakpoint="Breakpoint.Xs">
-                    <MudText Typo="Typo.h6">Welcome to Team Global CMS</MudText>
+                    <MudText Typo="Typo.h6">Welcome to iWork Technologies</MudText>
 
                 </MudHidden>
                 <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
-                    <MudText Typo="Typo.subtitle2">Welcome to TIVA</MudText>
+                    <MudText Typo="Typo.subtitle2">Welcome to iWork</MudText>
 
                 </MudHidden>
                 <MudSpacer/>
@@ -30,13 +30,13 @@
             <MudMainContent>
                 <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
 
-                    <PWAUpdater/>
+                    @*<PWAUpdater/>*@
 
                     <ErrorBoundary @ref="_errorBoundary">
                         <ChildContent>
                             @Body
                         </ChildContent>
-                        <ErrorContent Context="Exception">
+                       @* <ErrorContent Context="Exception">
                             @if (Exception is HttpRequestException || Exception.InnerException is HttpRequestException)
                             {
                                 _navManager.NavigateTo("/logout");
@@ -45,13 +45,13 @@
                                 Oops something went wrong !!!
                                 <MudButton OnClick="@_errorBoundary.Recover">Reload</MudButton>
                             </MudAlert>
-                        </ErrorContent>
+                        </ErrorContent>*@
                     </ErrorBoundary>
                 </MudContainer>
             </MudMainContent>
         </MudLayout>
-    </Authorized>
-    <NotAuthorized>
+    @*</Authorized>*@
+    @*<NotAuthorized>
         <MudThemeProvider Theme="_theme" DefaultScrollbar="true" @bind-IsDarkMode="@_isDarkMode"/>
         <MudDialogProvider FullWidth="true" CloseOnEscapeKey="false" DisableBackdropClick="true"
                            Position="DialogPosition.TopCenter" MaxWidth="MaxWidth.Medium"/>
@@ -93,5 +93,5 @@
                 </MudContainer>
             </MudMainContent>
         </MudLayout>
-    </NotAuthorized>
-</AuthorizeView>
+    </NotAuthorized>*@
+@*</AuthorizeView>*@

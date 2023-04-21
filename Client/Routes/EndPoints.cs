@@ -253,3 +253,8 @@ public static class ReportsEndpoints
     public const string ExportReport = "api/v1/label/ExportSeaLable";
     public const string ExportAirLableReport = "api/v1/label/ExportAirLable";
 }
+
+public static class CustomerEndpoints
+{
+    public const string GetCommunications = "api/customer/getcommunications";
+}
