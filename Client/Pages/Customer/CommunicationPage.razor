@@ -1,8 +1,8 @@
 ﻿@page "/"
 
-@using EDMS.DSM.Shared.Models;
+@using EDMS.DSM.Client.Dto;
 
-<MudDataGrid T="Communications" MultiSelection="true" Items="@Elements" SortMode="MudBlazor.SortMode.Multiple" Filterable="true" QuickFilter="@_quickFilter"
+<MudDataGrid T="CommunicationDto" MultiSelection="true" Items="@Elements" SortMode="MudBlazor.SortMode.Multiple" Filterable="true" QuickFilter="@_quickFilter"
              Hideable="true" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged" Class="table-striped" Striped="true">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Customer Communication</MudText>
@@ -11,15 +11,38 @@
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <Columns>
-        <SelectColumn T="Communications" />
+        <SelectColumn T="CommunicationDto" />
         <PropertyColumn Property="x => x.TemplateName" Title="Letter Type" />
         <PropertyColumn Property="x => x.LPCID" />
         @*<PropertyColumn Property="x => x.Name" SortBy="@_sortBy" />*@
-        <TemplateColumn CellClass="d-flex justify-end" Title="Action">
+        <TemplateColumn Title="Action">
             <CellTemplate>
                 <MudStack Row>
-                    <span class="badge py-3 px-4 fs-7 badge-light-primary">@context.Item.Action</span>
-                    @*<MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">@context.Item.Action</MudButton>*@
+                    @if (context.Item?.IsProcessing == true)
+                    {
+                        @*<MudProgressCircular Color="Color.Primary" Indeterminate="true" />*@
+                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Style="margin-top: 10px; padding-top:10px;">
+                        </MudProgressLinear>
+                    }
+                    
+                    @if (context.Item?.IsProcessing == false)
+                    {
+                        if (context.Item.Action.StartsWith("Generate"))
+                        {
+                            <MudLink DataLabel="Actual File Name" Href="javascript:void(0);" OnClick="@(async () => await PerformLongRunningOperation(context.Item))" Underline="Underline.Always">@context.Item.Action</MudLink>
+                        }
+                        else
+                        {
+                            <MudLink DataLabel="Actual File Name" Href="javascript:void(0);" OnClick="@(async () => await DownloadSourceFile("test.pdf"))" Underline="Underline.Always">@context.Item.Action</MudLink>
+                        }
+                        @*<MudButton OnClick="@(async () => await PerformLongRunningOperation(context.Item))">
+                            @context.Item.Action
+                        </MudButton>*@
+                    }
+                    @*<div style="display:@(context.Item.IsProcessing ? "block" : "none")">
+                    </div>*@
+                    @* <span class="badge py-3 px-4 fs-7 badge-light-primary">@context.Item.Action</span> *@
+                    @*<MudButton Size="@Size.Small" Variant="@Variant.Filled" Color="@Color.Primary">@context.Item.Actions</MudButton>*@
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
@@ -34,7 +57,7 @@
         </TemplateColumn>
     </Columns>
     <PagerContent>
-        <MudDataGridPager T="Communications" />
+        <MudDataGridPager T="CommunicationDto" />
     </PagerContent>
 </MudDataGrid>
 
