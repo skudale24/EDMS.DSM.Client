@@ -126,7 +126,7 @@ public static class UploadEndPoints
     public const string Delete = "api/v1/pricing/upload";
     public const string TransferData = "api/v1/pricing/upload/{0}/transferdata";
     public const string DownloadErrorFile = "api/v1/pricing/downloaderrorfile";
-    public const string DownloadSourceFile = "api/v1/pricing/downloadsourcefile";
+    public const string DownloadSourceFile = "api/customer/downloadsourcefile";
 }
 
 public static class QuoteEndPoints

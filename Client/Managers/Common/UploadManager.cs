@@ -54,9 +54,9 @@ public class UploadManager : IUploadManager
         return stream;
     }
 
-    public async Task<Stream> DownloadSourceFileAsync(string CSVFileName)
+    public async Task<Stream> DownloadSourceFileAsync(string FileName)
     {
-        var urlWithParams = $"{UploadEndPoints.DownloadSourceFile}/{CSVFileName}/";
+        var urlWithParams = $"{UploadEndPoints.DownloadSourceFile}/{FileName}/";
         var stream = await _httpRequest.GetStreamAsync(urlWithParams).ConfigureAwait(false);
 
         return stream;
