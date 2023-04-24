@@ -16,7 +16,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     private IEnumerable<CommunicationDto> Elements = new List<CommunicationDto>();
     //private bool IsButtonDisabled = false;
-    //private bool isProcessing = false;
+    private bool isLoading = false;
     private string _searchString;
     private bool _sortNameByLength;
     private List<string> _events = new();
@@ -58,18 +58,25 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
+        await FetchCommunications();
+    }
+
+    private async Task FetchCommunications()
+    {
+        isLoading = true;
+        StateHasChanged();
+
         var result = await _customerManager.GetCommunicationsListAsync();
 
         _ = result.Status
             ? _snackbar.Add(result.Message, Severity.Success)
             : _snackbar.Add(result.Message, Severity.Error);
-        
+
         Elements = result.Result.ToCommunicationGrid();
-        
+        isLoading = false;
         StateHasChanged();
     }
-
-    private async Task PerformLongRunningOperation(CommunicationDto item)
+    private async Task ProcessLetterGeneration(CommunicationDto item)
     {
         Console.WriteLine($"Item: {item.LPCID}");
         item.IsProcessing = true;
@@ -79,18 +86,23 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         StateHasChanged();
 
         // Perform the long-running operation
-        await LongRunningOperationAsync();
+        await GenerateLetterAsync();
 
         // Enable the button again
         item.IsButtonDisabled = false;
         item.IsProcessing = false;
+
+        //await FetchCommunications();
+
+        //Simulate PDF creation
+        item.Action = "Download PDF";
         StateHasChanged();
     }
 
-    private async Task LongRunningOperationAsync()
+    private async Task GenerateLetterAsync()
     {
         // Do some long-running operation here
-        await Task.Delay(5000);
+        await Task.Delay(2000);
     }
 
     private async Task DownloadSourceFile(string csvFileName)
