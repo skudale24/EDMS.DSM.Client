@@ -25,7 +25,7 @@ namespace EDMS.DSM.Server.Controllers
         [HttpGet("List")]
         public async Task<IApiResult> GetCommunications()
         {
-            var communications = _context.Database.SqlQueryRaw<Communications>($"EXECUTE dbo.[p_Get_HUP_AggregateList4CustomerCommunications]").ToList();
+            var communications = _context.Database.SqlQueryRaw<Communications>($"EXECUTE dbo.[p_Get_HUP_AggregateList4CustomerCommunications_1]").ToList();
             
 			return ApiResult<List<Communications>>.Success(communications);
         }

@@ -6,7 +6,7 @@ public class TeamWorldTheme : MudTheme
     {
         Palette = new PaletteLight
         {
-            Primary = "#B18711",
+            Primary = "#3d49f5",
             PrimaryDarken = Colors.Amber.Darken4,
             Secondary = Colors.BlueGrey.Darken4,
             Background = Colors.BlueGrey.Lighten5,
@@ -14,7 +14,7 @@ public class TeamWorldTheme : MudTheme
             TableHover = Colors.BlueGrey.Lighten5,
             TableLines = Colors.BlueGrey.Lighten5,
             LinesDefault = Colors.BlueGrey.Lighten5,
-            AppbarBackground = "#B18711",
+            AppbarBackground = "#a3f07d",
             DrawerBackground = "#FFF",
             DrawerText = "#262626",
             Success = "#06d79c"
