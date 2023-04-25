@@ -1,4 +1,8 @@
-﻿.pwa-updater-updatenow-button {
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.pwa-updater-updatenow-button {
     background-color: transparent;
     border: solid 2px #ffffff80;
     border-radius: 4px;

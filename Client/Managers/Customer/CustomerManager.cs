@@ -41,7 +41,6 @@ namespace EDMS.DSM.Managers.Customer
             var urlWithParams = $"{CustomerEndpoints.GetCommunications}";
 
             return await _httpRequest.GetRequestAsync<List<Communications>>(urlWithParams);
-            //return await response.ToResultAsync<TOut>().ConfigureAwait(false);
         }
     }
 }
