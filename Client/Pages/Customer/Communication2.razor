@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/c2"
 
 @using System.Net.Http.Json
 @using MudBlazor
@@ -7,11 +7,38 @@
 @inject HttpClient httpClient
 @inject ISnackbar Snackbar
 
-<MudTable Items="@Elements" SortLabel="Sort By" CommitEditTooltip="Commit Edit" FixedHeader="true" Loading="@isLoading">
+<MudTable Items="@Elements" SortLabel="Sort By" CommitEditTooltip="Commit Edit" FixedHeader="true" Loading="@isLoading"
+          Height="520px" Filter="new Func<CommunicationDto,bool>(_quickFilter)">
     <ToolBarContent>
-        <MudText Typo="Typo.h6" Class="font-bold text-red-500 text-2xl">Tools: HUP Customer Communication</MudText>
+        @*<MudContainer Class="bg-stone-600 mt-2">*@
+        <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
+            <MudText Typo="Typo.h6">Tools: HUP Customer Communication</MudText>
+        </MudItem>
         <MudSpacer />
-        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
+        @*<MudGrid>
+            <MudItem xs="3">
+                <MudPaper Class="d-flex align-center justify-center mud-width-full py-3">
+                    <MudText Typo="Typo.h6" Class="font-bold text-white text-2xl">Tools: HUP Customer Communication</MudText>
+                </MudPaper>
+            </MudItem>
+            <MudItem xs="3">
+                <MudSpacer />
+            </MudItem>
+            <MudItem xs="3">
+                <MudSpacer />
+            </MudItem>
+            <MudItem xs="3">
+                <MudPaper Class="d-flex align-center justify-center mud-width-full py-3 bg-white">
+                    <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search"
+                                  IconSize="Size.Medium" Class="mt-0 bg-white">
+                    </MudTextField>
+                </MudPaper>
+            </MudItem>
+        </MudGrid>*@
+        @*</MudContainer>*@
     </ToolBarContent>
     <ColGroup>
         <col style="width:20%;" />

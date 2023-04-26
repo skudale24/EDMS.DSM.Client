@@ -1,15 +1,16 @@
-﻿@page "/c1"
+﻿@page "/"
 
 @using EDMS.DSM.Client.Dto;
-
+@*
 @if (isLoading)
 {
     <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" Style="margin-bottom: -4px !important">
     </MudProgressLinear>
-}
-<MudDataGrid T="CommunicationDto" MultiSelection="false" Items="@Elements" SortMode="MudBlazor.SortMode.Single" Filterable="true" QuickFilter="@_quickFilter"
-             Hideable="false" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged" Class="table-striped"
-             Striped="true" ShowFilterIcons="false">
+}*@
+<MudDataGrid T="CommunicationDto" MultiSelection="false" Items="@Elements" SortMode="MudBlazor.SortMode.Single" Filterable="true"
+             QuickFilter="@_quickFilter" Loading="@isLoading"
+        Hideable="false" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged" Class="table-striped"
+        Striped="true" ShowFilterIcons="true" FixedHeader="true" Height="520px">
     <ToolBarContent>
         <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
             <MudText Typo="Typo.h6">Tools: HUP Customer Communication</MudText>
@@ -18,6 +19,14 @@
         <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
+    <ColGroup>
+        <col style="width:20%;" />
+        <col style="width:20%;" />
+        <col style="width:15%;" />
+        <col style="width:15%;" />
+        <col style="width:15%;" />
+        <col />
+    </ColGroup>
     <Columns>
         <PropertyColumn Property="x => x.TemplateName" Title="Letter Type" HeaderClass="font-bold" />
         <PropertyColumn Property="x => x.CompanyName" Title="LPC" HeaderClass="font-bold" />
@@ -26,12 +35,12 @@
                 <MudStack Row>
                     @if (context.Item?.IsProcessing == true)
                     {
-                        <MudProgressLinear Color="Color.Primary" Indeterminate="true">
+                        <MudProgressLinear Color="Color.Primary" Class="text-green-600" Style="text-green-600" Indeterminate="true">
                         </MudProgressLinear>
                     }
                     @if (context.Item?.IsProcessing == false)
                     {
-                        if (context.Item.Action.StartsWith("Generate"))
+                        if (context.Item?.Action?.StartsWith("Generate") == true)
                         {
                             <MudLink DataLabel="Actual File Name" Href="javascript:void(0);" OnClick="@(async () => await ProcessLetterGeneration(context.Item))" Underline="Underline.Always">@context.Item.Action</MudLink>
                         }
@@ -54,6 +63,9 @@
             </CellTemplate>
         </TemplateColumn>
     </Columns>
+    <LoadingContent>
+        <MudText Typo="Typo.body2" Class="mt-4 mud-text-secondary">Loading Communications...</MudText>
+    </LoadingContent>
     <PagerContent>
         <MudDataGridPager T="CommunicationDto" />
     </PagerContent>
