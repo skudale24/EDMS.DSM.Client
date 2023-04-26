@@ -9,8 +9,8 @@
 }*@
 <MudDataGrid T="CommunicationDto" MultiSelection="false" Items="@Elements" SortMode="MudBlazor.SortMode.Single" Filterable="true"
              QuickFilter="@_quickFilter" Loading="@isLoading"
-        Hideable="false" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged" Class="table-striped"
-        Striped="true" ShowFilterIcons="true" FixedHeader="true" Height="520px">
+             Hideable="false" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged"
+             Striped="true" ShowFilterIcons="true" FixedHeader="true" Height="520px">
     <ToolBarContent>
         <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
             <MudText Typo="Typo.h6">Tools: HUP Customer Communication</MudText>
@@ -20,17 +20,17 @@
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
     </ToolBarContent>
     <ColGroup>
+        <col style="width:15%;" />
+        <col style="width:15%;" />
+        <col style="width:15%;" />
         <col style="width:20%;" />
         <col style="width:20%;" />
-        <col style="width:15%;" />
-        <col style="width:15%;" />
-        <col style="width:15%;" />
         <col />
     </ColGroup>
     <Columns>
-        <PropertyColumn Property="x => x.TemplateName" Title="Letter Type" HeaderClass="font-bold" />
-        <PropertyColumn Property="x => x.CompanyName" Title="LPC" HeaderClass="font-bold" />
-        <TemplateColumn Title="Action" Filterable="false" Sortable="false" HeaderClass="font-bold">
+        <PropertyColumn Property="x => x.TemplateName" Title="Letter Type" />
+        <PropertyColumn Property="x => x.CompanyName" Title="LPC" />
+        <TemplateColumn Title="Action" Filterable="false" Sortable="false">
             <CellTemplate>
                 <MudStack Row>
                     @if (context.Item?.IsProcessing == true)
