@@ -14,7 +14,7 @@ public class TeamWorldTheme : MudTheme
             TableHover = Colors.BlueGrey.Lighten5,
             TableLines = Colors.BlueGrey.Lighten5,
             LinesDefault = Colors.BlueGrey.Lighten5,
-            AppbarBackground = "#a3f07d",
+            AppbarBackground = "#0072CF",
             DrawerBackground = "#FFF",
             DrawerText = "#262626",
             Success = "#06d79c"
