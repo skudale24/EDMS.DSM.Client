@@ -14,14 +14,14 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     [Inject] private ISnackbar _snackbar { get; set; } = default!;
 
-    private IEnumerable<CommunicationDto> Elements = new List<CommunicationDto>();
+    private IEnumerable<CommunicationDTO> Elements = new List<CommunicationDTO>();
     //private bool IsButtonDisabled = false;
     private bool isLoading = false;
     private string _searchString;
     private bool _sortNameByLength;
     private List<string> _events = new();
     // custom sort by name length
-    private Func<CommunicationDto, object> _sortBy => x =>
+    private Func<CommunicationDTO, object> _sortBy => x =>
     {
         if (_sortNameByLength)
             return x.TemplateName.Length;
@@ -30,7 +30,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     };
 
     // quick filter - filter gobally across multiple columns with the same input
-    private Func<CommunicationDto, bool> _quickFilter => x =>
+    private Func<CommunicationDTO, bool> _quickFilter => x =>
     {
         if (string.IsNullOrWhiteSpace(_searchString))
             return true;
@@ -76,7 +76,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         isLoading = false;
         StateHasChanged();
     }
-    private async Task ProcessLetterGeneration(CommunicationDto item)
+    private async Task ProcessLetterGeneration(CommunicationDTO item)
     {
         Console.WriteLine($"Item: {item.LPCID}");
         item.IsProcessing = true;
@@ -124,12 +124,12 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     }
 
     // events
-    void RowClicked(DataGridRowClickEventArgs<CommunicationDto> args)
+    void RowClicked(DataGridRowClickEventArgs<CommunicationDTO> args)
     {
         _events.Insert(0, $"Event = RowClick, Index = {args.RowIndex}, Data = {System.Text.Json.JsonSerializer.Serialize(args.Item)}");
     }
 
-    void SelectedItemsChanged(HashSet<CommunicationDto> items)
+    void SelectedItemsChanged(HashSet<CommunicationDTO> items)
     {
         _events.Insert(0, $"Event = SelectedItemsChanged, Data = {System.Text.Json.JsonSerializer.Serialize(items)}");
     }

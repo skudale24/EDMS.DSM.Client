@@ -1,6 +1,6 @@
-﻿namespace EDMS.DSM.Client.Dto;
+﻿namespace EDMS.DSM.Client.DTO;
 
-public class CommunicationDto
+public class CommunicationDTO
 {
     public long LPCID { get; set; }
     public int TemplateType { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace EDMS.DSM.Client.Dto;
+﻿namespace EDMS.DSM.Client.DTO;
 
 public class TermsDto
 {

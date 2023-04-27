@@ -4,9 +4,9 @@ namespace EDMS.DSM.Client.Extensions;
 
 public static class GridExtensions
 {
-    public static List<CommunicationDto> ToCommunicationGrid(this List<Communications> items)
+    public static List<CommunicationDTO> ToCommunicationGrid(this List<Communications> items)
     {
-        return items.Select(x => new CommunicationDto
+        return items.Select(x => new CommunicationDTO
         {
             Action = x.ActionText,
             CompanyName = x.CompanyName,

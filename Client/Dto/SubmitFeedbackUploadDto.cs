@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace EDMS.DSM.Client.Dto;
+namespace EDMS.DSM.Client.DTO;
 
 public class SubmitFeedbackUploadDto
 {

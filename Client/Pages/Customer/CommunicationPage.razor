@@ -1,8 +1,8 @@
 ﻿@page "/"
 
-@using EDMS.DSM.Client.Dto;
+@using EDMS.DSM.Client.DTO;
 
-<MudDataGrid T="CommunicationDto" MultiSelection="false" Items="@Elements" SortMode="MudBlazor.SortMode.Single" Filterable="true"
+<MudDataGrid T="CommunicationDTO" MultiSelection="false" Items="@Elements" SortMode="MudBlazor.SortMode.Single" Filterable="true"
              QuickFilter="@_quickFilter" Loading="@isLoading"
              Hideable="false" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged"
              Striped="true" ShowFilterIcons="true" FixedHeader="true" Height="520px">
@@ -86,7 +86,7 @@
         <MudText Typo="Typo.body2" Class="mt-4 mud-text-secondary">Loading Communications...</MudText>
     </LoadingContent>
     <PagerContent>
-        <MudDataGridPager T="CommunicationDto" />
+        <MudDataGridPager T="CommunicationDTO" />
     </PagerContent>
 </MudDataGrid>
 

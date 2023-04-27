@@ -11,7 +11,7 @@ global using EDMS.Shared.Enums;
 global using EDMS.Shared.Wrapper;
 global using EDMS.DSM.Client.Authentication.HttpUtils;
 global using EDMS.DSM.Client.Components;
-global using EDMS.DSM.Client.Dto;
+global using EDMS.DSM.Client.DTO;
 global using EDMS.DSM.Client.Extensions;
 global using EDMS.DSM.Client.Filters;
 global using EDMS.DSM.Client.Managers;
