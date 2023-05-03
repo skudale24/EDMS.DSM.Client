@@ -15,6 +15,14 @@ namespace EDMS.DSM.Managers.Customer
 
         private List<Communications> _communications { get; set; }
 
+        public async Task<IApiResult> GenerateLetter<TIn>(TIn generateLetterDTO)
+        {
+            var urlWithParams = $"{CustomerEndpoints.GenerateLetter}";
+            var response = await _httpRequest.PutRequestAsync<TIn, ApiResult>(urlWithParams, generateLetterDTO);
+
+            return response;
+        }
+
         public async Task<DataSourceResult> GetCommunicationsListAsync(DataSourceRequest gridRequest)
         {
 

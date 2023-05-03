@@ -1,5 +1,6 @@
 ﻿using EDMS.DSM.Shared.Models;
 using Telerik.DataSource;
+using Telerik.SvgIcons;
 
 namespace EDMS.DSM.Managers.Customer
 {
@@ -7,5 +8,6 @@ namespace EDMS.DSM.Managers.Customer
     {
         Task<DataSourceResult> GetCommunicationsListAsync(DataSourceRequest gridRequest);
         Task<IListApiResult<List<Communications>>> GetCommunicationsListAsync();
+        Task<IApiResult> GenerateLetter<TIn>(TIn editAgentDto);
     }
 }
