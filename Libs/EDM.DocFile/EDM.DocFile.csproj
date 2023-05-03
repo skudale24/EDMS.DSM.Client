@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{EF452E04-7902-4BB3-90EE-3DA4FB7F7808}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>EDM.DocFile</RootNamespace>
+    <AssemblyName>EDM.DocFile</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="bNetDBLib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=c858855deeb70cee">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\EDM.Common\Lib\bNetDBLib.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Telerik.Web.Spreadsheet">
+      <HintPath>..\..\lib\RCAJAX\2020.2.512.45\AdditionalLibraries\Bin45\Telerik.Web.Spreadsheet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Web.UI">
+      <HintPath>..\..\lib\RCAJAX\2020.2.512.45\Telerik.Web.UI.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Core">
+      <HintPath>..\..\lib\RCAJAX\2020.2.512.45\AdditionalLibraries\Bin45\Telerik.Windows.Documents.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Flow">
+      <HintPath>..\..\lib\RCAJAX\2020.2.512.45\AdditionalLibraries\Bin45\Telerik.Windows.Documents.Flow.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Spreadsheet">
+      <HintPath>..\..\lib\RCAJAX\2020.2.512.45\AdditionalLibraries\Bin45\Telerik.Windows.Documents.Spreadsheet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml">
+      <HintPath>..\..\lib\RCAJAX\2020.2.512.45\AdditionalLibraries\Bin45\Telerik.Windows.Documents.Spreadsheet.FormatProviders.OpenXml.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Telerik.Windows.Zip">
+      <HintPath>..\..\lib\RCAJAX\2020.2.512.45\AdditionalLibraries\Bin45\Telerik.Windows.Zip.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="VTI.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f84c3c96fcc3a5ce, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\EDM.Common\Lib\VTI.Common.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApplicationDocTypeDates.cs" />
+    <Compile Include="UserDocumentStatus.cs" />
+    <Compile Include="UserDocTypeDates.cs" />
+    <Compile Include="CompanyDocTypeDates.cs" />
+    <Compile Include="DocFile.cs" />
+    <Compile Include="DocumentStatus.cs" />
+    <Compile Include="eScoreReport.cs" />
+    <Compile Include="MissingAutoApprovedPdfFile.cs" />
+    <Compile Include="LocalToServerUploader.cs" />
+    <Compile Include="MissingFileReport.cs" />
+    <Compile Include="MissingImageFile.cs" />
+    <Compile Include="MissingPdfFile.cs" />
+    <Compile Include="MissingProjectReport.cs" />
+    <Compile Include="MissingSignFile.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EDM.Codes\EDM.Codes.csproj">
+      <Project>{7acc0c27-0a5d-4124-a270-88c08f0c38e5}</Project>
+      <Name>EDM.Codes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EDM.Common\EDM.Common.csproj">
+      <Project>{8B5B38FF-5E68-4A44-8C5C-E59884DCC503}</Project>
+      <Name>EDM.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EDM.ContentHandler\EDM.ContentHandler.csproj">
+      <Project>{1D5C1C1E-1D1A-4C6D-93E0-852253AB4C39}</Project>
+      <Name>EDM.ContentHandler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EDM.DocType\EDM.DocType.csproj">
+      <Project>{7e5bb9f0-1e08-40fa-bee3-a392dd676b68}</Project>
+      <Name>EDM.DocType</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EDM.Email\EDM.Email.csproj">
+      <Project>{03C1DEAF-10DA-4C59-93CB-AFEE3C3A736B}</Project>
+      <Name>EDM.Email</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EDM.Group\EDM.Group.csproj">
+      <Project>{25cc99e6-7596-4b55-89cb-63e6d4feae2a}</Project>
+      <Name>EDM.Group</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EDM.Program\EDM.Program.csproj">
+      <Project>{ea98b19f-fd23-4e81-86ae-457c1b75675c}</Project>
+      <Name>EDM.Program</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EDM.Setting\EDM.Setting.csproj">
+      <Project>{729f8366-f5e2-4c1e-857c-d37a4f270bab}</Project>
+      <Name>EDM.Setting</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

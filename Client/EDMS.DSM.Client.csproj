@@ -36,6 +36,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\Libs\EDM.PDFMappingVariables\EDM.PDFMappingVariables.csproj" />
 	  <ProjectReference Include="..\Shared\EDMS.Shared.csproj" />
 	</ItemGroup>
 

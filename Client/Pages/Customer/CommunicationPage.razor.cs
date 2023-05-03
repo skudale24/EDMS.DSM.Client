@@ -170,7 +170,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     public class GenerateLetterDTO
     {
-        public string TemplateFile { get; set; } = "Home_Uplift__Ineligibility_Notice.pdf";
+        public string TemplateFile { get; set; } = "/CDN/HUP_Template/Home_Uplift__Ineligibility_Notice.pdf";
         public string NewLocalPath { get; set; } = "C:\\Users\\siddharth.k\\source\\EDM-DSM\\eScore\\EDMS.AP\\Tools\\CustomerCommunications\\ApplicationDoc\\";
         public int ProgramId { get; set; } = 2;
         public int TemplateID { get; set; } = 2;

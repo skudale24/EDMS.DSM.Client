@@ -1,4 +1,6 @@
-﻿using EDMS.DSM.Server.Models;
+﻿using EDM.PDFMappingVariables;
+using EDM.Setting;
+using EDMS.DSM.Server.Models;
 using EDMS.DSM.Shared.Models;
 using EDMS.Shared.Enums;
 using EDMS.Shared.Wrapper;
@@ -65,10 +67,22 @@ namespace EDMS.DSM.Server.Controllers
         {
             try
             {
-                //if (file == null || file.Length <= 0)
-                //{
-                //    return BadRequest(ApiResult.Fail("Please select file"));
-                //}
+                PDFGeneration obj = new PDFGeneration();
+                obj.ConnectionString = _configuration.GetConnectionString("Default");
+                obj.TemplateFile = letterDetails.TemplateFile;
+                obj.NewLocalPath = _configuration["UploadFilePath"];
+                //obj.NewLocalPath = Server.MapPath("~/Tools/CustomerCommunications/ApplicationDoc/");
+                obj.ProgramId = 2;
+                obj.TemplateID = letterDetails.TemplateID;
+                obj.LPCID = letterDetails.LPCID;
+                obj.TemplateType = letterDetails.TemplateType;
+                obj.GeneratedBy = 10572;
+                obj.GetTemplatePDFGeneration();
+                var GeneratedPath = obj.GeneratedFilePath;
+                var BatchId = obj.BatchId;
+                string letterType = Enum.GetName(typeof(ETemplateType), letterDetails.TemplateType);
+                var OriginalName = DateTime.Now.ToString("yyyyMMdd") + "_CC" + letterType + ".pdf";
+                //this.ClientScript.RegisterStartupScript(Page.GetType(), "myScript", "ShowFile(" + "'Local','" + OriginalName + "','" + GeneratedPath + "');", true);
 
                 //string? uploadFilePath = _configuration["UploadFilePath"];
                 //FileInfo fileInfo = new(file.FileName);
