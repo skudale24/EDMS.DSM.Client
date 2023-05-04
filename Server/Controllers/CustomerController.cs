@@ -93,50 +93,8 @@ namespace EDMS.DSM.Server.Controllers
                 var BatchId = obj.BatchId;
                 string letterType = Enum.GetName(typeof(ETemplateType), letterDetails.TemplateType);
                 var OriginalName = DateTime.Now.ToString("yyyyMMdd") + "_CC" + letterType + ".pdf";
-                //this.ClientScript.RegisterStartupScript(Page.GetType(), "myScript", "ShowFile(" + "'Local','" + OriginalName + "','" + GeneratedPath + "');", true);
 
-                //string? uploadFilePath = _configuration["UploadFilePath"];
-                //FileInfo fileInfo = new(file.FileName);
-
-                //string fileNameWithOutExt = Path.GetFileNameWithoutExtension(file.FileName);
-                //string fileExtension = Path.GetExtension(file.FileName);
-
-                //if (fileExtension != ".csv")
-                //{
-                //    return BadRequest(ApiResult.Fail("Only .csv file can be uploaded."));
-                //}
-
-                //string generatedFileName = $"{fileNameWithOutExt}_{DateTime.UtcNow.ToString(_uploadFileDateTimeFormat)}{fileExtension}";
-
-                //string filePath = Path.Combine(uploadFilePath, generatedFileName);
-
-                //_ = Directory.CreateDirectory(uploadFilePath);
-
-                //string UserNameEmail = string.Empty;
-
-                //Auth.Models.User? loggeduser = _usercacheSevice.GetUserByAspNetUserId(AspnetUserId).Result;
-                //if (loggeduser != null)
-                //{
-                //    UserNameEmail = loggeduser.emailaddress;
-                //}
-
-                //using (FileStream stream = System.IO.File.Create(filePath))
-                //{
-                //    await file.CopyToAsync(stream);
-                //    PricingUploadsDto pricing = new()
-                //    {
-                //        Status = PricingUploadFileStatus.New.ToString(),
-                //        ActualFileName = file.FileName,
-                //        FileType = fileType,
-                //        UploadedDate = DateTime.UtcNow,
-                //        orgId = orgId,
-                //        UploadedBy = UserNameEmail,
-                //        FileName = generatedFileName
-                //    };
-                //    await _pricingService.AddUploadAsync(pricing);
-                //}
-
-                return Ok(await ApiResult.SuccessAsync());
+                return Ok(await ApiResult<PDFGeneration>.SuccessAsync(obj));
             }
             catch (Exception ex)
             {

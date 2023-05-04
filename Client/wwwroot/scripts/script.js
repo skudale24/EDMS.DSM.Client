@@ -22,6 +22,15 @@ function OpenFileAsPDF(contentStreamReference, fileName) {
     
 }
 
+function convertStreamToDataURL(stream) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(stream);
+    });
+}
+
 async function downloadFileFromStream(fileName, contentStreamReference) {
     const arrayBuffer = await contentStreamReference.arrayBuffer();
     const blob = new Blob([arrayBuffer]);
@@ -33,13 +42,16 @@ async function downloadFileFromStream(fileName, contentStreamReference) {
 function triggerFileDownload(fileName, url) {
     const anchorElement = document.createElement("a");
     anchorElement.href = url;
+    anchorElement.target = "_blank";
 
     if (fileName) {
         anchorElement.download = fileName;
     }
-
+    document.body.appendChild(anchorElement);
     anchorElement.click();
-    anchorElement.remove();
+    document.body.removeChild(anchorElement);
+
+    //anchorElement.remove();
 }
 
 function copyToClipboard(text) {

@@ -96,7 +96,8 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             //TODO: Remove hardcoded programid & userid
             model.ProgramId = 2;
             model.GeneratedBy = 10572;
-            var result = await _customerManager.GenerateLetter(model);
+            var result = await _customerManager.GenerateLetter<GenerateLetterDTO, GenerateLetterDTO>(model);
+            ApiResult<GenerateLetterDTO> response = result as ApiResult<GenerateLetterDTO>;
 
             // Enable the button again
             item.IsButtonDisabled = false;
@@ -104,8 +105,9 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
             StateHasChanged();
 
-            if (result.Status)
+            if (response.Status)
             {
+
                 await _loadingIndicatorProvider.HoldAsync();
 
                 await FetchCommunications();
@@ -115,14 +117,28 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                 
                 var letterType = item.FilePath?.Split("__").Skip(1).FirstOrDefault();
                 //string letterType = item.TemplateType; Enum.GetName(typeof(ETemplateType), TemplateType);
-                var downloadResult = await _uploadManager.DownloadSourceFileAsync(item.GeneratedFilePath);
-                using DotNetStreamReference streamRef = new(downloadResult);
+                var downloadResult = await _uploadManager.DownloadSourceFileAsync(response.Result.GeneratedFilePath);
+                //using DotNetStreamReference streamRef = new(downloadResult);
+
+                // this line works
+                downloadResult.Position = 0;
+                using var streamRef = new DotNetStreamReference(stream: downloadResult);
+
+                // execute javaScript to download file
+                //using var pdfStream = new MemoryStream(Encoding.UTF8.GetBytes("Hello, world!"));
+                //var dataUrl = await _jsRuntime.InvokeAsync<string>("convertStreamToDataURL", downloadResult);
+                //await _jsRuntime.InvokeVoidAsync("OpenNewTab", dataUrl);
+
+                //var pdfData = new Blob(await downloadResult.ReadAllAsync());
                 var fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_CC{letterType}";
                 await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+
+
+                //await _jsRuntime.InvokeVoidAsync("OpenFileAsPDF", streamRef, fileName);
             }
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             _ = _snackbar.Add("Error occurred while generating letter.", Severity.Error);
             await _loadingIndicatorProvider.ReleaseAsync();
@@ -190,5 +206,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         public int LPCID { get; set; } = 242;
         public int TemplateType { get; set; } = 1;
         public int GeneratedBy { get; set; } = 10572;
+        public string? TemplateName { get; set; }
+        public string? GeneratedFilePath { get; set; }
     }
 }

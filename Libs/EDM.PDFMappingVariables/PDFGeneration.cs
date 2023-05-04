@@ -20,18 +20,18 @@ namespace EDM.PDFMappingVariables
     {
         #region --- Members ---
         public String Message = String.Empty;
-        public string TemplateFile = null;
-        public string NewLocalPath = null;
-        public int? TemplateID = null;
-        public int? LPCID = null;
+        public string TemplateFile { get; set; }
+        public string NewLocalPath { get; set; }
+        public int? TemplateID { get; set; }
+        public int? LPCID { get; set; }
         public string ConnectionString = string.Empty;
 
         public string ApplicationIDs = null;
-        public string GeneratedFilePath = null;
-        public int? TemplateType = null;
-        public int? DocObjectType = null;
-        public string GeneratedFileName = null;
-        public int? GeneratedBy = null;
+        public string GeneratedFilePath { get; set; }
+        public int? TemplateType { get; set; }
+        public int? DocObjectType { get; set; }
+        public string GeneratedFileName { get; set; }
+        public int? GeneratedBy { get; set; }
         public string SystemName = null;//
         public string Storage = "";
         public byte[] localFile = null;
