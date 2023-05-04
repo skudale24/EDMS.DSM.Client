@@ -18,6 +18,7 @@ public static class GridExtensions
             TemplateId = x.TemplateId,
             TemplateName = x.TemplateName,
             TemplateType = x.TemplateType,
+            GeneratedFilePath = x.GeneratedFilePath
         }).ToList();
     }
 }

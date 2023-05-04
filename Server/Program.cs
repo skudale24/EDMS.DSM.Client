@@ -1,11 +1,37 @@
-﻿using EDMS.DSM.Server.Models;
+﻿//using Autofac;
+//using CacheLibrary;
+using EDM.Common;
+using EDM.ContentHandler;
+using EDMS.DSM.Server.Models;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
+using System.Text;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
+
+
+//var container = AutofacConfig.Configure();
+//using (var scope = container.BeginLifetimeScope())
+//{
+//    // Resolve dependencies and start the application
+//    var cache = scope.Resolve<IDistributedCache>();
+//    cache.Set("ProgramId", Encoding.UTF8.GetBytes("2"));
+//    cache.Set("UserId", Encoding.UTF8.GetBytes("10572"));
+
+//    var docTypeStorage = scope.Resolve<DocTypeStorage>();
+//    docTypeStorage.Cache = cache;
+//    docTypeStorage.LoadFromCache();
+//    // ...
+
+//    var myClass = scope.Resolve<FileHandlerCreator>();
+//}
+
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseUrls("http://0.0.0.0:5000", "https://0.0.0.0:5001");
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
 // Add services to the container.
@@ -26,6 +52,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
                 ServiceLifetime.Transient);
 
 builder.Services.AddPWAUpdater();
+
+AppDomain.CurrentDomain.SetData("ContentRootPath", builder.Environment.ContentRootPath);
 
 var app = builder.Build();
 

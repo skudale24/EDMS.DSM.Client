@@ -35,7 +35,8 @@ namespace EDM.ContentHandler
             //Physical
             DefaultUploadLocation = EDM.Setting.DB.GetByName(EDM.Setting.Key.DefaultUploadLocation, configKey: ConfigKey);
             ReportLocation = EDM.Setting.DB.GetByName(EDM.Setting.Key.ReportLocation, configKey: ConfigKey);
-            UploadFilePath = EDM.Setting.DB.GetByName(EDM.Setting.Key.UploadFilePath, configKey: ConfigKey);
+            //UploadFilePath = EDM.Setting.DB.GetByName(EDM.Setting.Key.UploadFilePath, configKey: ConfigKey);
+            UploadFilePath = "D:\\Upload\\Upload\\";
            // LPCRebatePDFPathPhysical = EDM.Setting.DB.GetByName(EDM.Setting.Key.LPCRebatePDFPathPhysical, configKey: ConfigKey);
         }
         public LocalFileHandler(String module, FileLocationType fileLocationType, String configKey) : this(configKey)

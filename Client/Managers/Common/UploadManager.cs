@@ -1,4 +1,6 @@
-﻿namespace EDMS.DSM.Client.Managers.Common;
+﻿using System.Net;
+
+namespace EDMS.DSM.Client.Managers.Common;
 
 public class UploadManager : IUploadManager
 {
@@ -56,7 +58,8 @@ public class UploadManager : IUploadManager
 
     public async Task<Stream> DownloadSourceFileAsync(string FileName)
     {
-        var urlWithParams = $"{UploadEndPoints.DownloadSourceFile}/{FileName}/";
+        var encodedFileName = WebUtility.UrlEncode(FileName);
+        var urlWithParams = $"{UploadEndPoints.DownloadSourceFile}/{encodedFileName}/";
         var stream = await _httpRequest.GetStreamAsync(urlWithParams).ConfigureAwait(false);
 
         return stream;

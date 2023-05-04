@@ -1,4 +1,5 @@
 ﻿using EDMS.DSM.Managers.Customer;
+using Telerik.SvgIcons;
 
 namespace EDMS.DSM.Client.Pages.Customer;
 
@@ -78,39 +79,48 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         isLoading = false;
         StateHasChanged();
     }
+
     private async Task ProcessLetterGeneration(CommunicationDTO item)
     {
-        await _loadingIndicatorProvider.HoldAsync();
-
         try
         {
-            Console.WriteLine($"Item: {item.LPCID}");
             item.IsProcessing = true;
             // Disable the button
             item.IsButtonDisabled = true;
-            Console.WriteLine($"Item IsProcessing: {item.IsProcessing}");
+
             StateHasChanged();
 
-            // Perform the long-running operation
-            // Do some long-running operation here
+            model.LPCID = Convert.ToInt32(item.LPCID);
+            model.TemplateFile = item.FilePath;
+            model.TemplateID = item.TemplateId;
+            //TODO: Remove hardcoded programid & userid
+            model.ProgramId = 2;
+            model.GeneratedBy = 10572;
             var result = await _customerManager.GenerateLetter(model);
-            //await Task.Delay(2000);
 
             // Enable the button again
             item.IsButtonDisabled = false;
             item.IsProcessing = false;
 
-            //await FetchCommunications();
-
-            //Simulate PDF creation
-            if (result.Status)
-            {
-                item.Action = "Download PDF";
-            }
-
             StateHasChanged();
 
-            await _loadingIndicatorProvider.ReleaseAsync();
+            if (result.Status)
+            {
+                await _loadingIndicatorProvider.HoldAsync();
+
+                await FetchCommunications();
+                //item.Action = "Download PDF";
+            
+                await _loadingIndicatorProvider.ReleaseAsync();
+                
+                var letterType = item.FilePath?.Split("__").Skip(1).FirstOrDefault();
+                //string letterType = item.TemplateType; Enum.GetName(typeof(ETemplateType), TemplateType);
+                var downloadResult = await _uploadManager.DownloadSourceFileAsync(item.GeneratedFilePath);
+                using DotNetStreamReference streamRef = new(downloadResult);
+                var fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_CC{letterType}";
+                await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+            }
+
         }
         catch (Exception)
         {
@@ -134,15 +144,18 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     //    }
     //}
 
-    private async Task DownloadSourceFile(string csvFileName)
+    private async Task DownloadSourceFile(CommunicationDTO item)
     {
         await _loadingIndicatorProvider.HoldAsync();
 
         try
         {
-            var result = await _uploadManager.DownloadSourceFileAsync(csvFileName);
+            var letterType = item.FilePath?.Split("__").Skip(1).FirstOrDefault();
+            //string letterType = item.TemplateType; Enum.GetName(typeof(ETemplateType), TemplateType);
+            var result = await _uploadManager.DownloadSourceFileAsync(item.GeneratedFilePath);
             using DotNetStreamReference streamRef = new(result);
-            await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", csvFileName, streamRef);
+            var fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_CC{letterType}";
+            await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
             await _loadingIndicatorProvider.ReleaseAsync();
         }
         catch (Exception)
@@ -177,44 +190,5 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         public int LPCID { get; set; } = 242;
         public int TemplateType { get; set; } = 1;
         public int GeneratedBy { get; set; } = 10572;
-
-        //[Required(ErrorMessage = "The Segment field is required.")]
-        //public string Segment { get; set; }
-
-        //[Required(ErrorMessage = "The Country field is required.")]
-        //public string Country { get; set; } = string.Empty;
-
-        //[Required(ErrorMessage = "The City field is required.")]
-        //public string City { get; set; }
-
-        //[Required(ErrorMessage = "The Name field is required.")]
-        //public string Name { get; set; } = string.Empty;
-
-        //[Required(ErrorMessage = "The PhoneNo field is required.")]
-        //public string PhoneNo { get; set; } = string.Empty;
-
-        //[Required(ErrorMessage = "The Address field is required.")]
-        //public string Address { get; set; } = string.Empty;
-
-        //[Required(ErrorMessage = "The FaxNo field is required.")]
-        //public string FaxNo { get; set; } = string.Empty;
-
-        //[Required(ErrorMessage = "The Email field is required.")]
-        //public string Email { get; set; } = string.Empty;
-
-        //[Required(ErrorMessage = "The Category field is required.")]
-
-        //public string Category { get; set; }
-
-        //[Required(ErrorMessage = "The Routing field is required.")]
-
-        //public string Routing { get; set; } = string.Empty;
-
-        //[Required(ErrorMessage = "The HubAgent field is required.")]
-        //public string HubAgent { get; set; } = string.Empty;
-
-        //[Required(ErrorMessage = "The Code field is required.")]
-        //public string Code { get; set; } = string.Empty;
     }
-
 }

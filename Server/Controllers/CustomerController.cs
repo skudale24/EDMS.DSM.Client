@@ -7,6 +7,7 @@ using EDMS.Shared.Wrapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IO;
 using System.Net;
 
 namespace EDMS.DSM.Server.Controllers
@@ -50,10 +51,14 @@ namespace EDMS.DSM.Server.Controllers
 
 				string generatedFileName = $"{fileNameWithOutExt}_err.txt";
 				*/
-                string filePath = Path.Combine(uploadFilePath, FileName);
+
+                var decodedFileName = WebUtility.UrlDecode(FileName).Replace("/", "\\");
+
+                string filePath = Path.Join(uploadFilePath, decodedFileName);
+                filePath = filePath.Replace("\\\\", "\\");
 
                 var l_sReader = System.IO.File.OpenRead(filePath);
-                return (File(l_sReader, "application/octet-stream", Path.GetFileName(FileName)));
+                return (File(l_sReader, "application/octet-stream", Path.GetFileName(filePath)));
             }
             catch (Exception ex)
             {
@@ -67,16 +72,22 @@ namespace EDMS.DSM.Server.Controllers
         {
             try
             {
+
                 PDFGeneration obj = new PDFGeneration();
                 obj.ConnectionString = _configuration.GetConnectionString("Default");
                 obj.TemplateFile = letterDetails.TemplateFile;
-                obj.NewLocalPath = _configuration["UploadFilePath"];
-                //obj.NewLocalPath = Server.MapPath("~/Tools/CustomerCommunications/ApplicationDoc/");
-                obj.ProgramId = 2;
+
+                //NewLocalPath
+                //obj.NewLocalPath = _configuration["UploadFilePath"];
+                var contentRootPath = (string)AppDomain.CurrentDomain.GetData("ContentRootPath");
+                var path = "\\Tools\\CustomerCommunications\\ApplicationDoc\\";
+                obj.NewLocalPath = contentRootPath + path;
+
+                obj.ProgramId = letterDetails.ProgramId;
                 obj.TemplateID = letterDetails.TemplateID;
                 obj.LPCID = letterDetails.LPCID;
                 obj.TemplateType = letterDetails.TemplateType;
-                obj.GeneratedBy = 10572;
+                obj.GeneratedBy = letterDetails.GeneratedBy;
                 obj.GetTemplatePDFGeneration();
                 var GeneratedPath = obj.GeneratedFilePath;
                 var BatchId = obj.BatchId;

@@ -9,6 +9,7 @@ public class CommunicationDTO
     public string? Action { get; set; }
     public string? GeneratedDate { get; set; }
     public string? GeneratedBy { get; set; }
+    public string? GeneratedFilePath { get; set; }
     public int TemplateId { get; set; }
     public int CountofApplications { get; set; }
     public string? FilePath { get; set; }

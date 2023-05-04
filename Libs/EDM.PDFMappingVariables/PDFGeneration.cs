@@ -1,5 +1,5 @@
 ﻿using EDM.ContentHandler;
-using EDM.PDFMappingVariables.YourNamespace;
+using EDMS.DSM.Data;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
@@ -61,10 +61,10 @@ namespace EDM.PDFMappingVariables
         {
             try
             {
-                string TemplateURL = EDM.Setting.DB.GetByName(EDM.Setting.Key.ImageUrl, 
-                    ProgramId, 
-                    configKey: ConfigKey,
-                    connectionString: ConnectionString);
+                EDM.Setting.DB.ConnectionString = ConnectionString;
+                string TemplateURL = EDM.Setting.DB.GetByName(EDM.Setting.Key.ImageUrl,
+                    ProgramId,
+                    configKey: ConfigKey);
                 String TemplatePath = TemplateURL + TemplateFile;
                 String SaveAsFileName = String.Empty;
                 DataSet dsTemplateFields = GetDataTemplateFields(); // mapping table dataset
@@ -80,7 +80,7 @@ namespace EDM.PDFMappingVariables
 
                 List<TemplateField> Fields = new List<TemplateField>();
                 List<TemplateMapping> Mappings = new List<TemplateMapping>();
-              
+
                 foreach (DataRow row in dsTemplateFields.Tables[DocumentTemplateMapping].Rows)
                 {
                     TemplateMapping mapping = new TemplateMapping();
@@ -152,6 +152,10 @@ namespace EDM.PDFMappingVariables
                 string newFile = NewLocalPath + SaveAsFileName;
                 byte[] bytOutput = ConcatAndAddContent(lstPages);
                 localFile = bytOutput;
+                if (!Directory.Exists(Path.GetDirectoryName(newFile)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(newFile));
+                }
                 using (FileStream fs = File.Create(newFile))
                 {
                     fs.Write(bytOutput, 0, (int)bytOutput.Length);
@@ -180,7 +184,7 @@ namespace EDM.PDFMappingVariables
                 GeneratedFilePath = RelLocation + SaveAsFileName;
                 DocObjectType = Convert.ToInt32(DocTypeId);
                 string enumText = Enum.GetName(typeof(ETemplateType), TemplateType);
-                GeneratedFileName = DateTime.Now.ToString("yyyyMMdd") + "_CC" + enumText+".pdf"; //2023 - 04 - 10_CC_AL;
+                GeneratedFileName = DateTime.Now.ToString("yyyyMMdd") + "_CC" + enumText + ".pdf"; //2023 - 04 - 10_CC_AL;
 
                 SystemName = SaveAsFileName;
                 try
@@ -329,53 +333,93 @@ namespace EDM.PDFMappingVariables
 
             try
             {
+                SqlParameter[] parameters = new SqlParameter[10];
                 Hashtable prms = new Hashtable();
                 if (!string.IsNullOrEmpty(ApplicationIDs))
                 {
                     prms["ApplicationIDs"] = ApplicationIDs;
+                    // , @LPCID    BIGINT
+                    // ,@GeneratedFilePath NVARCHAR(500)    
+                    // ,@TemplateType INT
+                    // , @GeneratedBy   BIGINT
+                    // ,@DocObjectType SMALLINT = 12000
+                    // , @GeneratedFileName NVARCHAR(150)
+                    // ,@SystemName VARCHAR(128) = NULL
+                    // ,@Storage VARCHAR(20)  = NULL
                 }
+                parameters[0] = new SqlParameter("@ApplicationIDs", SqlDbType.VarChar, 255);
+                parameters[0].Value = ApplicationIDs;
+
                 if (TemplateID != null)
                 {
                     prms["TemplateID"] = TemplateID;
                 }
+                parameters[1] = new SqlParameter("@TemplateID", SqlDbType.Int);
+                parameters[1].Value = TemplateID;
+
                 if (LPCID != null)
                 {
                     prms["LPCID"] = LPCID;
-
                 }
+                parameters[2] = new SqlParameter("@LPCID", SqlDbType.BigInt);
+                parameters[2].Value = LPCID;
+
                 if (!string.IsNullOrEmpty(GeneratedFilePath))
                 {
                     prms["GeneratedFilePath"] = GeneratedFilePath;
                 }
+                parameters[3] = new SqlParameter("@GeneratedFilePath", SqlDbType.NVarChar, 150);
+                parameters[3].Value = GeneratedFilePath;
+
                 if (TemplateType != null)
                 {
                     prms["TemplateType"] = TemplateType;
                 }
+                parameters[4] = new SqlParameter("@TemplateType", SqlDbType.Int);
+                parameters[4].Value = TemplateType;
+
                 if (GeneratedBy != null)
                 {
                     prms["GeneratedBy"] = GeneratedBy;
                 }
+                parameters[5] = new SqlParameter("@GeneratedBy", SqlDbType.BigInt);
+                parameters[5].Value = GeneratedBy;
+
                 if (DocObjectType != null)
                 {
                     prms["DocObjectType"] = DocObjectType;
                 }
+                parameters[6] = new SqlParameter("@DocObjectType", SqlDbType.SmallInt);
+                parameters[6].Value = DocObjectType;
+
                 if (!string.IsNullOrEmpty(GeneratedFileName))
                 {
                     prms["GeneratedFileName"] = GeneratedFileName;
                 }
+                parameters[7] = new SqlParameter("@GeneratedFileName", SqlDbType.NVarChar, 150);
+                parameters[7].Value = GeneratedFileName;
+
                 if (!string.IsNullOrEmpty(SystemName))
                 {
                     prms["SystemName"] = SystemName;
                 }
+                parameters[8] = new SqlParameter("@SystemName", SqlDbType.VarChar, 128);
+                parameters[8].Value = SystemName;
+
                 if (!string.IsNullOrEmpty(Storage))
                 {
                     prms["Storage"] = Storage;
                 }
+                parameters[9] = new SqlParameter("@Storage", SqlDbType.VarChar, 20);
+                parameters[9].Value = Storage;
+
                 Common.Log.Info("HUPCustomerCommunications", "SaveHUPCustomerCommunicationsResponse", "p_A_HUP_CustomerCommunications called");
                 String SqlforLog = string.Empty;
                 String sql = MsSql.GetSqlStmt("p_A_HUP_CustomerCommunications", prms, out SqlforLog);
                 Common.Log.Info("HUPCustomerCommunications", "SaveHUPCustomerCommunicationsResponse", SqlforLog);
-                DataSet ds = MsSql.ExecuteQuery(sql);
+                //DataSet ds = MsSql.ExecuteQuery(sql);
+                DataSet ds = StoredProcedureExecutor.ExecuteStoredProcedureAsDataSet(ConnectionString, "p_A_HUP_CustomerCommunications", parameters);
+
                 if (MsSql.IsEmpty(ds))
                 {
                     Message = "Error inserting Communication Transaction Data Transaction";
@@ -387,7 +431,7 @@ namespace EDM.PDFMappingVariables
                     BatchId = Int32.Parse(ds.Tables[0].Rows[0]["BatchID"].ToString());
                     return true;
                 }
-                
+
             }
             catch (Exception exception)
             {

@@ -13,6 +13,7 @@ namespace EDM.Setting
         {
             get
             {
+                return 2;
                 long programId = 0;
                 String temp = String.Empty;
                 try

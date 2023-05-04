@@ -12,5 +12,6 @@
         public int TemplateId { get; set; }
         public int CountofApplications { get; set; }
         public string? FilePath { get; set; }
+        public string? GeneratedFilePath { get; set; }
     }
 }

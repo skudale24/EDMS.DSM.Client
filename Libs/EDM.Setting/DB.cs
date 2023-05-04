@@ -377,7 +377,7 @@ namespace EDM.Setting
         public String Description = String.Empty;
         public int StatusId;
         public long ByUserId;
-        public string ConnectionString;
+        public static string ConnectionString;
         #endregion --- Properties ---
 
         #region --- Constructors ---
@@ -566,7 +566,7 @@ namespace EDM.Setting
                 parameters[1].Value = lpcId;
                 parameters[2] = new SqlParameter("@Key", SqlDbType.VarChar, 64);
                 parameters[2].Value = key;
-                DataSet ds = StoredProcedureExecutor.ExecuteStoredProcedureAsDataSet(connectionString, "p_GET_Setting", parameters);
+                DataSet ds = StoredProcedureExecutor.ExecuteStoredProcedureAsDataSet(ConnectionString, "p_GET_Setting", parameters);
                 //DataSet ds = db.ExecuteNoTransQuery();
                 if (SqlDb.IsEmpty(ds)) return String.Empty;
 
