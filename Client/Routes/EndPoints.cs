@@ -3,12 +3,12 @@
 public static class EndPoints
 {
     public static string Version = "0.9.0014";
-    public static string ApiBaseUrl => "https://localhost:5001";
+    public static string ApiBaseUrl => "https://localhost:44342";
     public static string LoginPage => "https://localhost:7119";
     public static string PhotosBaseUrl => "http://localhost:5119";
 
     //Local machine
-    //public static string Version = "0.9.0014";
+    //public static string Version = "0.9.0015";
     //public static string ApiBaseUrl => "http://edmstvademo.local:8080";
     //public static string LoginPage => "https://logsoft.iworktech.net";
     //public static string PhotosBaseUrl => "https://pwa.iworktech.net";
@@ -133,6 +133,7 @@ public static class UploadEndPoints
     public const string TransferData = "api/v1/pricing/upload/{0}/transferdata";
     public const string DownloadErrorFile = "api/v1/pricing/downloaderrorfile";
     public const string DownloadSourceFile = "api/customer/downloadsourcefile";
+    public const string DownloadExcelFile = "api/customer/downloadexcelfile";
 }
 
 public static class QuoteEndPoints
@@ -262,6 +263,6 @@ public static class ReportsEndpoints
 
 public static class CustomerEndpoints
 {
-    public const string GetCommunications = "api/Customer/List";
-    public const string GenerateLetter = "api/Customer/generateletter";
+    public const string GetCommunications = "api/customer/list";
+    public const string GenerateLetter = "api/customer/generateletter";
 }

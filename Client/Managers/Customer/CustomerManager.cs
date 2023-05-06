@@ -1,4 +1,5 @@
-﻿using EDMS.DSM.Shared.Models;
+﻿using EDMS.DSM.Client.Pages.RoadBridge;
+using EDMS.DSM.Shared.Models;
 using Telerik.DataSource;
 using Telerik.DataSource.Extensions;
 
@@ -44,9 +45,9 @@ namespace EDMS.DSM.Managers.Customer
             return dataToReturn;
         }
 
-        public async Task<IListApiResult<List<Communications>>> GetCommunicationsListAsync()
+        public async Task<IListApiResult<List<Communications>>> GetCommunicationsListAsync(int programId)
         {
-            var urlWithParams = $"{CustomerEndpoints.GetCommunications}";
+            var urlWithParams = $"{CustomerEndpoints.GetCommunications}/{programId}";
 
             return await _httpRequest.GetRequestAsync<List<Communications>>(urlWithParams);
         }

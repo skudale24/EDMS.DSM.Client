@@ -23,6 +23,10 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     private string _searchString;
     private bool _sortNameByLength;
     private List<string> _events = new();
+
+    //TODO: Replace hardcoded values with actual values
+    private int _programId = 2;
+    private int _generatedById = 10572;
     // custom sort by name length
     private Func<CommunicationDTO, object> _sortBy => x =>
     {
@@ -69,7 +73,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         isLoading = true;
         StateHasChanged();
 
-        var result = await _customerManager.GetCommunicationsListAsync();
+        var result = await _customerManager.GetCommunicationsListAsync(_programId);
 
         _ = result.Status
             ? _snackbar.Add(result.Message, Severity.Success)
@@ -93,72 +97,75 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             model.LPCID = Convert.ToInt32(item.LPCID);
             model.TemplateFile = item.FilePath;
             model.TemplateID = item.TemplateId;
-            //TODO: Remove hardcoded programid & userid
-            model.ProgramId = 2;
-            model.GeneratedBy = 10572;
+            model.ProgramId = _programId;
+            model.GeneratedBy = _generatedById;
             var result = await _customerManager.GenerateLetter<GenerateLetterDTO, GenerateLetterDTO>(model);
             ApiResult<GenerateLetterDTO> response = result as ApiResult<GenerateLetterDTO>;
 
-            // Enable the button again
-            item.IsButtonDisabled = false;
-            item.IsProcessing = false;
-
-            StateHasChanged();
-
-            if (response.Status)
+            if (response?.Status == true)
             {
+                var items = await _customerManager.GetCommunicationsListAsync(_programId);
+                var cRow = items.Result.Where(f => f.BatchId == response.Result.BatchId).FirstOrDefault();
+                item.GeneratedBy = cRow?.GeneratedBy;
+                item.GeneratedDate = cRow?.GeneratedDate;
+                item.Action = "Download PDF";
+
+                // Enable the button again
+                item.IsButtonDisabled = false;
+                item.IsProcessing = false;
+                StateHasChanged();
 
                 await _loadingIndicatorProvider.HoldAsync();
 
-                await FetchCommunications();
-                //item.Action = "Download PDF";
-            
-                await _loadingIndicatorProvider.ReleaseAsync();
-                
                 var letterType = item.FilePath?.Split("__").Skip(1).FirstOrDefault();
                 //string letterType = item.TemplateType; Enum.GetName(typeof(ETemplateType), TemplateType);
                 var downloadResult = await _uploadManager.DownloadSourceFileAsync(response.Result.GeneratedFilePath);
-                //using DotNetStreamReference streamRef = new(downloadResult);
 
-                // this line works
-                downloadResult.Position = 0;
-                using var streamRef = new DotNetStreamReference(stream: downloadResult);
-
-                // execute javaScript to download file
-                //using var pdfStream = new MemoryStream(Encoding.UTF8.GetBytes("Hello, world!"));
-                //var dataUrl = await _jsRuntime.InvokeAsync<string>("convertStreamToDataURL", downloadResult);
-                //await _jsRuntime.InvokeVoidAsync("OpenNewTab", dataUrl);
-
-                //var pdfData = new Blob(await downloadResult.ReadAllAsync());
+                MemoryStream ms = new();
+                await downloadResult.CopyToAsync(ms);
                 var fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_CC{letterType}";
-                await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+                await _jsRuntime.InvokeVoidAsync("OpenFileAsPDF", ms.GetBuffer(), fileName);
 
+                await _loadingIndicatorProvider.ReleaseAsync();
 
-                //await _jsRuntime.InvokeVoidAsync("OpenFileAsPDF", streamRef, fileName);
             }
 
         }
         catch (Exception ex)
         {
+            // Enable the button again
+            item.IsButtonDisabled = false;
+            item.IsProcessing = false;
+            StateHasChanged();
+
             _ = _snackbar.Add("Error occurred while generating letter.", Severity.Error);
             await _loadingIndicatorProvider.ReleaseAsync();
         }
     }
 
-    //private async Task GenerateLetterAsync()
-    //{
-    //    try
-    //    {
-    //        // Do some long-running operation here
-    //        await Task.Delay(2000);
-    //        await _loadingIndicatorProvider.ReleaseAsync();
-    //    }
-    //    catch (Exception)
-    //    {
-    //        _ = _snackbar.Add("Error occurred while generating letter.", Severity.Error);
-    //        await _loadingIndicatorProvider.ReleaseAsync();
-    //    }
-    //}
+    private async Task DownloadExcel()
+    {
+        await _loadingIndicatorProvider.HoldAsync();
+
+        try
+        {
+            // Do some long-running operation here
+            //await Task.Delay(2000);
+
+            var result = await _uploadManager.DownloadExcelFileAsync("");
+            using DotNetStreamReference streamRef = new(result);
+            var fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_CC{""}";
+            await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+
+            await _loadingIndicatorProvider.ReleaseAsync();
+
+        }
+        catch (Exception)
+        {
+            _ = _snackbar.Add("We are facing some issues generating the excel file. Please try again later.", Severity.Warning);
+            await _loadingIndicatorProvider.ReleaseAsync();
+        }
+    }
 
     private async Task DownloadSourceFile(CommunicationDTO item)
     {
@@ -208,5 +215,6 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         public int GeneratedBy { get; set; } = 10572;
         public string? TemplateName { get; set; }
         public string? GeneratedFilePath { get; set; }
+        public int BatchId { get; set; }
     }
 }

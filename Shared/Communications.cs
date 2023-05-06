@@ -13,5 +13,6 @@
         public int CountofApplications { get; set; }
         public string? FilePath { get; set; }
         public string? GeneratedFilePath { get; set; }
+        public int? BatchId { get; set; }
     }
 }

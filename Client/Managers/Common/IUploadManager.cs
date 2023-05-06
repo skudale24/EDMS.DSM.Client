@@ -8,5 +8,6 @@ public interface IUploadManager : IManager
     Task<IApiResult> DeleteAsync(int id);
     Task<IApiResult> TransferDataAsync(int id);
     Task<Stream> DownloadErrorFileAsync(string CSVFileName);
-    Task<Stream> DownloadSourceFileAsync(string CSVFileName);
+    Task<Stream> DownloadSourceFileAsync(string fileName);
+    Task<Stream> DownloadExcelFileAsync(string fileName);
 }

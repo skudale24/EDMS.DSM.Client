@@ -38,7 +38,7 @@ namespace EDM.PDFMappingVariables
         public SqlDb Db;
         private String _configKey = String.Empty;
         public String Module;
-        public int BatchId;
+        public int BatchId { get; set; }
         public String ConfigKey
         {
             get { return _configKey; }

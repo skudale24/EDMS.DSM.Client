@@ -56,10 +56,19 @@ public class UploadManager : IUploadManager
         return stream;
     }
 
-    public async Task<Stream> DownloadSourceFileAsync(string FileName)
+    public async Task<Stream> DownloadSourceFileAsync(string fileName)
     {
-        var encodedFileName = WebUtility.UrlEncode(FileName);
+        var encodedFileName = WebUtility.UrlEncode(fileName);
         var urlWithParams = $"{UploadEndPoints.DownloadSourceFile}/{encodedFileName}/";
+        var stream = await _httpRequest.GetStreamAsync(urlWithParams).ConfigureAwait(false);
+
+        return stream;
+    }
+
+    public async Task<Stream> DownloadExcelFileAsync(string fileName)
+    {
+        var encodedFileName = WebUtility.UrlEncode(fileName);
+        var urlWithParams = $"{UploadEndPoints.DownloadExcelFile}/{encodedFileName}/";
         var stream = await _httpRequest.GetStreamAsync(urlWithParams).ConfigureAwait(false);
 
         return stream;
