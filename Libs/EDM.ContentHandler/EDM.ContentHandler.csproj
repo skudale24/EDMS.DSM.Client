@@ -95,12 +95,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\AWSSDK.S3.3.3.11.1\analyzers\dotnet\cs\AWSSDK.S3.CodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\EDMS.DSM.Data\EDMS.DSM.Data.csproj">
+      <Project>{0AF15209-3051-4A42-94FC-E4C86B57662E}</Project>
+      <Name>EDMS.DSM.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EDM.Common\EDM.Common.csproj">
       <Project>{8b5b38ff-5e68-4a44-8c5c-e59884dcc503}</Project>
       <Name>EDM.Common</Name>
