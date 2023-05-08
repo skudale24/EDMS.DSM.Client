@@ -1,7 +1,10 @@
-﻿using System;
+﻿using EDMS.Data.Constants;
+using EDMS.DSM.Data;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,11 +55,20 @@ namespace EDM.CommunicationTemplate
         {
             try
             {
-                Hashtable prms = new Hashtable();
-                prms["ProgramId"] = ProgramId;
-                Db.SetSql("p_Get_HUP_AggregateList4CustomerCommunications", prms);
-                Lg.Info("GetAllCustomerCommunication", Db.SqlStmt);
-                return Db.ExecuteNoTransQuery();
+                //Hashtable prms = new Hashtable();
+                //prms["ProgramId"] = ProgramId;
+                //Db.SetSql("p_Get_HUP_AggregateList4CustomerCommunications", prms);
+                //Lg.Info("GetAllCustomerCommunication", Db.SqlStmt);
+                //return Db.ExecuteNoTransQuery();
+
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@ProgramID", SqlDbType.Int);
+                parameters[0].Value = ProgramId;
+                DataSet data = StoredProcedureExecutor.ExecuteStoredProcedureAsDataSet(
+                    SQLConstants.ConnectionString, 
+                    "p_Get_HUP_AggregateList4CustomerCommunications", 
+                    parameters);
+                return data;
             }
             catch (Exception ex)
             {

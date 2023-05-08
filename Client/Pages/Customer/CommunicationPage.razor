@@ -3,11 +3,11 @@
 @using EDMS.DSM.Client.DTO;
 
 <style>
-  .icon-link:hover {
-    cursor: pointer;
-    color: blue;
-    text-decoration: underline;
-  }
+    .icon-link:hover {
+        cursor: pointer;
+        color: blue;
+        text-decoration: underline;
+    }
 </style>
 
 <MudDataGrid T="CommunicationDTO" MultiSelection="false" Items="@Elements" SortMode="MudBlazor.SortMode.Single" Filterable="true"
@@ -15,7 +15,6 @@
              Hideable="false" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged"
              Striped="true" ShowFilterIcons="true" FixedHeader="true" Height="520px">
     <ToolBarContent>
-
         <MudGrid>
             <MudItem class="align-self-center">
                 <MudText Typo="Typo.h6">Tools: Customer Communications</MudText>
@@ -24,32 +23,15 @@
                 <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
                               AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                 <MudSpacer />
-                <div class="d-flex align-items-center" style="margin-top: 15px;">
-                    <MudText Typo="Typo.h6" Class="ml-6">Export:</MudText>
-                    <MudIcon Icon="@Icons.Custom.FileFormats.FileExcel" Color="@Color.Tertiary"
-                             Class="ml-2 icon-link" ></MudIcon>
+                <div class="d-flex align-items-center ml-2 icon-link" style="margin-top: 15px;">
+                    <MudLink OnClick="@(async () => await ExportGridClicked())">
+                        <MudText Typo="Typo.h6" Class="ml-6" onclick="ExportGridClicked">Export:</MudText>
+                        <MudIcon Icon="@Icons.Custom.FileFormats.FileExcel" Color="@Color.Tertiary" onclick="ExportGridClicked"></MudIcon>
+                    </MudLink>
                 </div>
             </MudItem>
         </MudGrid>
-
-
-
-
-
-        @*<MudItem xs="12" sm="12" md="12" lg="12" xl="12">
-        <MudText Typo="Typo.h6">Tools: Customer Communications</MudText>
-        </MudItem>
-        <MudSpacer />
-        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-        AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-        <MudSpacer />
-        <MudItem xs="12" sm="12" md="12" lg="12" xl="12">
-        <MudText Typo="Typo.h6">Export:</MudText>
-        <MudIcon Icon="@Icons.Custom.FileFormats.FileExcel" Color="@Color.Tertiary"></MudIcon>
-        </MudItem>*@
     </ToolBarContent>
-
-    @*<HeaderCell Class="font-bold"></HeaderCell>*@
     <ColGroup>
         <col style="width:18%;" />
         <col style="width:15%;" />
@@ -97,7 +79,6 @@
                             <MudLink DataLabel="Actual File Name" Href="javascript:void(0);" OnClick="@(async () => await DownloadSourceFile(context.Item))" Underline="Underline.Always">@context.Item?.ActionText</MudLink>
                         }
                     }
-                    @*<div style="display:@(context.Item.IsProcessing ? "block" : "none")"></div>*@
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
@@ -117,7 +98,7 @@
             </HeaderTemplate>
             <CellTemplate>
                 <MudStack Row>
-                    <MudLink DataLabel="Actual File Name" Href="javascript:void(0);" OnClick="@(async () => await DownloadExcel(context.Item))" Underline="Underline.Always">Export Excel file</MudLink>
+                    <MudLink DataLabel="Actual File Name" Href="javascript:void(0);" OnClick="@(async () => await DownloadExcel(context.Item))" Underline="Underline.Always">Export</MudLink>
                 </MudStack>
             </CellTemplate>
         </TemplateColumn>
@@ -130,8 +111,7 @@
     </PagerContent>
 </MudDataGrid>
 
-@*
-<div class="d-flex flex-wrap mt-4">
+@*<div class="d-flex flex-wrap mt-4">
     <MudSwitch @bind-Checked="@_sortNameByLength" Color="Color.Primary">Sort Name Column By Length</MudSwitch>
 </div>
 

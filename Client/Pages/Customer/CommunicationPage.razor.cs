@@ -1,4 +1,6 @@
-﻿using EDMS.DSM.Managers.Customer;
+﻿using EDM.Setting;
+using EDMS.DSM.Managers.Customer;
+using System.Data;
 using Telerik.SvgIcons;
 
 namespace EDMS.DSM.Client.Pages.Customer;
@@ -84,6 +86,11 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         StateHasChanged();
     }
 
+    /// <summary>
+    /// Generate Letters functionality
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
     private async Task ProcessLetterGeneration(CommunicationDTO item)
     {
         try
@@ -145,6 +152,11 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         }
     }
 
+    /// <summary>
+    /// Export Excel file
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
     private async Task DownloadExcel(CommunicationDTO item)
     {
         await _loadingIndicatorProvider.HoldAsync();
@@ -153,14 +165,13 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         {
             //var request = new DownloadExcelFileRequest
             //{
-
             //};
             //model.LPCID = Convert.ToInt32(item.LPCID);
             //model.TemplateFile = item.FilePath;
             //model.TemplateID = item.TemplateId;
             //model.ProgramId = _programId;
             //model.GeneratedBy = _generatedById;
-            await _uploadManager.DownloadExcelFileAsync<CommunicationDTO> (item);
+            await _uploadManager.DownloadExcelFileAsync<CommunicationDTO>(item);
             //ApiResult<GenerateLetterDTO> response = result as ApiResult<GenerateLetterDTO>;
 
             //using DotNetStreamReference streamRef = new(result);
@@ -177,6 +188,11 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         }
     }
 
+    /// <summary>
+    /// Download PDF directly
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
     private async Task DownloadSourceFile(CommunicationDTO item)
     {
         await _loadingIndicatorProvider.HoldAsync();
@@ -195,6 +211,25 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         {
             _ = _snackbar.Add("Source file not found.", Severity.Error);
             await _loadingIndicatorProvider.ReleaseAsync();
+        }
+    }
+
+    protected async Task ExportGridClicked()
+    {
+        await _loadingIndicatorProvider.HoldAsync();
+
+        try
+        {
+            var result = await _uploadManager.ExportGridAsync();
+            using DotNetStreamReference streamRef = new(result);
+            var fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_CC.xlsx";
+            await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+            await _loadingIndicatorProvider.ReleaseAsync();
+        }
+        catch (Exception ex)
+        {
+            await _loadingIndicatorProvider.ReleaseAsync();
+            EDM.Common.Log.Error("Common", "EDMS.AP.Tools.CustomerCommunications.List", "ExportGridClicked", ex);
         }
     }
 

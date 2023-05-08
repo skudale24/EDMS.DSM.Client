@@ -1,6 +1,7 @@
 ﻿using EDM.DataExport;
 using EDM.PDFMappingVariables;
 using EDM.Setting;
+using EDMS.Data.Constants;
 using EDMS.DSM.Server.Models;
 using EDMS.DSM.Shared.Models;
 using EDMS.Shared.Enums;
@@ -12,7 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.IO;
 using System.Net;
+using Telerik.SvgIcons;
 using VTI.Common;
+using static Azure.Core.HttpHeader;
 
 namespace EDMS.DSM.Server.Controllers
 {
@@ -166,5 +169,59 @@ namespace EDMS.DSM.Server.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, ApiResult.Fail(ex.Message));
             }
         }
+
+
+        [HttpGet("exportgrid")]
+        public async Task<IActionResult> ExportGrid()
+        {
+            try
+            {
+                string sheetName = "Table1";
+
+                ExcelExport objExport = new ExcelExport(SQLConstants.AdminPortal);
+
+                DataSet DsExportData = new DataSet();
+                DataSet ds = GetGridDataSet();
+                if (!MsSql.IsEmpty(ds))
+                {
+                    DataTable dt = objExport.GetFilteredData(ds.Tables[0], string.Empty, "LPCID", sheetName);
+                    if (dt != null)
+                    {
+                        DsExportData = objExport.SetFilteredDataSource(ds, dt, sheetName);
+                    }
+                }
+
+                objExport.ExportListToExcel(SQLConstants.GemBoxKey, DsExportData, sheetName);
+
+                var l_sReader = System.IO.File.OpenRead(objExport.FilePath);
+                return (File(l_sReader, "application/octet-stream", Path.GetFileName(objExport.FilePath)));
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, ApiResult.Fail(ex.Message));
+            }
+        }
+
+        private DataSet GetGridDataSet()
+        {
+            DataSet dsReturn = null;
+            try
+            {
+                //EDM.User.Cookie _cook = new EDM.User.Cookie(Session);
+                EDM.CommunicationTemplate.CustomerCommunications objComTran = new EDM.CommunicationTemplate.CustomerCommunications();
+
+                objComTran.Module = SQLConstants.AdminPortal;
+                objComTran.ProgramId = SQLConstants.ProgramID;
+                dsReturn = objComTran.GetAllCustomerCommunication();
+            }
+            catch (Exception ex)
+            {
+                EDM.Common.Log.Error(SQLConstants.AdminPortal, "EDMS.AP.CustomerCommunications.List", "GetGridDataSet", ex);
+            }
+            return dsReturn;
+        }
+
+
     }
 }

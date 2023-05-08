@@ -134,6 +134,7 @@ public static class UploadEndPoints
     public const string DownloadErrorFile = "api/v1/pricing/downloaderrorfile";
     public const string DownloadSourceFile = "api/customer/downloadsourcefile";
     public const string DownloadExcelFile = "api/customer/downloadexcelfile";
+    public const string ExportGrid = "api/customer/exportgrid";
 }
 
 public static class QuoteEndPoints

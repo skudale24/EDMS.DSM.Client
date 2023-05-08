@@ -2,8 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Linq.Dynamic;
+using System.Net;
+using System.Web;
 //using System.Web;
 using Telerik.Web.UI;
 
@@ -15,7 +18,7 @@ namespace EDM.DataExport
 
         public String Module = String.Empty;
         public String Message = String.Empty;
-
+        public string FilePath = String.Empty;
         #endregion --- Properties ---
 
         #region --- Member Variables ---
@@ -148,6 +151,117 @@ namespace EDM.DataExport
                 EDM.Common.Log.Error(Module, Module + ":EDM.DataExport", "ExportToExcel", message);
             }
         }
+
+
+        public void ExportListToExcel(string gemBoxKey, DataSet dsExportData, string sheetName, bool wrapText = false)
+        {
+            try
+            {
+                string NavUrlPath = string.Empty; //HttpContext.Current.Request.Path;
+                sheetName = GetPlainFileName(sheetName);
+
+                //if (uxRadGrid == null || uxRadGrid.Items.Count == 0) return;
+                if (dsExportData == null) return;
+                if (dsExportData.Tables[sheetName] == null) return;
+                int iColSeq = 0;
+                DataTable dt = dsExportData.Tables[sheetName];
+                //folowing list is as - ColumnName, Aggregate (ASP Format), DataFormatString  (ASP Format), FooterAggregateFormatString  (ASP Format), FooterText
+                List<Tuple<String, String, String, String, String>> lstFormatedColumns = new List<Tuple<String, String, String, String, String>>();
+                if (dt != null)
+                {
+                    EDM.Common.Log.Info(Module, "ExportToExcel", "## Step-7 : At start ExportToExcel function record count is = " + Convert.ToString(dt.Rows.Count) + ", FileName = " + sheetName);
+                }
+
+                //foreach (GridColumn col in uxRadGrid.Columns)
+                //{
+                //    if (col.Visible)
+                //    {
+                //        var uniqueName = col.UniqueName == "UserCompanyName" ? "CompanyName" : col.UniqueName;
+                //        if (dt.Columns.Contains(uniqueName))
+                //        //if (dt.Columns.Contains(col.UniqueName))
+                //        {
+                //            dt.Columns[uniqueName].SetOrdinal(iColSeq);
+                //            if (dt.Columns.Contains(col.HeaderText) && uniqueName != col.HeaderText)
+                //            {
+                //                dt.Columns.Remove(col.HeaderText);
+                //            }
+                //            dt.Columns[uniqueName].ColumnName = col.HeaderText;
+
+                //            iColSeq++;
+                //        }
+                //        else if (dt.Columns.Contains(col.HeaderText))
+                //        {
+                //            dt.Columns[col.HeaderText].SetOrdinal(iColSeq);
+                //            dt.Columns[col.HeaderText].ColumnName = col.HeaderText;
+
+                //            iColSeq++;
+                //        }
+                //        string strDataFormatString = "", strAggregate = "", strFooterAggregateFormatString = "", strFooterText = "";
+                //        switch (col.ColumnType)
+                //        {
+                //            case "GridBoundColumn":
+                //                strDataFormatString = ((Telerik.Web.UI.GridBoundColumn)col).DataFormatString;
+                //                strAggregate = ((Telerik.Web.UI.GridBoundColumn)col).Aggregate.ToString();
+                //                strFooterAggregateFormatString = ((Telerik.Web.UI.GridBoundColumn)col).FooterAggregateFormatString;
+                //                strFooterText = ((Telerik.Web.UI.GridBoundColumn)col).FooterText;
+                //                break;
+
+                //            case "GridNumericColumn":
+                //                strDataFormatString = ((Telerik.Web.UI.GridNumericColumn)col).DataFormatString;
+                //                strAggregate = ((Telerik.Web.UI.GridNumericColumn)col).Aggregate.ToString();
+                //                strFooterAggregateFormatString = ((Telerik.Web.UI.GridNumericColumn)col).FooterAggregateFormatString;
+                //                strFooterText = ((Telerik.Web.UI.GridNumericColumn)col).FooterText;
+                //                break;
+                //        }
+                //        if (!String.IsNullOrEmpty(strDataFormatString) || (!String.IsNullOrEmpty(strAggregate) && strAggregate != "None") || !String.IsNullOrEmpty(strFooterAggregateFormatString) || !String.IsNullOrEmpty(strFooterText))
+                //        {
+                //            strAggregate = ConvertASPtoExcelFormat(strAggregate);
+                //            strDataFormatString = ConvertASPtoExcelFormat(strDataFormatString);
+                //            strFooterAggregateFormatString = ConvertASPtoExcelFormat(strFooterAggregateFormatString);
+                //            lstFormatedColumns.Add(new Tuple<String, String, String, String, String>(col.HeaderText, strAggregate, strDataFormatString, strFooterAggregateFormatString, strFooterText));
+                //        }
+                //    }
+                //}
+                //while (iColSeq != dt.Columns.Count)
+                //{
+                //    dt.Columns.RemoveAt(iColSeq);
+                //}
+
+                DataSet ds = new DataSet();
+                ds.Tables.Add(dt.Copy());
+
+                if (ds != null && ds.Tables[0] != null)
+                {
+                    EDM.Common.Log.Info(Module, "ExportToExcel", "## Step-8 : At end ExportToExcel function record count is = " + Convert.ToString(ds.Tables[0].Rows.Count) + ", FileName = " + sheetName);
+                }
+
+                Export(ds, gemBoxKey, sheetName, lstFormatedColumns, wrapText);
+            }
+            catch (Exception ex)
+            {
+                Message = ex.Message;
+                Common.Log.Error(Module, Module + ":EDM.DataExport", "ExportToExcel", ex);
+
+                string message = string.Format("Time: {0}", DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"));
+                message += Environment.NewLine;
+                message += "-----------------------------------------------------------";
+                message += Environment.NewLine;
+                message += string.Format("Message: {0}", ex.Message);
+                message += Environment.NewLine;
+                message += string.Format("StackTrace: {0}", ex.StackTrace);
+                message += Environment.NewLine;
+                message += string.Format("Source: {0}", ex.Source);
+                message += Environment.NewLine;
+                message += string.Format("TargetSite: {0}", ex.TargetSite.ToString());
+                message += Environment.NewLine;
+                message += "-----------------------------------------------------------";
+                message += Environment.NewLine;
+
+                EDM.Common.Log.Error(Module, Module + ":EDM.DataExport", "ExportToExcel", message);
+            }
+        }
+
+
 
         public DataTable GetFilteredDataSource(RadGrid uxRadGrid, string tableName)
         {
@@ -415,6 +529,7 @@ namespace EDM.DataExport
                 string strURL = NavUrlPath + fileName + strDateTime + ".xlsx"; // HttpContext.Current.Server.MapPath(fileName + strDateTime + ".xlsx");
                 ef.Save(strURL);
 
+                FilePath = strURL;
                 //Downloadfile(fileName, strURL);
             }
             catch (Exception ex)
@@ -487,21 +602,40 @@ namespace EDM.DataExport
 
         #region --- Private Methods ---
 
+        //public IActionResult DownloadFile()
+        //{
+        //    // Set the file path and content type
+        //    var filePath = "/path/to/your/file.pdf";
+        //    var contentType = "application/pdf";
+
+        //    // Return the file to the client as a download
+        //    var fileContent = System.IO.File.ReadAllBytes(filePath);
+        //    return File(fileContent, contentType, Path.GetFileName(filePath));
+        //}
+
         private void Downloadfile(string sFileName, string sFilePath)
         {
             try
             {
-                var file = new System.IO.FileInfo(sFilePath);
-                //HttpContext.Current.Response.Clear();
-                //HttpContext.Current.Response.ContentType = "application/octet-stream";
-                //HttpContext.Current.Response.AddHeader("content-disposition", "attachment; filename=" + sFileName + ".xlsx");
-                //HttpContext.Current.Response.AddHeader("Content-Length", file.Length.ToString(System.Globalization.CultureInfo.InvariantCulture));
-                //HttpContext.Current.Response.WriteFile(file.FullName);
-                //HttpContext.Current.Response.Flush();
-                //// Prevents any other content from being sent to the browser
-                //HttpContext.Current.Response.SuppressContent = true;
-                //HttpContext.Current.ApplicationInstance.CompleteRequest();
-                file.Delete();
+
+                //var contentType = "application/octet-stream";
+
+                //// Return the file to the client as a download
+                //var fileContent = System.IO.File.ReadAllBytes(sFilePath);
+                //return File(fileContent, contentType, Path.GetFileName(sFilePath));
+
+
+                //var file = new System.IO.FileInfo(sFilePath);
+
+                //var response = HttpContext.Response;
+                //response.Clear();
+                //response.ContentType = "application/octet-stream";
+                //response.Headers.Add("content-disposition", "attachment; filename=" + sFileName + ".xlsx");
+                //response.Headers.Add("Content-Length", file.Length.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                //response.WriteFile(file.FullName);
+                //response.Flush();
+                //response.StatusCode = (int)HttpStatusCode.OK;
+                //response.ContentType = "application/octet-stream";
             }
             catch (Exception ex)
             {
@@ -509,6 +643,31 @@ namespace EDM.DataExport
                 Common.Log.Error(Module, Module + ":EDM.DataExport", "Downloadfile", ex);
             }
         }
+
+
+
+        //private void Downloadfile(string sFileName, string sFilePath)
+        //{
+        //    try
+        //    {
+        //        var file = new System.IO.FileInfo(sFilePath);
+        //        HttpContext.Current.Response.Clear();
+        //        HttpContext.Current.Response.ContentType = "application/octet-stream";
+        //        HttpContext.Current.Response.AddHeader("content-disposition", "attachment; filename=" + sFileName + ".xlsx");
+        //        HttpContext.Current.Response.AddHeader("Content-Length", file.Length.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        //        HttpContext.Current.Response.WriteFile(file.FullName);
+        //        HttpContext.Current.Response.Flush();
+        //        // Prevents any other content from being sent to the browser
+        //        HttpContext.Current.Response.SuppressContent = true;
+        //        HttpContext.Current.ApplicationInstance.CompleteRequest();
+        //        file.Delete();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Message = ex.Message;
+        //        Common.Log.Error(Module, Module + ":EDM.DataExport", "Downloadfile", ex);
+        //    }
+        //}
 
         public string GetPlainFileName(string fileName)
         {

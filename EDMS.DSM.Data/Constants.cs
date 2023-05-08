@@ -1,4 +1,6 @@
-﻿namespace EDMS.Data.Constants
+﻿using System;
+
+namespace EDMS.Data.Constants
 {
     public static class SQLConstants
     {
@@ -7,5 +9,7 @@
         public const int ProgramID = 2;
         //TODO: Remove hardcoded value
         public const int UserID = 10572;
+        public const string AdminPortal = "AP";
+        public const string GemBoxKey = "EMPZ-O95K-ELRO-I5T1";
     }
 }

@@ -77,4 +77,11 @@ public class UploadManager : IUploadManager
 
         //return stream;
     }
+
+    public async Task<Stream> ExportGridAsync()
+    {
+        var urlWithParams = $"{UploadEndPoints.ExportGrid}";
+        var stream = await _httpRequest.GetStreamAsync(urlWithParams).ConfigureAwait(false);
+        return stream;
+    }
 }
