@@ -109,6 +109,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                 item.GeneratedBy = cRow?.GeneratedBy;
                 item.GeneratedDate = cRow?.GeneratedDate;
                 item.ActionText = "Download PDF";
+                item.GeneratedFilePath = response.Result.GeneratedFilePath;
 
                 // Enable the button again
                 item.IsButtonDisabled = false;
