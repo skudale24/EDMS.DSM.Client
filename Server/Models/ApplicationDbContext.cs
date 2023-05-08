@@ -19,7 +19,7 @@ public class ApplicationDbContext : DbContext
         // For example, you can rename the ASP.NET Identity table names and more.
         // Add your customizations after calling base.OnModelCreating(builder);
         
-        builder.Entity<Communications>().HasNoKey();
+        builder.Entity<Communication>().HasNoKey();
 
         //_ = builder.Entity<ApplicationUser>()
         //.ToTable("AspNetUsers", t => t.ExcludeFromMigrations());

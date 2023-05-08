@@ -45,7 +45,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         if (x.TemplateName?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
             return true;
 
-        if (x.Action?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+        if (x.ActionText?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
             return true;
 
         if (x.CompanyName?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
@@ -108,7 +108,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                 var cRow = items.Result.Where(f => f.BatchId == response.Result.BatchId).FirstOrDefault();
                 item.GeneratedBy = cRow?.GeneratedBy;
                 item.GeneratedDate = cRow?.GeneratedDate;
-                item.Action = "Download PDF";
+                item.ActionText = "Download PDF";
 
                 // Enable the button again
                 item.IsButtonDisabled = false;
@@ -117,6 +117,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
                 await _loadingIndicatorProvider.HoldAsync();
 
+                //TODO: get letter type from backend
                 var letterType = item.FilePath?.Split("__").Skip(1).FirstOrDefault();
                 //string letterType = item.TemplateType; Enum.GetName(typeof(ETemplateType), TemplateType);
                 var downloadResult = await _uploadManager.DownloadSourceFileAsync(response.Result.GeneratedFilePath);
@@ -124,12 +125,12 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                 MemoryStream ms = new();
                 await downloadResult.CopyToAsync(ms);
                 var fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_CC{letterType}";
+                ms.Position = 0;
                 await _jsRuntime.InvokeVoidAsync("OpenFileAsPDF", ms.GetBuffer(), fileName);
 
                 await _loadingIndicatorProvider.ReleaseAsync();
 
             }
-
         }
         catch (Exception ex)
         {
@@ -143,26 +144,34 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         }
     }
 
-    private async Task DownloadExcel()
+    private async Task DownloadExcel(CommunicationDTO item)
     {
         await _loadingIndicatorProvider.HoldAsync();
 
         try
         {
-            // Do some long-running operation here
-            //await Task.Delay(2000);
+            //var request = new DownloadExcelFileRequest
+            //{
 
-            var result = await _uploadManager.DownloadExcelFileAsync("");
-            using DotNetStreamReference streamRef = new(result);
-            var fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_CC{""}";
-            await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
+            //};
+            //model.LPCID = Convert.ToInt32(item.LPCID);
+            //model.TemplateFile = item.FilePath;
+            //model.TemplateID = item.TemplateId;
+            //model.ProgramId = _programId;
+            //model.GeneratedBy = _generatedById;
+            await _uploadManager.DownloadExcelFileAsync<CommunicationDTO> (item);
+            //ApiResult<GenerateLetterDTO> response = result as ApiResult<GenerateLetterDTO>;
+
+            //using DotNetStreamReference streamRef = new(result);
+            //var fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_CC{""}";
+            //await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
 
             await _loadingIndicatorProvider.ReleaseAsync();
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            _ = _snackbar.Add("We are facing some issues generating the excel file. Please try again later.", Severity.Warning);
+            //_ = _snackbar.Add("We are facing some issues generating the excel file. Please try again later.", Severity.Warning);
             await _loadingIndicatorProvider.ReleaseAsync();
         }
     }
@@ -205,6 +214,20 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     }
 
     public class GenerateLetterDTO
+    {
+        public string TemplateFile { get; set; } = "/CDN/HUP_Template/Home_Uplift__Ineligibility_Notice.pdf";
+        public string NewLocalPath { get; set; } = "C:\\Users\\siddharth.k\\source\\EDM-DSM\\eScore\\EDMS.AP\\Tools\\CustomerCommunications\\ApplicationDoc\\";
+        public int ProgramId { get; set; } = 2;
+        public int TemplateID { get; set; } = 2;
+        public int LPCID { get; set; } = 242;
+        public int TemplateType { get; set; } = 1;
+        public int GeneratedBy { get; set; } = 10572;
+        public string? TemplateName { get; set; }
+        public string? GeneratedFilePath { get; set; }
+        public int BatchId { get; set; }
+    }
+
+    public class DownloadExcelFileDTO
     {
         public string TemplateFile { get; set; } = "/CDN/HUP_Template/Home_Uplift__Ineligibility_Notice.pdf";
         public string NewLocalPath { get; set; } = "C:\\Users\\siddharth.k\\source\\EDM-DSM\\eScore\\EDMS.AP\\Tools\\CustomerCommunications\\ApplicationDoc\\";

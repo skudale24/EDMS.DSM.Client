@@ -14,12 +14,12 @@ namespace EDMS.DSM.Managers.Customer
             _httpRequest = httpRequest;
         }
 
-        private List<Communications> _communications { get; set; }
+        private List<Communication> _communications { get; set; }
 
-        public async Task<IApiResult> GenerateLetter<TIn, TOut>(TIn generateLetterDTO)
+        public async Task<IApiResult> GenerateLetter<TIn, TOut>(TIn communication)
         {
             var urlWithParams = $"{CustomerEndpoints.GenerateLetter}";
-            var response = await _httpRequest.PutExternalRequestAsync<TIn, TOut>(urlWithParams, generateLetterDTO);
+            var response = await _httpRequest.PutExternalRequestAsync<TIn, TOut>(urlWithParams, communication);
 
             return response;
         }
@@ -29,7 +29,7 @@ namespace EDMS.DSM.Managers.Customer
 
             var urlWithParams = $"{CustomerEndpoints.GetCommunications}";
 
-            IApiResult<List<Communications>> result = await _httpRequest.GetRequestAsync<List<Communications>>(urlWithParams);
+            IApiResult<List<Communication>> result = await _httpRequest.GetRequestAsync<List<Communication>>(urlWithParams);
 
             //if (_communications.IsNullOrEmpty())
             //{
@@ -45,11 +45,11 @@ namespace EDMS.DSM.Managers.Customer
             return dataToReturn;
         }
 
-        public async Task<IListApiResult<List<Communications>>> GetCommunicationsListAsync(int programId)
+        public async Task<IListApiResult<List<Communication>>> GetCommunicationsListAsync(int programId)
         {
             var urlWithParams = $"{CustomerEndpoints.GetCommunications}/{programId}";
 
-            return await _httpRequest.GetRequestAsync<List<Communications>>(urlWithParams);
+            return await _httpRequest.GetRequestAsync<List<Communication>>(urlWithParams);
         }
     }
 }

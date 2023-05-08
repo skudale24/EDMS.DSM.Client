@@ -1,6 +1,6 @@
 ﻿namespace EDMS.DSM.Shared.Models
 {
-    public class Communications
+    public class Communication
     {
         public long LPCID { get; set; }
         public int TemplateType { get; set; }

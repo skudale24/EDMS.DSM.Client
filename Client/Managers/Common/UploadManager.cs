@@ -1,7 +1,9 @@
-﻿using System.Net;
+﻿using EDMS.DSM.Client.Pages.Customer;
+using EDMS.DSM.Shared.Models;
+using System.Net;
 
 namespace EDMS.DSM.Client.Managers.Common;
-
+                
 public class UploadManager : IUploadManager
 {
     private readonly HttpRequest _httpRequest;
@@ -61,16 +63,18 @@ public class UploadManager : IUploadManager
         var encodedFileName = WebUtility.UrlEncode(fileName);
         var urlWithParams = $"{UploadEndPoints.DownloadSourceFile}/{encodedFileName}/";
         var stream = await _httpRequest.GetStreamAsync(urlWithParams).ConfigureAwait(false);
-
         return stream;
     }
 
-    public async Task<Stream> DownloadExcelFileAsync(string fileName)
+    public async Task DownloadExcelFileAsync<TIn>(TIn communication)
     {
-        var encodedFileName = WebUtility.UrlEncode(fileName);
-        var urlWithParams = $"{UploadEndPoints.DownloadExcelFile}/{encodedFileName}/";
-        var stream = await _httpRequest.GetStreamAsync(urlWithParams).ConfigureAwait(false);
+        var urlWithParams = $"{UploadEndPoints.DownloadExcelFile}";
+        var response = await _httpRequest.PostRequest1Async(urlWithParams, communication);
 
-        return stream;
+        //var encodedFileName = WebUtility.UrlEncode(fileName);
+        //var urlWithParams = $"{UploadEndPoints.DownloadExcelFile}/{encodedFileName}/";
+        //var stream = await _httpRequest.GetStreamAsync(urlWithParams).ConfigureAwait(false);
+
+        //return stream;
     }
 }

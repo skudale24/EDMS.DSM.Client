@@ -38,7 +38,7 @@ public partial class Communication2 : ComponentBase, IDisposable
         if (x.TemplateName?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
             return true;
 
-        if (x.Action?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+        if (x.ActionText?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
             return true;
 
         if (x.CompanyName?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
@@ -95,7 +95,7 @@ public partial class Communication2 : ComponentBase, IDisposable
         //await FetchCommunications();
 
         //Simulate PDF creation
-        item.Action = "Download PDF";
+        item.ActionText = "Download PDF";
         StateHasChanged();
     }
 

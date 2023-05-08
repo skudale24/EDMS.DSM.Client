@@ -68,13 +68,13 @@
                 }
                 @if (context.IsProcessing == false)
                 {
-                    if (context.Action?.StartsWith("Generate") == true)
+                    if (context.ActionText?.StartsWith("Generate") == true)
                     {
-                        <MudLink DataLabel="Actual File Name" Href="javascript:void(0);" OnClick="@(async () => await ProcessLetterGeneration(context))" Underline="Underline.Always">@context.Action</MudLink>
+                        <MudLink DataLabel="Actual File Name" Href="javascript:void(0);" OnClick="@(async () => await ProcessLetterGeneration(context))" Underline="Underline.Always">@context.ActionText</MudLink>
                     }
                     else
                     {
-                        <MudLink DataLabel="Actual File Name" Href="javascript:void(0);" OnClick="@(async () => await DownloadSourceFile("20230425_CC_NoticeofIneligibility.pdf"))" Underline="Underline.Always">@context.Action</MudLink>
+                        <MudLink DataLabel="Actual File Name" Href="javascript:void(0);" OnClick="@(async () => await DownloadSourceFile("20230425_CC_NoticeofIneligibility.pdf"))" Underline="Underline.Always">@context.ActionText</MudLink>
                     }
                 }
                 @*<div style="display:@(context.Item.IsProcessing ? "block" : "none")"></div>*@
