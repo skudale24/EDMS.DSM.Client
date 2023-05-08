@@ -51,5 +51,11 @@
     <Compile Include="DocumentTemplate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\EDMS.DSM.Data\EDMS.DSM.Data.csproj">
+      <Project>{0af15209-3051-4a42-94fc-e4c86b57662e}</Project>
+      <Name>EDMS.DSM.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -41,7 +41,7 @@ namespace EDMS.DSM.Server.Controllers
         }
 
         [HttpPost("downloadexcelfile")]
-        public async Task DownloadExcelFile([FromBody] DownloadExcelFileRequest request)
+        public async Task<IActionResult> DownloadExcelFile([FromBody] DownloadExcelFileRequest request)
         {
             try
             {
@@ -96,19 +96,18 @@ namespace EDMS.DSM.Server.Controllers
                         "EMPZ-O95K-ELRO-I5T1",
                         $"CustomerList_{request.TemplateName}_{request.CompanyName}_{DateTime.Now.ToString("MMddyy")}",
                         new List<Tuple<String, String, String, String, String>>());
+
+                    var l_sReader = System.IO.File.OpenRead(objExport.FilePath);
+                    return (File(l_sReader, "application/octet-stream", Path.GetFileName(objExport.FilePath)));
                 }
 
-                //string? uploadFilePath = _configuration["UploadFilePath"];
-                //var decodedFileName = WebUtility.UrlDecode(FileName).Replace("/", "\\");
-                //string filePath = Path.Join(uploadFilePath, decodedFileName);
-                //filePath = filePath.Replace("\\\\", "\\");
-                //var l_sReader = System.IO.File.OpenRead(filePath);
-                //return (File(l_sReader, "application/octet-stream", Path.GetFileName(filePath)));
+                return StatusCode((int)HttpStatusCode.InternalServerError, ApiResult.Fail("File not found."));
+
             }
             catch (Exception ex)
             {
                 //_logger.LogError(ex.Message);
-                //return StatusCode((int)HttpStatusCode.InternalServerError, ApiResult.Fail(ex.Message));
+                return StatusCode((int)HttpStatusCode.InternalServerError, ApiResult.Fail(ex.Message));
             }
         }
 

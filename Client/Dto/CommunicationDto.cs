@@ -15,4 +15,5 @@ public class CommunicationDTO
     public string? FilePath { get; set; }
     public bool IsButtonDisabled { get; set; } = false;
     public bool IsProcessing { get; set; } = false;
+    public int? BatchId { get; set; }
 }

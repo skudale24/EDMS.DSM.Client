@@ -78,15 +78,18 @@ namespace EDM.CommunicationTemplate
             }
         }
 
-        public DataSet GetApplicationDataByBatchId(int batchId)
+        public DataSet GetApplicationDataByBatchId(int? batchId)
         {
             try
             {
-                Hashtable prms = new Hashtable();
-                prms["BatchId"] = batchId;
-                Db.SetSql("p_GET_HUP_CustomerCommunications", prms);
-                Lg.Info("GetApplicationDataByBatchId", Db.SqlStmt);
-                return Db.ExecuteNoTransQuery();
+                SqlParameter[] parameters = new SqlParameter[1];
+                parameters[0] = new SqlParameter("@BatchId", SqlDbType.Int);
+                parameters[0].Value = batchId;
+                DataSet data = StoredProcedureExecutor.ExecuteStoredProcedureAsDataSet(
+                    SQLConstants.ConnectionString,
+                    "p_GET_HUP_CustomerCommunications",
+                    parameters);
+                return data;
             }
             catch (Exception ex)
             {

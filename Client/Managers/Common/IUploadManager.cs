@@ -9,6 +9,6 @@ public interface IUploadManager : IManager
     Task<IApiResult> TransferDataAsync(int id);
     Task<Stream> DownloadErrorFileAsync(string CSVFileName);
     Task<Stream> DownloadSourceFileAsync(string fileName);
-    Task DownloadExcelFileAsync<TIn>(TIn communication);
+    Task<Stream> DownloadExcelFileAsync<TIn>(TIn communication);
     Task<Stream> ExportGridAsync();
 }

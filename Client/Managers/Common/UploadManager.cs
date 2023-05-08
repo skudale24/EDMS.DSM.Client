@@ -66,16 +66,11 @@ public class UploadManager : IUploadManager
         return stream;
     }
 
-    public async Task DownloadExcelFileAsync<TIn>(TIn communication)
+    public async Task<Stream> DownloadExcelFileAsync<TIn>(TIn communication)
     {
         var urlWithParams = $"{UploadEndPoints.DownloadExcelFile}";
-        var response = await _httpRequest.PostRequest1Async(urlWithParams, communication);
-
-        //var encodedFileName = WebUtility.UrlEncode(fileName);
-        //var urlWithParams = $"{UploadEndPoints.DownloadExcelFile}/{encodedFileName}/";
-        //var stream = await _httpRequest.GetStreamAsync(urlWithParams).ConfigureAwait(false);
-
-        //return stream;
+        var stream = await _httpRequest.GetStreamDataAsync<TIn>(urlWithParams, communication).ConfigureAwait(false);
+        return stream;
     }
 
     public async Task<Stream> ExportGridAsync()

@@ -117,6 +117,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                 item.GeneratedDate = cRow?.GeneratedDate;
                 item.ActionText = "Download PDF";
                 item.GeneratedFilePath = response.Result.GeneratedFilePath;
+                item.BatchId = response.Result.BatchId;
 
                 // Enable the button again
                 item.IsButtonDisabled = false;
@@ -171,15 +172,11 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             //model.TemplateID = item.TemplateId;
             //model.ProgramId = _programId;
             //model.GeneratedBy = _generatedById;
-            await _uploadManager.DownloadExcelFileAsync<CommunicationDTO>(item);
-            //ApiResult<GenerateLetterDTO> response = result as ApiResult<GenerateLetterDTO>;
-
-            //using DotNetStreamReference streamRef = new(result);
-            //var fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_CC{""}";
-            //await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
-
+            var result = await _uploadManager.DownloadExcelFileAsync<CommunicationDTO>(item);
+            using DotNetStreamReference streamRef = new(result);
+            var fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_CC{""}.xlsx";
+            await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
             await _loadingIndicatorProvider.ReleaseAsync();
-
         }
         catch (Exception ex)
         {

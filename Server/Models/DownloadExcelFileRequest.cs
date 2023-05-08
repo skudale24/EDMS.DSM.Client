@@ -13,7 +13,6 @@ namespace EDMS.DSM.Server.Models
         public int TemplateID { get; set; } = 2;
         public int LPCID { get; set; } = 242;
         public int TemplateType { get; set; } = 1;
-        public int? GeneratedBy { get; set; } = 10572;
-        public int BatchId { get; set; }
+        public int? BatchId { get; set; }
     }
 }
