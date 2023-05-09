@@ -1,8 +1,8 @@
 ﻿namespace EDMS.DSM.Client.Themes;
 
-public class TeamWorldTheme : MudTheme
+public class TVATheme : MudTheme
 {
-    public TeamWorldTheme()
+    public TVATheme()
     {
         Palette = new PaletteLight
         {
@@ -27,7 +27,7 @@ public class TeamWorldTheme : MudTheme
             Default =
                 new Default
                 {
-                    FontFamily = new[] { "Roboto", "sans-serif" },
+                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
                     FontSize = "14px",
                     FontWeight = 400,
                     LineHeight = 1.43,
@@ -36,7 +36,7 @@ public class TeamWorldTheme : MudTheme
             H1 =
                 new H1
                 {
-                    FontFamily = new[] { "Roboto", "sans-serif" },
+                    FontFamily = new[] { "Helvetica Neue Bold", "Arial Bold" },
                     FontSize = "38px",
                     FontWeight = 500,
                     LineHeight = 1.167,
@@ -45,7 +45,7 @@ public class TeamWorldTheme : MudTheme
             H2 =
                 new H2
                 {
-                    FontFamily = new[] { "Roboto", "sans-serif" },
+                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
                     FontSize = "34px",
                     FontWeight = 500,
                     LineHeight = 1.2,
@@ -54,7 +54,7 @@ public class TeamWorldTheme : MudTheme
             H3 =
                 new H3
                 {
-                    FontFamily = new[] { "Roboto", "sans-serif" },
+                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
                     FontSize = "30px",
                     FontWeight = 500,
                     LineHeight = 1.167,
@@ -63,7 +63,7 @@ public class TeamWorldTheme : MudTheme
             H4 =
                 new H4
                 {
-                    FontFamily = new[] { "Roboto", "sans-serif" },
+                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
                     FontSize = "28px",
                     FontWeight = 500,
                     LineHeight = 1.235,
@@ -72,7 +72,7 @@ public class TeamWorldTheme : MudTheme
             H5 =
                 new H5
                 {
-                    FontFamily = new[] { "Roboto", "sans-serif" },
+                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
                     FontSize = "26px",
                     FontWeight = 500,
                     LineHeight = 1.334,
@@ -81,7 +81,7 @@ public class TeamWorldTheme : MudTheme
             H6 =
                 new H6
                 {
-                    FontFamily = new[] { "Roboto", "sans-serif" },
+                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
                     FontSize = "1rem",
                     FontWeight = 600,
                     LineHeight = 1.1,
@@ -90,7 +90,7 @@ public class TeamWorldTheme : MudTheme
             Button =
                 new Button
                 {
-                    FontFamily = new[] { "Roboto", "sans-serif" },
+                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
                     FontSize = ".875rem",
                     FontWeight = 500,
                     LineHeight = 1.75,
@@ -99,7 +99,7 @@ public class TeamWorldTheme : MudTheme
             Body1 =
                 new Body1
                 {
-                    FontFamily = new[] { "Roboto", "sans-serif" },
+                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
                     FontSize = "1rem",
                     FontWeight = 400,
                     LineHeight = 1.5,
@@ -107,7 +107,7 @@ public class TeamWorldTheme : MudTheme
                 },
             Body2 = new Body2
             {
-                FontFamily = new[] { "Roboto", "sans-serif" },
+                FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
                 FontSize = ".875rem",
                 FontWeight = 400,
                 LineHeight = 1.43,
@@ -115,7 +115,7 @@ public class TeamWorldTheme : MudTheme
             },
             Caption = new Caption
             {
-                FontFamily = new[] { "Roboto", "sans-serif" },
+                FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
                 FontSize = ".75rem",
                 FontWeight = 400,
                 LineHeight = 1.66,
@@ -123,7 +123,7 @@ public class TeamWorldTheme : MudTheme
             },
             Subtitle2 = new Subtitle2
             {
-                FontFamily = new[] { "Roboto", "sans-serif" },
+                FontFamily = new[] { "Helvetica Neue Bold", "Arial Regular" },
                 FontSize = ".875rem",
                 FontWeight = 500,
                 LineHeight = 1.57,

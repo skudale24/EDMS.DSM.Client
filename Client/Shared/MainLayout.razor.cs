@@ -2,7 +2,7 @@ namespace EDMS.DSM.Client.Shared;
 
 public partial class MainLayout : LayoutComponentBase
 {
-    private readonly TeamWorldTheme _theme = new();
+    private readonly TVATheme _theme = new();
 
     private bool _drawerOpen = true;
     private ErrorBoundary? _errorBoundary = new();
