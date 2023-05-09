@@ -70,8 +70,8 @@ namespace EDMS.DSM.Server.Controllers
                             DataRow drExport = dtExport.NewRow();
                             drExport["Application ID"] = dr["ApplicationId"];
                             drExport["Applicant Name"] = dr["PrimaryApplicantName"].ToString().TrimEnd(',');
-                            //drExport["Letter Type"] = args[6];
-                            //drExport["LPC Name"] = args[5];
+                            drExport["Letter Type"] = request.TemplateName;
+                            drExport["LPC Name"] = request.CompanyName;
                             drExport["Date Generated"] = string.Empty;
 
                             dtExport.Rows.Add(drExport);
