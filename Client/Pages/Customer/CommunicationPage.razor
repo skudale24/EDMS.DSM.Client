@@ -8,25 +8,108 @@
         color: blue;
         text-decoration: underline;
     }
+
+    .mud-main-content {
+        padding: 10px;
+    }
+
+    .mud-container {
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 10px;
+    }
 </style>
+@*
+<table width="100%" cellpadding="0" cellspacing="0" class="main">
+    <tbody>
+        <tr>
+            <td class="filler10"></td>
+        </tr>
+        <tr>
+            <td class="pgtitle">
+                <table cellpadding="0" cellspacing="0" width="100%">
+                    <tbody>
+                        <tr valign="middle">
+                            <td class="pl10">
+                                <span id="ctl00_Work_uxTitle">Tools: Customer Communications</span>
+                            </td>
+                            <td align="right" class="pl10">
+                                <table cellpadding="0" cellspacing="0">
+                                    <tbody>
+                                        <tr valign="middle">
+                                            <td>
+                                                &nbsp;&nbsp;|&nbsp;&nbsp;
+                                            </td>
+                                            <td>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td class="filler10"></td>
+        </tr>
+        <tr id="ctl00_Work_trGrid">
+            <td>
+            </td>
+        </tr>
+    </tbody>
+</table>*@
 
 <MudDataGrid T="CommunicationDTO" MultiSelection="false" Items="@Elements" SortMode="MudBlazor.SortMode.Single" Filterable="true"
-             QuickFilter="@_quickFilter" Loading="@isLoading"
+             QuickFilter="@_quickFilter" Loading="@isLoading" Dense="true"
              Hideable="false" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged"
-             Striped="true" ShowFilterIcons="true" FixedHeader="true" Height="520px">
+             Striped="true" ShowFilterIcons="true" FixedHeader="true" Height="100%">
     <ToolBarContent>
+
+        @*<table cellpadding="0" cellspacing="0" width="100%">
+        <tbody>
+        <tr valign="middle">
+        <td class="pl10">
+        <span id="ctl00_Work_uxTitle">Tools: Customer Communications</span>
+        </td>
+        <td align="right" class="pl10">
+        <table cellpadding="0" cellspacing="0">
+        <tbody>
+        <tr valign="middle">
+        <td>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        </td>
+        <td>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+
+        </td>
+        </tr>
+        </tbody>
+        </table>*@
+
         <MudGrid>
             <MudItem class="align-self-center">
                 <MudText Typo="Typo.h6">Tools: Customer Communications</MudText>
             </MudItem>
             <MudItem class="d-flex align-items-center ml-auto">
                 <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Style="margin-top: 0px !important"></MudTextField>
                 <MudSpacer />
-                <div class="d-flex align-items-center ml-2 icon-link" style="margin-top: 15px;">
+                <div class="d-flex align-items-center justify-content-center ml-2 icon-link mt-2">
                     <MudLink OnClick="@(async () => await ExportGridClicked())">
-                        <MudText Typo="Typo.h6" Class="ml-6">Export:</MudText>
-                        <MudIcon Icon="@Icons.Custom.FileFormats.FileExcel" Color="@Color.Tertiary"></MudIcon>
+                        <div class="d-flex align-items-center justify-content-center">
+                            @*<MudText Class="ml-6">Export:</MudText>*@
+                            <MudIcon Icon="@Icons.Custom.FileFormats.FileExcel" Color="@Color.Tertiary" Class="ml-2" Title="Export"></MudIcon>
+                        </div>
+                    </MudLink>
+                    <MudText Class="ml-2"> | </MudText>
+                    <MudLink OnClick="@(async () => await FetchCommunications())">
+                        <MudIcon Icon="@Icons.Material.Filled.Refresh" Color="@Color.Tertiary" Class="ml-2" Title="Retain filter & refresh"></MudIcon>
                     </MudLink>
                 </div>
             </MudItem>
@@ -43,25 +126,25 @@
     </ColGroup>
     <Columns>
         <PropertyColumn Property="x => x.TemplateName" Title="Letter Type" ShowColumnOptions="false"
-                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgb(0 58 112 / var(--tw-bg-opacity));">
+                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgb(106 144 51 / var(--tw-bg-opacity));">
             <HeaderTemplate>
                 <span style="font-weight:600" class="text-white">Letter Type</span>
             </HeaderTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.CompanyName" Title="LPC" ShowColumnOptions="false"
-                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgb(0 58 112 / var(--tw-bg-opacity));">
+                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgb(106 144 51 / var(--tw-bg-opacity));">
             <HeaderTemplate>
                 <span style="font-weight:600" class="text-white">LPC</span>
             </HeaderTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.CountofApplications" Title="Count Of Applications" ShowColumnOptions="false"
-                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgb(0 58 112 / var(--tw-bg-opacity));">
+                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgb(106 144 51 / var(--tw-bg-opacity));">
             <HeaderTemplate>
                 <span style="font-weight:600" class="text-white">Count Of Applications</span>
             </HeaderTemplate>
         </PropertyColumn>
         <TemplateColumn Title="Action" Filterable="false" Sortable="false"
-                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgb(0 58 112 / var(--tw-bg-opacity));">
+                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgb(106 144 51 / var(--tw-bg-opacity));">
             <HeaderTemplate>
                 <span style="font-weight:600" class="text-white">Action</span>
             </HeaderTemplate>
@@ -87,19 +170,22 @@
             </CellTemplate>
         </TemplateColumn>
         <PropertyColumn Property="x => x.GeneratedDate" Title="Letter Generated Date" ShowColumnOptions="false"
-                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgb(0 58 112 / var(--tw-bg-opacity));">
+                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgb(106 144 51 / var(--tw-bg-opacity));">
             <HeaderTemplate>
                 <span style="font-weight:600" class="text-white">Letter Generated Date</span>
             </HeaderTemplate>
+            <CellTemplate>
+                <MudText>@context.Item?.GeneratedDate?.ToString("MM/dd/yyyy")</MudText>
+            </CellTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.GeneratedBy" Title="Letter Generated by" ShowColumnOptions="false"
-                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgb(0 58 112 / var(--tw-bg-opacity));">
+                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgb(106 144 51 / var(--tw-bg-opacity));">
             <HeaderTemplate>
                 <span style="font-weight:600" class="text-white">Letter Generated by</span>
             </HeaderTemplate>
         </PropertyColumn>
         <TemplateColumn CellClass="d-flex justify-center" Title="Customer List" Filterable="false" Sortable="false" CellStyle="text-align: center;"
-                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgb(0 58 112 / var(--tw-bg-opacity));" s>
+                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgb(106 144 51 / var(--tw-bg-opacity));" s>
             <HeaderTemplate>
                 <span style="font-weight:600" class="text-white">Customer List (xlsx)</span>
             </HeaderTemplate>

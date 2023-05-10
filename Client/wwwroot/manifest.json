@@ -1,6 +1,6 @@
 {
 "display_override": ["window-controls-overlay"], 
-"description": "TIVA", 
+"description": "TVA", 
   "name": "iWork Technologies",
   "short_name": "iWork",
   "start_url": "./",
