@@ -2,8 +2,9 @@
 
 public static class EndPoints
 {
-    public static string Version = "0.9.0014";
-    public static string ApiBaseUrl => "https://localhost:44342";
+    public static string Version = "0.9.0015";
+    public static string ApiBaseUrl => "";
+    //public static string ApiBaseUrl => "https://localhost:44342";
     public static string LoginPage => "https://localhost:7119";
     public static string PhotosBaseUrl => "http://localhost:5119";
 
@@ -13,11 +14,11 @@ public static class EndPoints
     //public static string LoginPage => "https://logsoft.iworktech.net";
     //public static string PhotosBaseUrl => "https://pwa.iworktech.net";
 
-    //iworktech server
-    //public static string Version = "0.9.0014";
-    //public static string ApiBaseUrl => "https://tivaapi.iworktech.net";
-    //public static string LoginPage => "https://logsoft.iworktech.net";
-    //public static string PhotosBaseUrl => "https://pwa.iworktech.net";
+    //Dev server
+    //public static string Version = "0.9.0015";
+    //public static string ApiBaseUrl => "https://baseline.energydatametrics.com";
+    //public static string LoginPage => "https://baseline.energydatametrics.com/";
+    //public static string PhotosBaseUrl => "https://baseline.energydatametrics.com/";
 }
 
 public static class NavMenuEndPoints

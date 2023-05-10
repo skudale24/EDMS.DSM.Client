@@ -91,8 +91,8 @@ namespace EDM.Common
         {
             try
             {
-                string extra = "|EXTRA: @UserId=" + GetCurrUserId() + ",@Username=" + GetCurrUserName() + ",@NavUrl=" + GetCurrUrl();
-                VTI.Common.Log.Write(VTI.Common.Log.Level.Info, moduleName, methodName, info + extra, logFileName);
+                //string extra = "|EXTRA: @UserId=" + GetCurrUserId() + ",@Username=" + GetCurrUserName() + ",@NavUrl=" + GetCurrUrl();
+                VTI.Common.Log.Write(VTI.Common.Log.Level.Info, moduleName, methodName, info, logFileName);
             }
             catch { }
         }

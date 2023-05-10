@@ -23,7 +23,7 @@ public class HttpRequest
 
     public async Task<IListApiResult<T>> GetRequestAsync<T>(string uri)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
+        using var httpClient = _httpClientFactory.CreateClient("MyHttpClient");
         httpClient.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
         _ = httpClient.EnableIntercept(_serviceProvider);
         var absoluteUrl = $"{EndPoints.ApiBaseUrl}/{uri}";
@@ -48,7 +48,7 @@ public class HttpRequest
 
     public async Task<T> ExternalGetRequestAsync<T>(string uri)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
+        using var httpClient = _httpClientFactory.CreateClient("MyHttpClient");
         _ = httpClient.EnableIntercept(_serviceProvider);
         var response = await httpClient.GetAsync(uri).ConfigureAwait(false);
         _ = response.EnsureSuccessStatusCode();
@@ -57,7 +57,7 @@ public class HttpRequest
 
     public async Task<T> ExternalGetRequestFromXmlAsync<T>(string uri)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
+        using var httpClient = _httpClientFactory.CreateClient("MyHttpClient");
         _ = httpClient.EnableIntercept(_serviceProvider);
         var response = await httpClient.GetAsync(uri).ConfigureAwait(false);
         _ = response.EnsureSuccessStatusCode();
@@ -66,7 +66,7 @@ public class HttpRequest
 
     public async Task<Stream> GetStreamAsync(string uri)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
+        using var httpClient = _httpClientFactory.CreateClient("MyHttpClient");
 
         _ = httpClient.EnableIntercept(_serviceProvider);
         var absoluteUrl = $"{EndPoints.ApiBaseUrl}/{uri}";
@@ -96,7 +96,7 @@ public class HttpRequest
     {
         try
         {
-            using var httpClient = _httpClientFactory.CreateClient();
+            using var httpClient = _httpClientFactory.CreateClient("MyHttpClient");
 
             _ = httpClient.EnableIntercept(_serviceProvider);
             var absoluteUrl = $"{EndPoints.ApiBaseUrl}/{uri}";
@@ -132,7 +132,7 @@ public class HttpRequest
 
     public async Task<IApiResult> PostRequest1Async<TIn>(string uri, TIn values)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
+        using var httpClient = _httpClientFactory.CreateClient("MyHttpClient");
 
         _ = httpClient.EnableIntercept(_serviceProvider);
 
@@ -163,7 +163,7 @@ public class HttpRequest
 
     public async Task<IListApiResult<TOut>> PostRequestAsync<TIn, TOut>(string uri, TIn values)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
+        using var httpClient = _httpClientFactory.CreateClient("MyHttpClient");
 
         _ = httpClient.EnableIntercept(_serviceProvider);
 
@@ -194,7 +194,7 @@ public class HttpRequest
 
     public async Task<IListApiResult<TOut>> PutRequestAsync<TIn, TOut>(string uri, TIn values)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
+        using var httpClient = _httpClientFactory.CreateClient("MyHttpClient");
 
         _ = httpClient.EnableIntercept(_serviceProvider);
 
@@ -227,7 +227,7 @@ public class HttpRequest
 
     public async Task<ApiResult> PutExternalRequestAsync<TIn, TOut>(string uri, TIn values)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
+        using var httpClient = _httpClientFactory.CreateClient("MyHttpClient");
 
         _ = httpClient.EnableIntercept(_serviceProvider);
 
@@ -260,7 +260,7 @@ public class HttpRequest
 
     public async Task<IApiResult> PostMultiPartRequestAsync(string uri, MemoryStream ms, string fileName)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
+        using var httpClient = _httpClientFactory.CreateClient("MyHttpClient");
 
         _ = httpClient.EnableIntercept(_serviceProvider);
         using MultipartFormDataContent content = new() { { new StreamContent(ms), "file", fileName } };
@@ -290,7 +290,7 @@ public class HttpRequest
 
     public async Task<IApiResult> DeleteRequestAsync(string uri)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
+        using var httpClient = _httpClientFactory.CreateClient("MyHttpClient");
         _ = httpClient.EnableIntercept(_serviceProvider);
 
         var absoluteUrl = $"{EndPoints.ApiBaseUrl}/{uri}";
@@ -315,7 +315,7 @@ public class HttpRequest
 
     public async Task<IApiResult<T>> GetRequestNewAsync<T>(string uri)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
+        using var httpClient = _httpClientFactory.CreateClient("MyHttpClient");
         _ = httpClient.EnableIntercept(_serviceProvider);
         var absoluteUrl = $"{EndPoints.ApiBaseUrl}/{uri}";
 
@@ -340,7 +340,7 @@ public class HttpRequest
 
     public async Task<TokenResult> AuthGetRequestAsync<T>(string uri)
     {
-        using var httpClient = _httpClientFactory.CreateClient();
+        using var httpClient = _httpClientFactory.CreateClient("MyHttpClient");
 
         _ = httpClient.EnableIntercept(_serviceProvider);
 
