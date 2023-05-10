@@ -82,13 +82,13 @@ function removeClass(el, className) {
 }
 
 function showLoadingIndicator() {
-    addClass(document.getElementById("tiva-loading"), "show");
-    addClass(document.getElementById("TivaAppMainBody"), "disable-body");
+    addClass(document.getElementById("tva-loading"), "show");
+    addClass(document.getElementById("TVAAppMainBody"), "disable-body");
 }
 
 function hideLoadingIndicator() {
-    removeClass(document.getElementById("tiva-loading"), "show");
-    removeClass(document.getElementById("TivaAppMainBody"), "disable-body");
+    removeClass(document.getElementById("tva-loading"), "show");
+    removeClass(document.getElementById("TVAAppMainBody"), "disable-body");
 }
 
 function DownladFileAsCSV(contentStreamReference, fileName)

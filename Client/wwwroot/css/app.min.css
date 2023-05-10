@@ -736,14 +736,14 @@ b-pwa-updater { color: white; }
 
 .disable-body { pointer-events: none; }
 
-.tiva-loading {
+.tva-loading {
     background-color: transparent;
     display: none;
     position: absolute;
     z-index: 696969;
 }
 
-.tiva-loading.show {
+.tva-loading.show {
     align-items: center;
     bottom: 0;
     display: flex;
@@ -754,7 +754,7 @@ b-pwa-updater { color: white; }
     top: 0;
 }
 
-.tiva-loading-content {
+.tva-loading-content {
     align-items: center;
     border: .5px solid var(--mud-palette-white);
     border-radius: 2em;
@@ -766,7 +766,7 @@ b-pwa-updater { color: white; }
     width: 160px;
 }
 
-.tiva-loading-content .mud-progress-circular.mud-progress-medium {
+.tva-loading-content .mud-progress-circular.mud-progress-medium {
     height: 26px;
     margin-right: 8px;
     width: 26px;
