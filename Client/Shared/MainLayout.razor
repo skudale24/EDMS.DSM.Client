@@ -9,7 +9,7 @@
                            Position="DialogPosition.TopCenter" MaxWidth="MaxWidth.Medium"/>
         <MudSnackbarProvider/>
         <MudLayout>
-            <MudDrawer @bind-Open="_drawerOpen" Elevation="25" Width="250px">
+           @* <MudDrawer @bind-Open="_drawerOpen" Elevation="25" Width="250px">
                 <NavMenu/>
             </MudDrawer>
             <MudAppBar Elevation="25" DisableGutters="true" Dense="true">
@@ -22,13 +22,13 @@
 
                 </MudHidden>
                 <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
-                    <MudText Typo="Typo.subtitle2">Welcome to iWork</MudText>
+                    <MudText Typo="Typo.subtitle2">Welcome to EDM</MudText>
 
                 </MudHidden>
                 <MudSpacer/>
-            </MudAppBar>
+            </MudAppBar>*@
             <MudMainContent>
-                <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+                <MudContainer MaxWidth="MaxWidth.False">
 
                     <PWAUpdater/>
 
@@ -57,13 +57,13 @@
                            Position="DialogPosition.TopCenter" MaxWidth="MaxWidth.Medium"/>
         <MudSnackbarProvider/>
         <MudLayout>
-            <MudAppBar Elevation="25" DisableGutters="true" Dense="true">
+           @* <MudAppBar Elevation="25" DisableGutters="true" Dense="true">
                 <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit"
                                OnClick="@(e => DrawerToggle())" Class="ml-3" Size="Size.Medium"/>
                 <MudHidden Breakpoint="Breakpoint.SmAndDown">
                 </MudHidden>
                 <MudHidden Breakpoint="Breakpoint.Xs">
-                    <MudText Typo="Typo.h6">Welcome to iWorkTech </MudText>
+                    <MudText Typo="Typo.h6">Welcome to EDM </MudText>
 
                 </MudHidden>
                 <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
@@ -71,9 +71,9 @@
 
                 </MudHidden>
                 <MudSpacer/>
-            </MudAppBar>
+            </MudAppBar>*@
             <MudMainContent>
-                <MudContainer MaxWidth="MaxWidth.False" Class="mt-4">
+                <MudContainer MaxWidth="MaxWidth.False">
                     <PWAUpdater/>
                     <ErrorBoundary @ref="_errorBoundary">
                         <ChildContent>
