@@ -7,7 +7,7 @@ public class CommunicationDTO
     public string? TemplateName { get; set; }
     public string? CompanyName { get; set; }
     public string? ActionText { get; set; }
-    public string? GeneratedDate { get; set; }
+    public DateTime? GeneratedDate { get; set; }
     public string? GeneratedBy { get; set; }
     public string? GeneratedFilePath { get; set; }
     public int TemplateId { get; set; }

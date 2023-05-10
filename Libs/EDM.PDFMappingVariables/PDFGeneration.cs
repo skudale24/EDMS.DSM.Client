@@ -61,6 +61,8 @@ namespace EDM.PDFMappingVariables
         {
             try
             {
+                Common.Log.Info("HUPCustomerCommunications", "GetTemplatePDFGeneration", $"ProgramId: {ProgramId}");
+
                 EDM.Setting.DB.ConnectionString = ConnectionString;
                 string TemplateURL = EDM.Setting.DB.GetByName(EDM.Setting.Key.ImageUrl,
                     ProgramId,
@@ -146,10 +148,16 @@ namespace EDM.PDFMappingVariables
                     byte[] content = output.ToArray();
                     lstPages.Add(content);
                     ids.Add(Convert.ToInt32(row["ApplicationId"]));
+
+                    Common.Log.Info("HUPCustomerCommunications", "GetTemplatePDFGeneration", $"ApplicationId: {row["ApplicationId"]}");
+
                 }
                 //Save file on server
                 SaveAsFileName = (Guid.NewGuid().ToString()).Replace("-", "") + ".pdf";
                 string newFile = NewLocalPath + SaveAsFileName;
+
+                Common.Log.Info("HUPCustomerCommunications", "GetTemplatePDFGeneration", $"newFile: {newFile}");
+
                 byte[] bytOutput = ConcatAndAddContent(lstPages);
                 localFile = bytOutput;
                 if (!Directory.Exists(Path.GetDirectoryName(newFile)))
@@ -160,9 +168,12 @@ namespace EDM.PDFMappingVariables
                 {
                     fs.Write(bytOutput, 0, (int)bytOutput.Length);
                 }
-                Common.Log.Info("HUPCustomerCommunications", "GetTemplatePDFGeneration", "File Not Generated.");
+                Common.Log.Info("HUPCustomerCommunications", "GetTemplatePDFGeneration", $"File Exists: {File.Exists(newFile)}");
 
                 string RelLocation = GetUrlForUploadCustomerCommunicationsDocs();
+
+                Common.Log.Info("HUPCustomerCommunications", "GetTemplatePDFGeneration", $"RelLocation: {RelLocation}");
+
                 long DocTypeId = EDM.DocFile.Type.Application;
                 FileFactory fileFactory = new FileHandlerCreator(Module);
                 IFileHandler fileHndl = fileFactory.GetFileUploadInstance(DocTypeId, out Storage);
@@ -170,7 +181,10 @@ namespace EDM.PDFMappingVariables
                 try
                 {
                     if (File.Exists(newFile))
+                    {
+                        Common.Log.Info("HUPCustomerCommunications", "GetTemplatePDFGeneration", $"Deleting file: {newFile}");
                         File.Delete(newFile);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -186,6 +200,9 @@ namespace EDM.PDFMappingVariables
                 string enumText = Enum.GetName(typeof(ETemplateType), TemplateType);
                 GeneratedFileName = DateTime.Now.ToString("yyyyMMdd") + "_CC" + enumText + ".pdf"; //2023 - 04 - 10_CC_AL;
 
+                Common.Log.Info("HUPCustomerCommunications", "GetTemplatePDFGeneration", $"GeneratedFilePath: {GeneratedFilePath}");
+                Common.Log.Info("HUPCustomerCommunications", "GetTemplatePDFGeneration", $"GeneratedFileName: {GeneratedFileName}");
+
                 SystemName = SaveAsFileName;
                 try
                 {
@@ -193,7 +210,8 @@ namespace EDM.PDFMappingVariables
                 }
                 catch (Exception exception)
                 {
-
+                    Common.Log.Error("HUPCustomerCommunications", "EDM.PDFMappingVariables", "GetTemplatePDFGeneration", exception);
+                    Common.Log.Info("HUPCustomerCommunications", "GetTemplatePDFGeneration", $"SaveHUPCustomerCommunicationsResponse exception: {exception.Message}");
                 }
                 return "Document Generated";
 
