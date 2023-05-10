@@ -29,4 +29,3 @@ global using EDMS.DSM.Client;
 global using EDMS.DSM.Client.Authentication;
 global using EDMS.DSM.Client.Components.ClipBordFeature;
 global using Toolbelt.Blazor.Extensions.DependencyInjection;
-global using SocialMediaSharingBlazor;

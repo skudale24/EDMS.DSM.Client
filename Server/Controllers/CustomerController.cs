@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Data;
 using System.IO;
 using System.Net;
-using Telerik.SvgIcons;
 using VTI.Common;
 using static Azure.Core.HttpHeader;
 

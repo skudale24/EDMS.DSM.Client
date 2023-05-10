@@ -1,7 +1,7 @@
 ﻿using EDM.Setting;
 using EDMS.DSM.Managers.Customer;
+using MudBlazor;
 using System.Data;
-using Telerik.SvgIcons;
 
 namespace EDMS.DSM.Client.Pages.Customer;
 

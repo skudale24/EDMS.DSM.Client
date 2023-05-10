@@ -1,7 +1,5 @@
 ﻿using EDMS.DSM.Client.Pages.RoadBridge;
 using EDMS.DSM.Shared.Models;
-using Telerik.DataSource;
-using Telerik.DataSource.Extensions;
 
 namespace EDMS.DSM.Managers.Customer
 {
@@ -24,26 +22,26 @@ namespace EDMS.DSM.Managers.Customer
             return response;
         }
 
-        public async Task<DataSourceResult> GetCommunicationsListAsync(DataSourceRequest gridRequest)
-        {
+        //public async Task<DataSourceResult> GetCommunicationsListAsync(DataSourceRequest gridRequest)
+        //{
 
-            var urlWithParams = $"{CustomerEndpoints.GetCommunications}";
+        //    var urlWithParams = $"{CustomerEndpoints.GetCommunications}";
 
-            IApiResult<List<Communication>> result = await _httpRequest.GetRequestAsync<List<Communication>>(urlWithParams);
+        //    IApiResult<List<Communication>> result = await _httpRequest.GetRequestAsync<List<Communication>>(urlWithParams);
 
-            //if (_communications.IsNullOrEmpty())
-            //{
-            //    //_communications = _db.Database.SqlQuery<Communications>($"EXECUTE dbo.[p_Get_HUP_AggregateList4CustomerCommunications_1]").ToList();
-            //}
+        //    //if (_communications.IsNullOrEmpty())
+        //    //{
+        //    //    //_communications = _db.Database.SqlQuery<Communications>($"EXECUTE dbo.[p_Get_HUP_AggregateList4CustomerCommunications_1]").ToList();
+        //    //}
 
-            _communications = result.Result;
+        //    _communications = result.Result;
 
-            // use the Telerik DataSource Extensions to perform the query on the data
-            // the Telerik extension methods can also work on "regular" collections like List<T> and IQueriable<T>
-            DataSourceResult dataToReturn = await _communications.ToDataSourceResultAsync(gridRequest);
+        //    // use the Telerik DataSource Extensions to perform the query on the data
+        //    // the Telerik extension methods can also work on "regular" collections like List<T> and IQueriable<T>
+        //    DataSourceResult dataToReturn = await _communications.ToDataSourceResultAsync(gridRequest);
 
-            return dataToReturn;
-        }
+        //    return dataToReturn;
+        //}
 
         public async Task<IListApiResult<List<Communication>>> GetCommunicationsListAsync(int programId)
         {
