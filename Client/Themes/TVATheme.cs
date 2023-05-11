@@ -11,7 +11,7 @@ public class TVATheme : MudTheme
             Secondary = Colors.BlueGrey.Darken4,
             Background = Colors.BlueGrey.Lighten5,
             Divider = Colors.BlueGrey.Lighten1,
-            TableHover = Colors.BlueGrey.Lighten5,
+            TableHover = "#D7D2CB", //"#8CB8D6", //Colors.BlueGrey.Lighten5,
             TableLines = Colors.BlueGrey.Lighten5,
             LinesDefault = Colors.BlueGrey.Lighten5,
             AppbarBackground = "#0072CF",
