@@ -46,6 +46,7 @@ builder.Services.AddHttpClient("MyHttpClient", httpClient =>
 builder.Services.AddHttpClientInterceptor();
 builder.Services.AddScoped<HttpInterceptorService>();
 builder.Services.AddMudServices();
+builder.Services.AddScoped<CookieStorageAccessor>();
 //builder.Services.AddScoped<IClipboardService, ClipboardService>();
 
 var currentAssembly = typeof(Program).Assembly;

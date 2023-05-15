@@ -210,7 +210,7 @@ namespace EDMS.DSM.Server.Controllers
                 EDM.CommunicationTemplate.CustomerCommunications objComTran = new EDM.CommunicationTemplate.CustomerCommunications();
 
                 objComTran.Module = SQLConstants.AdminPortal;
-                objComTran.ProgramId = SQLConstants.ProgramID;
+                objComTran.ProgramId = GridParams.ProgramID;
                 dsReturn = objComTran.GetAllCustomerCommunication();
             }
             catch (Exception ex)

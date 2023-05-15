@@ -62,6 +62,7 @@ namespace EDM.PDFMappingVariables
             try
             {
                 Common.Log.Info("HUPCustomerCommunications", "GetTemplatePDFGeneration", $"ProgramId: {ProgramId}");
+                Common.Log.Info("HUPCustomerCommunications", "GetTemplatePDFGeneration", $"GeneratedBy: {GeneratedBy}");
 
                 EDM.Setting.DB.ConnectionString = ConnectionString;
                 string TemplateURL = EDM.Setting.DB.GetByName(EDM.Setting.Key.ImageUrl,

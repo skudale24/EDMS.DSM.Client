@@ -43,8 +43,8 @@ namespace EDM.ContentHandler
         #region --- Constructors ---
         public DocTypeStorage()
         {
-            ProgramId = SQLConstants.ProgramID;
-            ByUserId = SQLConstants.UserID;
+            ProgramId = GridParams.ProgramID;
+            ByUserId = GridParams.UserID;
         }
         public DocTypeStorage(String module) : this() { Module = module; }
         public DocTypeStorage(String module, String configKey) : this() { Module = module; ConfigKey = configKey; }

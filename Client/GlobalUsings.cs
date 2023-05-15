@@ -19,6 +19,7 @@ global using EDMS.DSM.Client.Managers.Common;
 global using EDMS.DSM.Client.Managers.RoadBridge;
 global using EDMS.DSM.Client.Routes;
 global using EDMS.DSM.Client.Themes;
+global using EDMS.DSM.Client.Utils;
 global using Toolbelt.Blazor;
 global using DialogOptions = MudBlazor.DialogOptions;
 global using Fluxor;

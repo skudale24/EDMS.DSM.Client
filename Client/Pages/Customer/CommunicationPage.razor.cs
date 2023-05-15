@@ -1,4 +1,5 @@
 ﻿using EDM.Setting;
+using EDMS.Data.Constants;
 using EDMS.DSM.Managers.Customer;
 using MudBlazor;
 using System.Data;
@@ -16,6 +17,8 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     [Inject] private ICustomerManager _customerManager { get; set; } = default!;
 
     [Inject] private ISnackbar _snackbar { get; set; } = default!;
+
+    [Inject] private CookieStorageAccessor _cookieStorageAccessor { get; set; } = default!;
 
     private GenerateLetterDTO model { get; set; } = new();
 
@@ -67,7 +70,68 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
-        await FetchCommunications();
+        try
+        {
+            await FetchCommunications();
+
+            GridParams.UserID = 10572;
+            _generatedById = GridParams.UserID;
+
+            GridParams.ProgramID = 2;
+            _programId = GridParams.ProgramID;
+
+            //await GetGridParams();
+        }
+        catch (Exception ex)
+        {
+            _ = _snackbar.Add($"We are unable to load the CC grid data at this time. {ex.Message} : {ex.StackTrace}", Severity.Warning);
+        }
+    }
+
+    private async Task GetGridParams()
+    {
+        try
+        {
+            var obj = await _cookieStorageAccessor.GetValueAsync<string>("grid_params");
+            if (obj == null || obj == "")
+            {
+                await _cookieStorageAccessor.WriteLogAsync<string>("Cookie _gid not found.");
+            }
+            else
+            {
+                //_ = _snackbar.Add($"Grid params : {obj}", Severity.Info);
+
+                var str = Convert.ToString(obj);
+
+                //_ = _snackbar.Add($"Grid params: {str}", Severity.Info);
+
+                List<string> result = str?.Split('_').ToList();
+
+                foreach (string s in result)
+                {
+                    //_ = _snackbar.Add($"{s}", Severity.Info);
+
+                }
+
+                //var gParams = str
+                //    .Split('_')
+                //    .Where(x => int.TryParse(x.Trim(), out _))
+                //    .Select(int.Parse)
+                //    .ToList();
+
+                GridParams.UserID = int.Parse(result[0]);
+                _generatedById = GridParams.UserID;
+
+                GridParams.ProgramID = int.Parse(result[1]);
+                _programId = GridParams.ProgramID;
+
+                await _cookieStorageAccessor.WriteLogAsync<string>(obj);
+            }
+        }
+        catch (Exception ex)
+        {
+            _ = _snackbar.Add($"We are unable to fetch the CC grid at this time. {ex.Message} : {ex.StackTrace}", Severity.Warning);
+        }
     }
 
     private async Task FetchCommunications()
@@ -148,7 +212,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             item.IsProcessing = false;
             StateHasChanged();
 
-            _ = _snackbar.Add("Error occurred while generating letter.", Severity.Error);
+            _ = _snackbar.Add($"We are unable to generate the Communication Letter at this time. {ex.Message} : {ex.StackTrace}", Severity.Warning);
             await _loadingIndicatorProvider.ReleaseAsync();
         }
     }
@@ -250,11 +314,11 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     {
         public string TemplateFile { get; set; } = "/CDN/HUP_Template/Home_Uplift__Ineligibility_Notice.pdf";
         public string NewLocalPath { get; set; } = "C:\\Users\\siddharth.k\\source\\EDM-DSM\\eScore\\EDMS.AP\\Tools\\CustomerCommunications\\ApplicationDoc\\";
-        public int ProgramId { get; set; } = 2;
+        public int ProgramId { get; set; }
         public int TemplateID { get; set; } = 2;
         public int LPCID { get; set; } = 242;
         public int TemplateType { get; set; } = 1;
-        public int GeneratedBy { get; set; } = 10572;
+        public int GeneratedBy { get; set; }
         public string? TemplateName { get; set; }
         public string? GeneratedFilePath { get; set; }
         public int BatchId { get; set; }
@@ -264,11 +328,11 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     {
         public string TemplateFile { get; set; } = "/CDN/HUP_Template/Home_Uplift__Ineligibility_Notice.pdf";
         public string NewLocalPath { get; set; } = "C:\\Users\\siddharth.k\\source\\EDM-DSM\\eScore\\EDMS.AP\\Tools\\CustomerCommunications\\ApplicationDoc\\";
-        public int ProgramId { get; set; } = 2;
+        public int ProgramId { get; set; }
         public int TemplateID { get; set; } = 2;
         public int LPCID { get; set; } = 242;
         public int TemplateType { get; set; } = 1;
-        public int GeneratedBy { get; set; } = 10572;
+        public int GeneratedBy { get; set; }
         public string? TemplateName { get; set; }
         public string? GeneratedFilePath { get; set; }
         public int BatchId { get; set; }
