@@ -18,7 +18,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     [Inject] private ISnackbar _snackbar { get; set; } = default!;
 
-    [Inject] private CookieStorageAccessor _cookieStorageAccessor { get; set; } = default!;
+    //[Inject] private CookieStorageAccessor _cookieStorageAccessor { get; set; } = default!;
 
     private GenerateLetterDTO model { get; set; } = new();
 
@@ -88,51 +88,51 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         }
     }
 
-    private async Task GetGridParams()
-    {
-        try
-        {
-            var obj = await _cookieStorageAccessor.GetValueAsync<string>("grid_params");
-            if (obj == null || obj == "")
-            {
-                await _cookieStorageAccessor.WriteLogAsync<string>("Cookie _gid not found.");
-            }
-            else
-            {
-                //_ = _snackbar.Add($"Grid params : {obj}", Severity.Info);
+    //private async Task GetGridParams()
+    //{
+    //    try
+    //    {
+    //        var obj = await _cookieStorageAccessor.GetValueAsync<string>("grid_params");
+    //        if (obj == null || obj == "")
+    //        {
+    //            await _cookieStorageAccessor.WriteLogAsync<string>("Cookie _gid not found.");
+    //        }
+    //        else
+    //        {
+    //            //_ = _snackbar.Add($"Grid params : {obj}", Severity.Info);
 
-                var str = Convert.ToString(obj);
+    //            var str = Convert.ToString(obj);
 
-                //_ = _snackbar.Add($"Grid params: {str}", Severity.Info);
+    //            //_ = _snackbar.Add($"Grid params: {str}", Severity.Info);
 
-                List<string> result = str?.Split('_').ToList();
+    //            List<string> result = str?.Split('_').ToList();
 
-                foreach (string s in result)
-                {
-                    //_ = _snackbar.Add($"{s}", Severity.Info);
+    //            foreach (string s in result)
+    //            {
+    //                //_ = _snackbar.Add($"{s}", Severity.Info);
 
-                }
+    //            }
 
-                //var gParams = str
-                //    .Split('_')
-                //    .Where(x => int.TryParse(x.Trim(), out _))
-                //    .Select(int.Parse)
-                //    .ToList();
+    //            //var gParams = str
+    //            //    .Split('_')
+    //            //    .Where(x => int.TryParse(x.Trim(), out _))
+    //            //    .Select(int.Parse)
+    //            //    .ToList();
 
-                GridParams.UserID = int.Parse(result[0]);
-                _generatedById = GridParams.UserID;
+    //            GridParams.UserID = int.Parse(result[0]);
+    //            _generatedById = GridParams.UserID;
 
-                GridParams.ProgramID = int.Parse(result[1]);
-                _programId = GridParams.ProgramID;
+    //            GridParams.ProgramID = int.Parse(result[1]);
+    //            _programId = GridParams.ProgramID;
 
-                await _cookieStorageAccessor.WriteLogAsync<string>(obj);
-            }
-        }
-        catch (Exception ex)
-        {
-            _ = _snackbar.Add($"We are unable to fetch the CC grid at this time. {ex.Message} : {ex.StackTrace}", Severity.Warning);
-        }
-    }
+    //            await _cookieStorageAccessor.WriteLogAsync<string>(obj);
+    //        }
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        _ = _snackbar.Add($"We are unable to fetch the CC grid at this time. {ex.Message} : {ex.StackTrace}", Severity.Warning);
+    //    }
+    //}
 
     private async Task FetchCommunications()
     {
@@ -202,7 +202,15 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                 await _jsRuntime.InvokeVoidAsync("OpenFileAsPDF", ms.GetBuffer(), fileName);
 
                 await _loadingIndicatorProvider.ReleaseAsync();
+            }
+            else
+            {
+                // Enable the button again
+                item.IsButtonDisabled = false;
+                item.IsProcessing = false;
+                StateHasChanged();
 
+                _ = _snackbar.Add($"We are unable to generate the Communication Letter at this time. <br> \r\n {response?.Message}", Severity.Warning);
             }
         }
         catch (Exception ex)
