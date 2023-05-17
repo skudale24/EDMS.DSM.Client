@@ -1,8 +1,11 @@
 ﻿using EDM.Setting;
 using EDMS.Data.Constants;
 using EDMS.DSM.Managers.Customer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.JSInterop;
 using MudBlazor;
 using System.Data;
+using System.IO;
 
 namespace EDMS.DSM.Client.Pages.Customer;
 
@@ -18,12 +21,13 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     [Inject] private ISnackbar _snackbar { get; set; } = default!;
 
+    [Inject] IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
+
     //[Inject] private CookieStorageAccessor _cookieStorageAccessor { get; set; } = default!;
 
     private GenerateLetterDTO model { get; set; } = new();
 
     private IEnumerable<CommunicationDTO> Elements = new List<CommunicationDTO>();
-    //private bool IsButtonDisabled = false;
     private bool isLoading = false;
     private string _searchString;
     private bool _sortNameByLength;
@@ -68,10 +72,38 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         //_interceptor.RegisterEvent();
     }
 
+    //protected override async Task OnAfterRenderAsync(bool firstRender)
+    //{
+    //    if (firstRender)
+    //    {
+    //        if (HttpContextAccessor.HttpContext != null)
+    //        {
+    //            var headers = HttpContextAccessor.HttpContext.Request.Headers;
+    //            //var authorizationHeader = headers["Authorization"];
+    //            var accessTokenHeader = headers["AccessToken"];
+    //            // Use headers as needed
+    //        }
+    //    }
+    //}
+
+
     protected override async Task OnInitializedAsync()
     {
         try
         {
+
+            //await _jsRuntime.InvokeAsync<object>("setCorsHeaders");
+
+            if (HttpContextAccessor.HttpContext != null)
+            {
+                var headers = HttpContextAccessor.HttpContext.Request.Headers;
+
+                if (headers != null)
+                {
+                    var accessTokenHeader = HttpContextAccessor.HttpContext.Request.Headers["AccessToken"];
+                }
+            }
+
             await FetchCommunications();
 
             GridParams.UserID = 10572;
@@ -236,17 +268,11 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
         try
         {
-            //var request = new DownloadExcelFileRequest
-            //{
-            //};
-            //model.LPCID = Convert.ToInt32(item.LPCID);
-            //model.TemplateFile = item.FilePath;
-            //model.TemplateID = item.TemplateId;
-            //model.ProgramId = _programId;
-            //model.GeneratedBy = _generatedById;
-            var result = await _uploadManager.DownloadExcelFileAsync<CommunicationDTO>(item);
-            using DotNetStreamReference streamRef = new(result);
-            var fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_CC{""}.xlsx";
+            var stream = await _uploadManager.DownloadExcelFileAsync<CommunicationDTO>(item);
+
+            var fileName = $"CustomerList_{item.TemplateName}_{item.CompanyName}_{DateTime.Now.ToString("MMddyy")}.xlsx";
+            fileName = fileName.Replace(": ", "_").Replace(" ", "_").Replace("-", "");
+            using DotNetStreamReference streamRef = new(stream);
             await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
             await _loadingIndicatorProvider.ReleaseAsync();
         }
@@ -291,7 +317,8 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         {
             var result = await _uploadManager.ExportGridAsync();
             using DotNetStreamReference streamRef = new(result);
-            var fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_CC.xlsx";
+            var fileName = "Tools: Customer Communications.xlsx";
+            fileName = fileName.Replace(": ", "_").Replace(" ", "_").Replace("-", "");
             await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
             await _loadingIndicatorProvider.ReleaseAsync();
         }

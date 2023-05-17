@@ -525,7 +525,7 @@ namespace EDM.DataExport
 
                     EDM.Common.Log.Info(Module, "Export", "## Step-10 : At end Export function record count is = " + Convert.ToString(dataTable.Rows.Count) + ", FileName = " + fileName);
                 }
-                string strDateTime = DateTime.Now.ToString("yyyyMMddHHmmss");
+                string strDateTime = string.Empty; // DateTime.Now.ToString("yyyyMMddHHmmss");
                 string strURL = NavUrlPath + fileName + strDateTime + ".xlsx"; // HttpContext.Current.Server.MapPath(fileName + strDateTime + ".xlsx");
                 ef.Save(strURL);
 
