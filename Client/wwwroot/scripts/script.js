@@ -107,3 +107,11 @@ function OpenNewTab(URL)
     window.open(URL, '_blank');
 }
 // END Loading indicator mechanism
+
+// JavaScript interop
+window.addEventListener('message', event => {
+    const data = event.data;
+    if (data.token) {
+        localStorage.setItem('jwtToken', data.token);
+    }
+});
