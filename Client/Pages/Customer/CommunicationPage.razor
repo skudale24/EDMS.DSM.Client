@@ -8,19 +8,26 @@
         color: blue;
         text-decoration: underline;
     }
-
     .mud-main-content {
         padding: 10px;
     }
-
     .mud-container {
         padding-left: 10px;
         padding-right: 10px;
         padding-bottom: 10px;
     }
-
     .mud-toolbar {
         height: 42px;
+    }
+    .text-blue {
+        color: rgb(0, 58, 112);
+    }
+    .grid-header-col {
+        --tw-bg-opacity: 1;background-color: rgba(255, 255, 255);
+    }
+    .grid-header-col span {
+        font-weight:600;
+        color: rgb(0, 58, 112);
     }
 </style>
 @*
@@ -69,7 +76,7 @@
 <MudDataGrid T="CommunicationDTO" MultiSelection="false" Items="@Elements" SortMode="MudBlazor.SortMode.Single" Filterable="true"
              QuickFilter="@_quickFilter" Loading="@isLoading" Dense="true" Hover="true" RowsPerPage="50"
              Hideable="false" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged"
-             Striped="true" ShowFilterIcons="true" FixedHeader="true" Height="82vh">
+             Striped="true" ShowFilterIcons="true" FixedHeader="true" Height="82vh" Bordered="true" >
     <ToolBarContent>
 
         @*<table cellpadding="0" cellspacing="0" width="100%">
@@ -90,11 +97,34 @@
         </tr>
         </tbody>
         </table>
-
         </td>
         </tr>
         </tbody>
         </table>*@
+
+
+        @* <div class="d-flex">
+            <div class="align-self-center">
+                <MudText Typo="Typo.h6">Tools: Customer Communications</MudText>
+            </div>
+            <div class="d-flex align-items-center ml-auto">
+                <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Style="margin-top: 0px !important"></MudTextField>
+                <div class="d-flex align-items-center justify-content-center ml-2 icon-link mt-2">
+                    <MudLink OnClick="@(async () => await ExportGridClicked())">
+                        <div class="d-flex align-items-center justify-content-center">
+                            <MudIcon Icon="@Icons.Custom.FileFormats.FileExcel" Color="@Color.Tertiary" Class="ml-2" Title="Export"></MudIcon>
+                        </div>
+                    </MudLink>
+                    <div class="ml-2"> | </div>
+                    <MudLink OnClick="@(async () => await FetchCommunications())">
+                        <MudIcon Icon="@Icons.Material.Filled.Refresh" Color="@Color.Tertiary" Class="ml-2" Title="Retain filter & refresh"></MudIcon>
+                    </MudLink>
+                </div>
+            </div>
+        </div> *@
+
+
 
         <MudGrid>
             <MudItem class="align-self-center">
@@ -107,7 +137,6 @@
                 <div class="d-flex align-items-center justify-content-center ml-2 icon-link mt-2">
                     <MudLink OnClick="@(async () => await ExportGridClicked())">
                         <div class="d-flex align-items-center justify-content-center">
-                            @*<MudText Class="ml-6">Export:</MudText>*@
                             <MudIcon Icon="@Icons.Custom.FileFormats.FileExcel" Color="@Color.Tertiary" Class="ml-2" Title="Export"></MudIcon>
                         </div>
                     </MudLink>
@@ -118,6 +147,8 @@
                 </div>
             </MudItem>
         </MudGrid>
+
+        @* <MudDivider Style="background-color: rgb(68, 125, 174)" />   *@
     </ToolBarContent>
     <ColGroup>
         <col style="width:20%;" />  <!--Letter Type-->
@@ -131,27 +162,27 @@
     </ColGroup>
     <Columns>
         <PropertyColumn Property="x => x.TemplateName" Title="Letter Type" ShowColumnOptions="false"
-                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgba(68, 125, 174);">
+                        HeaderClass="grid-header-col">
             <HeaderTemplate>
-                <span style="font-weight:600" class="text-white">Letter Type</span>
+                <span>Letter Type</span>
             </HeaderTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.CompanyName" Title="Utility" ShowColumnOptions="false"
-                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgba(68, 125, 174);">
+                        HeaderClass="grid-header-col">
             <HeaderTemplate>
-                <span style="font-weight:600" class="text-white">Utility</span>
+                <span>Utility</span>
             </HeaderTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.CountofApplications" Title="Application Count" ShowColumnOptions="false"
-                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgba(68, 125, 174);">
+                        HeaderClass="grid-header-col">
             <HeaderTemplate>
-                <span style="font-weight:600" class="text-white">Application Count</span>
+                <span>Application Count</span>
             </HeaderTemplate>
         </PropertyColumn>
         <TemplateColumn Title="Action" Filterable="false" Sortable="false"
-                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgba(68, 125, 174);">
+                        HeaderClass="grid-header-col">
             <HeaderTemplate>
-                <span style="font-weight:600" class="text-white">Action</span>
+                <span>Action</span>
             </HeaderTemplate>
             <CellTemplate>
                 <MudStack Row>
@@ -175,24 +206,24 @@
             </CellTemplate>
         </TemplateColumn>
         <PropertyColumn Property="x => x.GeneratedDate" Title="Letter Generated Date" ShowColumnOptions="false"
-                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgba(68, 125, 174);">
+                        HeaderClass="grid-header-col">
             <HeaderTemplate>
-                <span style="font-weight:600" class="text-white">Letter Generated Date</span>
+                <span>Letter Generated Date</span>
             </HeaderTemplate>
             <CellTemplate>
                 <MudText Typo="Typo.body2">@context.Item?.GeneratedDate?.ToString("MM/dd/yyyy")</MudText>
             </CellTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.GeneratedBy" Title="Letter Generated by" ShowColumnOptions="false"
-                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgba(68, 125, 174);">
+                        HeaderClass="grid-header-col">
             <HeaderTemplate>
-                <span style="font-weight:600" class="text-white">Letter Generated by</span>
+                <span>Letter Generated by</span>
             </HeaderTemplate>
         </PropertyColumn>
         <TemplateColumn Title="Customer List" Filterable="false" Sortable="false" CellStyle="text-align: center;"
-                        HeaderStyle="--tw-bg-opacity: 1;background-color: rgba(68, 125, 174);">
+                        HeaderClass="grid-header-col">
             <HeaderTemplate>
-                <span style="font-weight:600" class="text-white">Customer List (xlsx)</span>
+                <span>Customer List (xlsx)</span>
             </HeaderTemplate>
             <CellTemplate>
                 <MudStack Row>
