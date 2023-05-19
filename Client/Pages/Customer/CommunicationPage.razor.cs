@@ -1,5 +1,6 @@
 ﻿using EDM.Setting;
 using EDMS.Data.Constants;
+using EDMS.DSM.Client.Managers.Menu;
 using EDMS.DSM.Managers.Customer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.JSInterop;
@@ -11,7 +12,7 @@ namespace EDMS.DSM.Client.Pages.Customer;
 
 public partial class CommunicationPage : ComponentBase, IDisposable
 {
-    //    [Inject] private HttpInterceptorService _interceptor { get; set; } = default!;
+    [Inject] private HttpInterceptorService _interceptor { get; set; } = default!;
 
     [Inject] private IJSRuntime _jsRuntime { get; set; } = default!;
 
@@ -22,6 +23,12 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     [Inject] private ISnackbar _snackbar { get; set; } = default!;
 
     [Inject] IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
+
+    [Inject] private ILocalStorageService LocalStorage { get; set; } = default!;
+
+    [Inject] private NavigationManager _navManager { get; set; } = default!;
+
+    [Inject] public INavManager NavManager { get; set; } = default!;
 
     //[Inject] private CookieStorageAccessor _cookieStorageAccessor { get; set; } = default!;
 
@@ -86,33 +93,65 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     //    }
     //}
 
-
     protected override async Task OnInitializedAsync()
     {
         try
         {
-
-            //await _jsRuntime.InvokeAsync<object>("setCorsHeaders");
-
-            if (HttpContextAccessor.HttpContext != null)
+            if (_navManager.TryGetQueryString(StorageConstants.UserToken, out string userTokenOut))
+            //&& _navManager.TryGetQueryString(StorageConstants.RefreshToken, out string refreshTokenOut))
             {
-                var headers = HttpContextAccessor.HttpContext.Request.Headers;
-
-                if (headers != null)
+                if (!string.IsNullOrWhiteSpace(userTokenOut))
                 {
-                    var accessTokenHeader = HttpContextAccessor.HttpContext.Request.Headers["AccessToken"];
+                    _ = _snackbar.Add($"UserToken. {userTokenOut}", Severity.Info);
+
+                    // Use retrieved `userToken` to update authentication state.
+                    //await _authStateProvider.UpdateAuthenticationStateAsync(userTokenOut, userTokenOut)
+                    //    .ConfigureAwait(false);
+
+                    //_navManager.NavigateTo($"/?programId={2}&userId=10572&_z={userTokenOut}", true, true);
+
+                    await FetchCommunications();
+
+                    GridParams.UserID = 10572;
+                    _generatedById = GridParams.UserID;
+
+                    GridParams.ProgramID = 2;
+                    _programId = GridParams.ProgramID;
+
+                    //await GetGridParams();
+
+                    return;
+                }
+            }
+            else
+            {
+                if (HttpContextAccessor.HttpContext != null)
+                {
+                    var headers = HttpContextAccessor.HttpContext.Request.Headers;
+
+                    if (headers != null)
+                    {
+                        var accessTokenHeader = HttpContextAccessor.HttpContext.Request.Headers[StorageConstants.UserToken];
+                        //if (accessTokenHeader == null)
+                        //{
+                        //    return;
+                        //}
+                    }
                 }
             }
 
-            await FetchCommunications();
+            _navManager.NavigateTo($"http://localhost:53398/Index.aspx");
 
-            GridParams.UserID = 10572;
-            _generatedById = GridParams.UserID;
+            //var userToken = await LocalStorage.GetItemAsStringAsync(StorageConstants.UserToken).ConfigureAwait(false);
 
-            GridParams.ProgramID = 2;
-            _programId = GridParams.ProgramID;
+            //// If the token is null, consider the authentication as anonymous (or non-authorized).
+            //if (userToken == null)
+            //{
+            //    _navManager.NavigateTo($"/login");
+            //}
 
-            //await GetGridParams();
+            ////await _jsRuntime.InvokeAsync<object>("setCorsHeaders");
+
         }
         catch (Exception ex)
         {

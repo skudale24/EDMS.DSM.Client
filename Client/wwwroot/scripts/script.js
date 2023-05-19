@@ -112,6 +112,6 @@ function OpenNewTab(URL)
 window.addEventListener('message', event => {
     const data = event.data;
     if (data.token) {
-        localStorage.setItem('jwtToken', data.token);
+        localStorage.setItem('_z', data.token);
     }
 });
