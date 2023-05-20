@@ -18,14 +18,22 @@ namespace EDMS.DSM.Server.Controllers
     {
         private readonly IConfiguration _configuration;
 
+        private readonly ILogger<AuthenticationController> _logger;
+
         private ApplicationDbContext _context;
-        public CustomerController(ApplicationDbContext context, IConfiguration configuration)
+
+        public CustomerController(ApplicationDbContext context, IConfiguration configuration, ILogger<AuthenticationController> logger)
         {
             _context = context;
             _configuration = configuration;
+            _logger = logger;
         }
 
-        // GET: api/<BooksController>
+        /// <summary>
+        /// Returns the Customer Communications
+        /// </summary>
+        /// <param name="programId"></param>
+        /// <returns></returns>
         [HttpGet("List/{programId}")]
         public async Task<IApiResult> GetCommunications(int programId)
         {
@@ -33,17 +41,22 @@ namespace EDMS.DSM.Server.Controllers
             return ApiResult<List<Communication>>.Success(communications);
         }
 
+        /// <summary>
+        /// Returns the Excel File in bytes
+        /// TODO: Move the gemboxkey to configuration section
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("downloadexcelfile")]
         public async Task<IActionResult> DownloadExcelFile([FromBody] DownloadExcelFileRequest request)
         {
             try
             {
-                //args = e.CommandArgument.ToString().Split(',');
                 DataSet dsExport = new DataSet();
                 DataTable dtExport = new DataTable();
                 if (request.ActionText.Equals("Generate Letters", StringComparison.OrdinalIgnoreCase))
                 {
-                    PDFGeneration objForExcel = new EDM.PDFMappingVariables.PDFGeneration();
+                    PDFGeneration objForExcel = new PDFGeneration();
                     objForExcel.ConnectionString = _configuration.GetConnectionString("Default");
                     objForExcel.ProgramId = request.ProgramId;
                     objForExcel.TemplateID = request.TemplateID;
@@ -99,11 +112,17 @@ namespace EDMS.DSM.Server.Controllers
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex.Message);
+                _logger.LogError(ex.Message);
                 return StatusCode((int)HttpStatusCode.InternalServerError, ApiResult.Fail(ex.Message));
             }
         }
 
+        /// <summary>
+        /// Generic method that downloads a file
+        /// Returns file as byte array
+        /// </summary>
+        /// <param name="FileName"></param>
+        /// <returns></returns>
         [HttpGet("downloadsourcefile/{FileName}")]
         public async Task<IActionResult> DownloadSourceFile(string FileName)
         {
@@ -121,11 +140,16 @@ namespace EDMS.DSM.Server.Controllers
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex.Message);
+                _logger.LogError(ex.Message);
                 return StatusCode((int)HttpStatusCode.InternalServerError, ApiResult.Fail(ex.Message));
             }
         }
 
+        /// <summary>
+        /// Generates PDF of requested Letter
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPut("generateletter")]
         public async Task<IActionResult> GenerateLetter([FromBody] GenerateLetterRequest request)
         {
@@ -163,11 +187,16 @@ namespace EDMS.DSM.Server.Controllers
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex.Message);
+                _logger.LogError(ex.Message);
                 return StatusCode((int)HttpStatusCode.InternalServerError, ApiResult.Fail(ex.Message));
             }
         }
 
+        /// <summary>
+        /// Exports the Customer Communications grid data
+        /// Returns excel file as byte array
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("exportgrid")]
         public async Task<IActionResult> ExportGrid()
         {
@@ -195,7 +224,7 @@ namespace EDMS.DSM.Server.Controllers
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex.Message);
+                _logger.LogError(ex.Message);
                 return StatusCode((int)HttpStatusCode.InternalServerError, ApiResult.Fail(ex.Message));
             }
         }

@@ -1,5 +1,4 @@
-﻿using EDMS.Data.Constants;
-using EDMS.DSM.Client.Managers.Menu;
+﻿using EDMS.DSM.Client.Managers.Menu;
 using EDMS.DSM.Managers.Customer;
 using Microsoft.AspNetCore.Http;
 using System.Data;
@@ -101,11 +100,9 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         try
         {
             if (_navManager.TryGetQueryString(StorageConstants.UserToken, out string userTokenOut))
-            //&& _navManager.TryGetQueryString(StorageConstants.RefreshToken, out string refreshTokenOut))
             {
                 if (!string.IsNullOrWhiteSpace(userTokenOut))
                 {
-                    //_ = _snackbar.Add($"UserToken. {userTokenOut}", Severity.Info);
                     await _cookieStorageAccessor.WriteLogAsync<string>($"UserToken. {userTokenOut}");
 
                     var claims = GetClaimsFromToken(userTokenOut);
@@ -115,12 +112,10 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                         if (claim.Type == "UserID")
                         {
                             int.TryParse(claim.Value, out _generatedById);
-                            GridParams.UserID = _generatedById;
                         }
                         else if (claim.Type == "ProgramID")
                         {
                             int.TryParse(claim.Value, out _programId);
-                            GridParams.ProgramID = _programId;
                         }
                     }
 
@@ -135,6 +130,9 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                     return;
                 }
             }
+
+            _navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
+
             //else
             //{
             //    if (HttpContextAccessor.HttpContext != null)
@@ -151,8 +149,6 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             //        }
             //    }
             //}
-
-            _navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
 
             //var userToken = await LocalStorage.GetItemAsStringAsync(StorageConstants.UserToken).ConfigureAwait(false);
 
@@ -250,8 +246,8 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             model.LPCID = Convert.ToInt32(item.LPCID);
             model.TemplateFile = item.FilePath;
             model.TemplateID = item.TemplateId;
-            model.ProgramId = GridParams.ProgramID;
-            model.GeneratedBy = GridParams.UserID;
+            model.ProgramId = _programId;
+            model.GeneratedBy = _generatedById;
             var result = await _customerManager.GenerateLetter<GenerateLetterDTO, GenerateLetterDTO>(model);
             ApiResult<GenerateLetterDTO> response = result as ApiResult<GenerateLetterDTO>;
 
@@ -354,8 +350,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         }
         catch (Exception ex)
         {
-            _ = _snackbar.Add("We are currently unable to get the file requested by you.", Severity.Warning);
-            EDM.Common.Log.Error("EDMS.DSM", "EDMS.DSM.Client.Pages.Customer", "DownloadSourceFile", ex);
+            _ = _snackbar.Add($"We are currently unable to get the file requested by you. \r\n {ex.Message}", Severity.Warning);
             await _loadingIndicatorProvider.ReleaseAsync();
         }
     }
@@ -376,7 +371,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         catch (Exception ex)
         {
             await _loadingIndicatorProvider.ReleaseAsync();
-            EDM.Common.Log.Error("Common", "EDMS.AP.Tools.CustomerCommunications.List", "ExportGridClicked", ex);
+            _ = _snackbar.Add($"We are currently unable to export the grid as requested by you. \r\n {ex.Message}", Severity.Warning);
         }
     }
 
@@ -402,33 +397,5 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         var jwtToken = handler.ReadJwtToken(token);
 
         return jwtToken.Claims.ToList();
-    }
-
-    public class GenerateLetterDTO
-    {
-        public string TemplateFile { get; set; } = "/CDN/HUP_Template/Home_Uplift__Ineligibility_Notice.pdf";
-        public string NewLocalPath { get; set; } = "C:\\Users\\siddharth.k\\source\\EDM-DSM\\eScore\\EDMS.AP\\Tools\\CustomerCommunications\\ApplicationDoc\\";
-        public int ProgramId { get; set; }
-        public int TemplateID { get; set; } = 2;
-        public int LPCID { get; set; } = 242;
-        public int TemplateType { get; set; } = 1;
-        public int GeneratedBy { get; set; }
-        public string? TemplateName { get; set; }
-        public string? GeneratedFilePath { get; set; }
-        public int BatchId { get; set; }
-    }
-
-    public class DownloadExcelFileDTO
-    {
-        public string TemplateFile { get; set; } = "/CDN/HUP_Template/Home_Uplift__Ineligibility_Notice.pdf";
-        public string NewLocalPath { get; set; } = "C:\\Users\\siddharth.k\\source\\EDM-DSM\\eScore\\EDMS.AP\\Tools\\CustomerCommunications\\ApplicationDoc\\";
-        public int ProgramId { get; set; }
-        public int TemplateID { get; set; } = 2;
-        public int LPCID { get; set; } = 242;
-        public int TemplateType { get; set; } = 1;
-        public int GeneratedBy { get; set; }
-        public string? TemplateName { get; set; }
-        public string? GeneratedFilePath { get; set; }
-        public int BatchId { get; set; }
     }
 }

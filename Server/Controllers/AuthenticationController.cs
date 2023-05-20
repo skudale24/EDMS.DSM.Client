@@ -2,7 +2,6 @@
 using EDMS.Shared.Constants;
 using EDMS.Shared.Wrapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
@@ -25,7 +24,10 @@ namespace EDMS.DSM.Server.Controllers
             _logger = logger;
         }
 
-        // POST: api/Authentication/GenerateToken
+        /// <summary>
+        /// Returns Access Token (JWT) for Customer Communications
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GenerateToken")]
         public IActionResult GenerateToken()
         {
@@ -87,7 +89,7 @@ namespace EDMS.DSM.Server.Controllers
         }
 
         /// <summary>
-        /// Prepare the claims for sending
+        /// Prepares the claims for sending
         /// </summary>
         /// <param name="claims"></param>
         /// <returns></returns>
@@ -101,7 +103,7 @@ namespace EDMS.DSM.Server.Controllers
         }
 
         /// <summary>
-        /// Parse the claims string into a dictionary
+        /// Parses the claims string into a dictionary
         /// </summary>
         /// <param name="claimsString"></param>
         /// <returns></returns>
@@ -125,7 +127,8 @@ namespace EDMS.DSM.Server.Controllers
         }
 
         /// <summary>
-        /// Generate the JWT token using the Private Key
+        /// Generates the Access (JWT) token using the Private Key
+        /// TODO: Move the Private Key to configuration section
         /// </summary>
         /// <returns></returns>
         private string GenerateJwtToken(string userId, string programId)

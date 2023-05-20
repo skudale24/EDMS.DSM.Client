@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.EntityFrameworkCore;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,12 @@ StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configurat
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+// Use Serilog
+builder.Host.UseSerilog((hostContext, services, configuration) => {
+    configuration
+        .WriteTo.File("logs/EDMS.DSM.Api.log");
+});
 
 builder.Services.AddCors(options =>
 {
