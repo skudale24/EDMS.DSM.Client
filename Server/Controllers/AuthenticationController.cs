@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Net.Http;
-using VTI.Common;
-using EDMS.DSM.Client.Pages.Support;
-using EDMS.DSM.Server.Models;
+﻿using EDMS.DSM.Server.Models;
+using EDMS.Shared.Constants;
+using EDMS.Shared.Wrapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
+using System.Security.Claims;
 using System.Text;
 
 namespace EDMS.DSM.Server.Controllers
@@ -15,55 +15,82 @@ namespace EDMS.DSM.Server.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
+        private readonly IConfiguration _configuration;
+
+        private readonly ILogger<AuthenticationController> _logger;
+
+        public AuthenticationController(IConfiguration configuration, ILogger<AuthenticationController> logger)
+        {
+            _configuration = configuration;
+            _logger = logger;
+        }
+
         // POST: api/Authentication/GenerateToken
         [HttpGet("GenerateToken")]
         public IActionResult GenerateToken()
         {
-            // Retrieve the prepared claims from the request header
-            string preparedClaimsBase64 = Request.Headers["X-Claims"];
-
-            if (string.IsNullOrEmpty(preparedClaimsBase64))
+            try
             {
-                // Claims not found in the request header, handle the error
-                return BadRequest(new APIResponse { Message = "Claims not provided" });
+                // Retrieve the prepared claims from the request header
+                string preparedClaimsBase64 = Request.Headers["X-Claims"];
+
+                if (string.IsNullOrEmpty(preparedClaimsBase64))
+                {
+                    // Claims not found in the request header, handle the error
+                    return BadRequest(new APIResponse { Message = "Claims not provided" });
+                }
+
+                _logger.LogInformation(preparedClaimsBase64);
+
+                // Decode the Base64 string to byte array
+                byte[] preparedClaims = Convert.FromBase64String(preparedClaimsBase64);
+
+                // Convert the prepared claims bytes to string using UTF-8 encoding
+                string claims = Encoding.UTF8.GetString(preparedClaims);
+
+                _logger.LogInformation(claims);
+
+                //// Prepare the claims for sending
+                //byte[] preparedClaims = PrepareClaims(claims);
+
+                // Extract the user ID from the claims (assuming it is a string)
+                //string claimsString = AP.Common.PGPHelper.DecryptClaims(preparedClaims); // Assuming you have a method to decrypt the prepared claims
+                Dictionary<string, string> parsedClaims = ParseClaims(claims);
+                string userId = parsedClaims["UserID"];
+                string programId = parsedClaims["ProgramID"];
+
+                _logger.LogInformation($"{userId}:{programId}");
+
+                // Construct the URL with the user ID appended as a query string parameter
+                string url = $"{_configuration["CCGridUrl"]}";
+
+                _logger.LogInformation($"{url}");
+
+                // Generate the JWT token (implement your own logic)
+                string jwtToken = GenerateJwtToken(userId, programId);
+
+                _logger.LogInformation($"{jwtToken}");
+
+                // Return the URL and JWT token in the response header
+                Response.Headers.Add("X-URL", url);
+                Response.Headers.Add("X-JWT-Token", jwtToken);
+                Response.Headers.Add("X-JWT-Token-Key", StorageConstants.UserToken);
+
+                // Return a success response
+                return Ok(new APIResponse { Message = "Token generated successfully" });
             }
-
-            // Decode the Base64 string to byte array
-            byte[] preparedClaims = Convert.FromBase64String(preparedClaimsBase64);
-
-            // Convert the prepared claims bytes to string using UTF-8 encoding
-            string claims = System.Text.Encoding.UTF8.GetString(preparedClaims);
-
-            //byte[] byteClaims = Convert.FromBase64String(claims);
-
-            //////// Prepare the claims for sending
-            //byte[] preparedClaims = PrepareClaims(claims);
-
-            //// Convert the prepared claims to Base64 string for transmission or storage
-            //string preparedClaimsBase64 = Convert.ToBase64String(preparedClaims);
-
-            // Your logic to extract the user ID from the claims (assuming it is a string)
-            //string claimsString = AP.Common.PGPHelper.DecryptClaims(preparedClaims); // Assuming you have a method to decrypt the prepared claims
-            Dictionary<string, string> parsedClaims = ParseClaims(claims);
-            string userId = parsedClaims["UserID"];
-            string programId = parsedClaims["ProgramID"];
-
-            //TODO: Make base url configurable
-            // Your logic to construct the URL with the user ID appended as a query string parameter
-            string url = $"https://localhost:5001?userId={userId}&programId={programId}";
-
-            // Generate the JWT token (implement your own logic)
-            string jwtToken = GenerateJwtToken();
-
-            // Return the URL and JWT token in the response header
-            Response.Headers.Add("X-URL", url);
-            Response.Headers.Add("X-JWT-Token", jwtToken);
-
-            // Return a success response
-            return Ok(new APIResponse { Message = "Token generated successfully" });
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ex.Message} : {ex.StackTrace}");
+                return StatusCode((int)HttpStatusCode.InternalServerError, ApiResult.Fail(ex.Message));
+            }
         }
 
-        // Prepare the claims for sending
+        /// <summary>
+        /// Prepare the claims for sending
+        /// </summary>
+        /// <param name="claims"></param>
+        /// <returns></returns>
         private byte[] PrepareClaims(string claims)
         {
             // Convert the claims string to bytes
@@ -73,7 +100,11 @@ namespace EDMS.DSM.Server.Controllers
             return claimsBytes;
         }
 
-        // Method to parse the claims string into a dictionary
+        /// <summary>
+        /// Parse the claims string into a dictionary
+        /// </summary>
+        /// <param name="claimsString"></param>
+        /// <returns></returns>
         private Dictionary<string, string> ParseClaims(string claimsString)
         {
             Dictionary<string, string> claims = new Dictionary<string, string>();
@@ -93,31 +124,12 @@ namespace EDMS.DSM.Server.Controllers
             return claims;
         }
 
-
-        //// Extract the user ID from the claims (implement your own logic based on your claims structure)
-        //private string ExtractUserIdFromClaims(string preparedClaimsBase64)
-        //{
-        //    // Implement your logic to extract the user ID from the claims here
-        //    // This can be based on the structure of your claims or any other criteria you have
-        //    // Parse the Base64 claims string and extract the relevant information
-
-        //    // For demonstration purposes, assuming the claims string is a JSON object
-        //    // Deserialize the claims JSON string and extract the user ID field
-        //    // Adjust this logic based on the actual structure of your claims
-        //    var claims = JsonConvert.DeserializeObject<Dictionary<string, string>>(preparedClaimsBase64);
-        //    string userId = claims["UserID"];
-
-        //    return userId;
-        //}
-
-        // Generate the JWT token (implement your own logic)
-        private string GenerateJwtToken()
+        /// <summary>
+        /// Generate the JWT token using the Private Key
+        /// </summary>
+        /// <returns></returns>
+        private string GenerateJwtToken(string userId, string programId)
         {
-            // Implement your logic to generate the JWT token here
-            // This can be based on your specific requirements and the libraries/frameworks you are using
-
-            // For demonstration purposes, assuming a simple token generation
-            // Replace this logic with your own JWT token generation logic
             var privateKey = @"-----BEGIN RSA PRIVATE KEY-----
 MIIEpAIBAAKCAQEAwu6q6nHGrLoa8/U7pcJLy9KFBcPSfSEojnQ8jhE0lhFGRuLW
 7FeWrpStUp5w0E8jYSkyM2Q9n7gwmdn0v4tuzmZO1/C3XiBgCNlY+v10MIB3w8b+
@@ -149,11 +161,18 @@ iylx4utOIgNNzNx51tiFEqcukLBTclPEMXiodvAKL4Po5rN12QO6GQ==
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(privateKey));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+            var claims = new List<Claim>
+            {
+                new Claim("UserID", userId),
+                new Claim("ProgramID", programId),
+            };
+
             var token = new JwtSecurityToken(
-                issuer: "https://localhost:5001/api/authenticate/generatetoken",
-                audience: "https://localhost:5001",
+                issuer: $"{_configuration["CCGridUrl"]}/api",
+                audience: $"{_configuration["CCGridUrl"]}",
                 expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: credentials
+                signingCredentials: credentials,
+                claims: claims
             );
 
             string jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
@@ -162,4 +181,3 @@ iylx4utOIgNNzNx51tiFEqcukLBTclPEMXiodvAKL4Po5rN12QO6GQ==
         }
     }
 }
-

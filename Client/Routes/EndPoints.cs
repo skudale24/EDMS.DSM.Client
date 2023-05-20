@@ -2,23 +2,28 @@
 
 public static class EndPoints
 {
+
+#if DEBUG
+    //Visual Studio Dev mode
     public static string Version = "0.9.0015";
     public static string ApiBaseUrl => "";
-    //public static string ApiBaseUrl => "https://localhost:44342";
+    public static string APBaseUrl => "http://localhost:53398";
     public static string LoginPage => "https://localhost:7119";
-    public static string PhotosBaseUrl => "http://localhost:5119";
 
-    //Local machine
-    //public static string Version = "0.9.0015";
-    //public static string ApiBaseUrl => "http://edmstvademo.local:8080";
-    //public static string LoginPage => "https://logsoft.iworktech.net";
-    //public static string PhotosBaseUrl => "https://pwa.iworktech.net";
-
+#else
     //Dev server
+    public static string Version = "0.9.0015";
+    public static string ApiBaseUrl => "";
+    public static string APBaseUrl => "https://esadmin.energydatametrics.com";
+    public static string LoginPage => "https://baseline.energydatametrics.com/";
+
+#endif
+
+    //Local machine (IIS)
     //public static string Version = "0.9.0015";
-    //public static string ApiBaseUrl => "https://baseline.energydatametrics.com";
-    //public static string LoginPage => "https://baseline.energydatametrics.com/";
-    //public static string PhotosBaseUrl => "https://baseline.energydatametrics.com/";
+    //public static string ApiBaseUrl => "";
+    //public static string APBaseUrl => "https://esadmin.energydatametrics.com";
+    //public static string LoginPage => "https://logsoft.iworktech.net";
 }
 
 public static class NavMenuEndPoints

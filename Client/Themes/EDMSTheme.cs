@@ -28,7 +28,7 @@ public class EDMSTheme : MudTheme
                 new Default
                 {
                     FontFamily = new[] { "Poppins", "sans-serif" },
-                    FontSize = "14px",
+                    FontSize = "12px",
                     FontWeight = 400,
                     LineHeight = 1.43,
                     LetterSpacing = ".01071em"
@@ -91,7 +91,7 @@ public class EDMSTheme : MudTheme
                 new Button
                 {
                     FontFamily = new[] { "Poppins", "sans-serif" },
-                    FontSize = ".875rem",
+                    FontSize = ".75rem",
                     FontWeight = 500,
                     LineHeight = 1.75,
                     LetterSpacing = ".02857em"
@@ -108,7 +108,7 @@ public class EDMSTheme : MudTheme
             Body2 = new Body2
             {
                 FontFamily = new[] { "Poppins", "sans-serif" },
-                FontSize = ".875rem",
+                FontSize = ".75rem",
                 FontWeight = 400,
                 LineHeight = 1.43,
                 LetterSpacing = ".01071em"
@@ -124,7 +124,7 @@ public class EDMSTheme : MudTheme
             Subtitle2 = new Subtitle2
             {
                 FontFamily = new[] { "Poppins", "sans-serif" },
-                FontSize = ".875rem",
+                FontSize = ".75rem",
                 FontWeight = 500,
                 LineHeight = 1.57,
                 LetterSpacing = ".00714em"

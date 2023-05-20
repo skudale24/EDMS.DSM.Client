@@ -108,6 +108,11 @@ function OpenNewTab(URL)
 }
 // END Loading indicator mechanism
 
+function writelog(value) {
+    console.log('EDM Grid Log:');
+    console.log(value);
+}
+
 // JavaScript interop
 window.addEventListener('message', event => {
     const data = event.data;

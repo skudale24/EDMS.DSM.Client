@@ -1,12 +1,9 @@
-﻿using EDM.Setting;
-using EDMS.Data.Constants;
+﻿using EDMS.Data.Constants;
 using EDMS.DSM.Client.Managers.Menu;
 using EDMS.DSM.Managers.Customer;
 using Microsoft.AspNetCore.Http;
-using Microsoft.JSInterop;
-using MudBlazor;
 using System.Data;
-using System.IO;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace EDMS.DSM.Client.Pages.Customer;
 
@@ -24,13 +21,13 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     [Inject] IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
 
-    [Inject] private ILocalStorageService LocalStorage { get; set; } = default!;
-
     [Inject] private NavigationManager _navManager { get; set; } = default!;
 
     [Inject] public INavManager NavManager { get; set; } = default!;
 
-    //[Inject] private CookieStorageAccessor _cookieStorageAccessor { get; set; } = default!;
+    [Inject] private CookieStorageAccessor _cookieStorageAccessor { get; set; } = default!;
+
+    [Inject] private CustomAuthenticationStateProvider _authStateProvider { get; set; } = default!;
 
     private GenerateLetterDTO model { get; set; } = new();
 
@@ -41,8 +38,8 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     private List<string> _events = new();
 
     //TODO: Replace hardcoded values with actual values
-    private int _programId = 2;
-    private int _generatedById = 10572;
+    private int _programId;
+    private int _generatedById;
     // custom sort by name length
     private Func<CommunicationDTO, object> _sortBy => x =>
     {
@@ -59,6 +56,12 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             return true;
 
         if (x.TemplateName?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
+            return true;
+
+        if (x.GeneratedDate?.ToString("MM/dd/yyyy").Contains(_searchString) == true)
+            return true;
+
+        if (x.CountofApplications.ToString().Contains(_searchString) == true)
             return true;
 
         if (x.ActionText?.Contains(_searchString, StringComparison.OrdinalIgnoreCase) == true)
@@ -102,45 +105,54 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             {
                 if (!string.IsNullOrWhiteSpace(userTokenOut))
                 {
-                    _ = _snackbar.Add($"UserToken. {userTokenOut}", Severity.Info);
+                    //_ = _snackbar.Add($"UserToken. {userTokenOut}", Severity.Info);
+                    await _cookieStorageAccessor.WriteLogAsync<string>($"UserToken. {userTokenOut}");
+
+                    var claims = GetClaimsFromToken(userTokenOut);
+
+                    foreach (var claim in claims)
+                    {
+                        if (claim.Type == "UserID")
+                        {
+                            int.TryParse(claim.Value, out _generatedById);
+                            GridParams.UserID = _generatedById;
+                        }
+                        else if (claim.Type == "ProgramID")
+                        {
+                            int.TryParse(claim.Value, out _programId);
+                            GridParams.ProgramID = _programId;
+                        }
+                    }
 
                     // Use retrieved `userToken` to update authentication state.
-                    //await _authStateProvider.UpdateAuthenticationStateAsync(userTokenOut, userTokenOut)
-                    //    .ConfigureAwait(false);
-
-                    //_navManager.NavigateTo($"/?programId={2}&userId=10572&_z={userTokenOut}", true, true);
+                    await _authStateProvider.UpdateAuthenticationStateAsync(userTokenOut, userTokenOut)
+                        .ConfigureAwait(false);
 
                     await FetchCommunications();
-
-                    GridParams.UserID = 10572;
-                    _generatedById = GridParams.UserID;
-
-                    GridParams.ProgramID = 2;
-                    _programId = GridParams.ProgramID;
 
                     //await GetGridParams();
 
                     return;
                 }
             }
-            else
-            {
-                if (HttpContextAccessor.HttpContext != null)
-                {
-                    var headers = HttpContextAccessor.HttpContext.Request.Headers;
+            //else
+            //{
+            //    if (HttpContextAccessor.HttpContext != null)
+            //    {
+            //        var headers = HttpContextAccessor.HttpContext.Request.Headers;
 
-                    if (headers != null)
-                    {
-                        var accessTokenHeader = HttpContextAccessor.HttpContext.Request.Headers[StorageConstants.UserToken];
-                        //if (accessTokenHeader == null)
-                        //{
-                        //    return;
-                        //}
-                    }
-                }
-            }
+            //        if (headers != null)
+            //        {
+            //            var accessTokenHeader = HttpContextAccessor.HttpContext.Request.Headers[StorageConstants.UserToken];
+            //            //if (accessTokenHeader == null)
+            //            //{
+            //            //    return;
+            //            //}
+            //        }
+            //    }
+            //}
 
-            _navManager.NavigateTo($"http://localhost:53398/Index.aspx");
+            _navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
 
             //var userToken = await LocalStorage.GetItemAsStringAsync(StorageConstants.UserToken).ConfigureAwait(false);
 
@@ -151,11 +163,10 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             //}
 
             ////await _jsRuntime.InvokeAsync<object>("setCorsHeaders");
-
         }
         catch (Exception ex)
         {
-            _ = _snackbar.Add($"We are unable to load the CC grid data at this time. {ex.Message} : {ex.StackTrace}", Severity.Warning);
+            _ = _snackbar.Add($"We are currently unable to display the Customer Communications at this time. \r\n {ex.Message} : {ex.StackTrace}", Severity.Warning);
         }
     }
 
@@ -239,8 +250,8 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             model.LPCID = Convert.ToInt32(item.LPCID);
             model.TemplateFile = item.FilePath;
             model.TemplateID = item.TemplateId;
-            model.ProgramId = _programId;
-            model.GeneratedBy = _generatedById;
+            model.ProgramId = GridParams.ProgramID;
+            model.GeneratedBy = GridParams.UserID;
             var result = await _customerManager.GenerateLetter<GenerateLetterDTO, GenerateLetterDTO>(model);
             ApiResult<GenerateLetterDTO> response = result as ApiResult<GenerateLetterDTO>;
 
@@ -281,7 +292,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                 item.IsProcessing = false;
                 StateHasChanged();
 
-                _ = _snackbar.Add($"We are unable to generate the Communication Letter at this time. <br> \r\n {response?.Message}", Severity.Warning);
+                _ = _snackbar.Add($"We are currently unable to generate the Communication Letter requested by you at this time. <br> \r\n {response?.Message}", Severity.Warning);
             }
         }
         catch (Exception ex)
@@ -291,7 +302,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             item.IsProcessing = false;
             StateHasChanged();
 
-            _ = _snackbar.Add($"We are unable to generate the Communication Letter at this time. {ex.Message} : {ex.StackTrace}", Severity.Warning);
+            _ = _snackbar.Add($"We are currently unable to generate the Communication Letter requested by you at this time. {ex.Message} : {ex.StackTrace}", Severity.Warning);
             await _loadingIndicatorProvider.ReleaseAsync();
         }
     }
@@ -341,9 +352,10 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
             await _loadingIndicatorProvider.ReleaseAsync();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            _ = _snackbar.Add("Source file not found.", Severity.Error);
+            _ = _snackbar.Add("We are currently unable to get the file requested by you.", Severity.Warning);
+            EDM.Common.Log.Error("EDMS.DSM", "EDMS.DSM.Client.Pages.Customer", "DownloadSourceFile", ex);
             await _loadingIndicatorProvider.ReleaseAsync();
         }
     }
@@ -382,6 +394,14 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     void IDisposable.Dispose()
     {
         //_interceptor.DisposeEvent();
+    }
+
+    private List<Claim> GetClaimsFromToken(string token)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        return jwtToken.Claims.ToList();
     }
 
     public class GenerateLetterDTO

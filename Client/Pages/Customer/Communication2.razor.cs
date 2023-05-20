@@ -118,7 +118,7 @@ public partial class Communication2 : ComponentBase, IDisposable
         }
         catch (Exception)
         {
-            _ = _snackbar.Add("Source file not found.", Severity.Error);
+            _ = _snackbar.Add("We are currently unable to get the file requested by you.", Severity.Warning);
             await _loadingIndicatorProvider.ReleaseAsync();
         }
     }

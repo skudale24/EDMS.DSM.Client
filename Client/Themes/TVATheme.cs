@@ -12,7 +12,7 @@ public class TVATheme : MudTheme
             Background = Colors.BlueGrey.Lighten5,
             Divider = Colors.BlueGrey.Lighten1,
             TableHover = "#D7D2CB", //"#8CB8D6", //Colors.BlueGrey.Lighten5,
-            TableLines = Colors.BlueGrey.Lighten5,
+            TableLines = "#BBC1DA",
             LinesDefault = Colors.BlueGrey.Lighten5,
             AppbarBackground = "#0072CF",
             DrawerBackground = "#FFF",
@@ -28,7 +28,7 @@ public class TVATheme : MudTheme
                 new Default
                 {
                     FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
-                    FontSize = "14px",
+                    FontSize = "12px",
                     FontWeight = 400,
                     LineHeight = 1.43,
                     LetterSpacing = ".01071em"
@@ -91,7 +91,7 @@ public class TVATheme : MudTheme
                 new Button
                 {
                     FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
-                    FontSize = ".875rem",
+                    FontSize = ".75rem",
                     FontWeight = 500,
                     LineHeight = 1.75,
                     LetterSpacing = ".02857em"
@@ -108,7 +108,7 @@ public class TVATheme : MudTheme
             Body2 = new Body2
             {
                 FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
-                FontSize = ".875rem",
+                FontSize = ".75rem",
                 FontWeight = 400,
                 LineHeight = 1.43,
                 LetterSpacing = ".01071em"
@@ -124,7 +124,7 @@ public class TVATheme : MudTheme
             Subtitle2 = new Subtitle2
             {
                 FontFamily = new[] { "Helvetica Neue Bold", "Arial Regular" },
-                FontSize = ".875rem",
+                FontSize = ".75rem",
                 FontWeight = 500,
                 LineHeight = 1.57,
                 LetterSpacing = ".00714em"

@@ -1,20 +1,14 @@
 ﻿using EDM.DataExport;
 using EDM.PDFMappingVariables;
-using EDM.Setting;
 using EDMS.Data.Constants;
 using EDMS.DSM.Server.Models;
 using EDMS.DSM.Shared.Models;
-using EDMS.Shared.Enums;
 using EDMS.Shared.Wrapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
-using System.IO;
 using System.Net;
 using VTI.Common;
-using static Azure.Core.HttpHeader;
 
 namespace EDMS.DSM.Server.Controllers
 {
@@ -154,6 +148,12 @@ namespace EDMS.DSM.Server.Controllers
                 obj.TemplateType = request.TemplateType;
                 obj.GeneratedBy = request.GeneratedBy;
                 obj.GetTemplatePDFGeneration();
+                if (string.IsNullOrEmpty(obj.GeneratedFilePath))
+                {
+                    var msg = "File generation not successfull.";
+                    return Ok(await ApiResult<PDFGeneration>.FailAsync(msg));
+                }
+
                 var GeneratedPath = obj.GeneratedFilePath;
                 var BatchId = obj.BatchId;
                 string letterType = Enum.GetName(typeof(ETemplateType), request.TemplateType);
@@ -167,7 +167,6 @@ namespace EDMS.DSM.Server.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, ApiResult.Fail(ex.Message));
             }
         }
-
 
         [HttpGet("exportgrid")]
         public async Task<IActionResult> ExportGrid()
@@ -203,7 +202,8 @@ namespace EDMS.DSM.Server.Controllers
 
         private DataSet GetGridDataSet()
         {
-            DataSet dsReturn = null;
+            DataSet dsReturn = new DataSet();
+
             try
             {
                 //EDM.User.Cookie _cook = new EDM.User.Cookie(Session);
@@ -215,11 +215,10 @@ namespace EDMS.DSM.Server.Controllers
             }
             catch (Exception ex)
             {
-                EDM.Common.Log.Error(SQLConstants.AdminPortal, "EDMS.AP.CustomerCommunications.List", "GetGridDataSet", ex);
+                EDM.Common.Log.Error(SQLConstants.AdminPortal, "EDMS.DSM.Server.Controllers", "GetGridDataSet", ex);
             }
             return dsReturn;
         }
-
 
     }
 }

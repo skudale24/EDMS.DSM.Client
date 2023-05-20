@@ -32,7 +32,7 @@ public partial class Login : ComponentBase
                     //await _authStateProvider.UpdateAuthenticationStateAsync(userTokenOut, userTokenOut)
                     //    .ConfigureAwait(false);
 
-                    _navManager.NavigateTo($"/?programId={2}&userId=10572&_z={userTokenOut}", true, true);
+                    //_navManager.NavigateTo($"/?programId={2}&userId=10572&_z={userTokenOut}", true, true);
 
                     return;
                 }
@@ -40,7 +40,7 @@ public partial class Login : ComponentBase
         }
 
         var returnUrl = _navManager.GetUriWithQueryParameter("1", "1");
-        var hosturl = $"{EndPoints.LoginPage}/?at={AppConstants.AppTokenValue}&returnUrl=";
+        var hosturl = $"{EndPoints.LoginPage}/?returnUrl=";
         var urlBytes = Encoding.UTF8.GetBytes(returnUrl);
         var encodedReturnUrl = Convert.ToBase64String(urlBytes);
 
@@ -66,7 +66,6 @@ public partial class Login : ComponentBase
         //            //await _authStateProvider.UpdateAuthenticationStateAsync(userTokenOut, userTokenOut)
         //            //    .ConfigureAwait(false);
 
-        //            _navManager.NavigateTo("/?programId={2}&userId=10572", true, true);
         //            return;
         //        }
         //    }

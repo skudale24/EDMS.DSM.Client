@@ -2,9 +2,6 @@
 
 public static class AppConstants
 {
-    public const string AppTokenValue = "FFB052F4-F1DC-4AD7-854F-B85281738824"; // Tiva - TGL
-    //public const string AppTokenValue = "FFB052F4-F1DC-4AD7-854F-B85281738825";  // Tiva - TWL
-
     public const string AppTokenHeaderKey = "AppToken";
     public const string UserTokenHeaderKey = "UserToken";
     public const string UserRefreshTokenHeaderKey = "RefToken";

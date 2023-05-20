@@ -27,7 +27,7 @@ namespace AdminDashboard.Wasm.Theme
                 Default = new Default()
                 {
                     FontFamily = new[] { "Montserrat", "Helvetica", "Arial", "sans-serif" },
-                    FontSize = ".875rem",
+                    FontSize = ".75rem",
                     FontWeight = 400,
                     LineHeight = 1.43,
                     LetterSpacing = ".01071em"
@@ -83,7 +83,7 @@ namespace AdminDashboard.Wasm.Theme
                 Button = new Button()
                 {
                     FontFamily = new[] { "Montserrat", "Helvetica", "Arial", "sans-serif" },
-                    FontSize = ".875rem",
+                    FontSize = ".75rem",
                     FontWeight = 500,
                     LineHeight = 1.75,
                     LetterSpacing = ".02857em"
@@ -99,7 +99,7 @@ namespace AdminDashboard.Wasm.Theme
                 Body2 = new Body2()
                 {
                     FontFamily = new[] { "Montserrat", "Helvetica", "Arial", "sans-serif" },
-                    FontSize = ".875rem",
+                    FontSize = ".75rem",
                     FontWeight = 400,
                     LineHeight = 1.43,
                     LetterSpacing = ".01071em"
@@ -115,7 +115,7 @@ namespace AdminDashboard.Wasm.Theme
                 Subtitle2 = new Subtitle2()
                 {
                     FontFamily = new[] { "Montserrat", "Helvetica", "Arial", "sans-serif" },
-                    FontSize = ".875rem",
+                    FontSize = ".75rem",
                     FontWeight = 500,
                     LineHeight = 1.57,
                     LetterSpacing = ".00714em"

@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
@@ -46,8 +48,21 @@ builder.Services.AddHttpClient("MyHttpClient", httpClient =>
 builder.Services.AddHttpClientInterceptor();
 builder.Services.AddScoped<HttpInterceptorService>();
 builder.Services.AddMudServices();
-//builder.Services.AddScoped<CookieStorageAccessor>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped<CookieStorageAccessor>();
 //builder.Services.AddScoped<IClipboardService, ClipboardService>();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",
+        policy =>
+        {
+            policy
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader() //set the allowed origin  
+                .SetIsOriginAllowed(origin => true);
+        });
+});
 
 var currentAssembly = typeof(Program).Assembly;
 builder.Services.AddFluxor(options => { options.ScanAssemblies(currentAssembly); });

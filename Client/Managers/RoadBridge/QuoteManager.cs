@@ -56,7 +56,6 @@ public class QuoteManager : IQuoteManager
 
         var request = new HttpRequestMessage(HttpMethod.Post, urlWithParams);
         request.Content = new StringContent(quoteRequest, Encoding.UTF8, "application/json");
-        request.Headers.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
         request.Headers.Add(AppConstants.UserTokenHeaderKey, userToken);
 
         var response = await client.SendAsync(request).ConfigureAwait(false);
@@ -76,7 +75,6 @@ public class QuoteManager : IQuoteManager
 
         var request = new HttpRequestMessage(HttpMethod.Post, urlWithParams);
         request.Content = new StringContent(quoteRequest, Encoding.UTF8, "application/json");
-        request.Headers.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
         request.Headers.Add(AppConstants.UserTokenHeaderKey, userToken);
 
         var response = await client.SendAsync(request).ConfigureAwait(false);

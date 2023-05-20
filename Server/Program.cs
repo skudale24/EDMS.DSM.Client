@@ -1,37 +1,11 @@
-﻿//using Autofac;
-//using CacheLibrary;
-using EDM.Common;
-using EDM.ContentHandler;
-using EDMS.DSM.Server.Models;
-using Microsoft.AspNetCore.Hosting;
+﻿using EDMS.DSM.Server.Models;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Configuration;
-using System.Text;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
-
-
-//var container = AutofacConfig.Configure();
-//using (var scope = container.BeginLifetimeScope())
-//{
-//    // Resolve dependencies and start the application
-//    var cache = scope.Resolve<IDistributedCache>();
-//    cache.Set("ProgramId", Encoding.UTF8.GetBytes("2"));
-//    cache.Set("UserId", Encoding.UTF8.GetBytes("10572"));
-
-//    var docTypeStorage = scope.Resolve<DocTypeStorage>();
-//    docTypeStorage.Cache = cache;
-//    docTypeStorage.LoadFromCache();
-//    // ...
-
-//    var myClass = scope.Resolve<FileHandlerCreator>();
-//}
-
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://0.0.0.0:5000", "https://0.0.0.0:5001");
+//builder.WebHost.UseUrls("http://0.0.0.0:5000", "https://0.0.0.0:5001");
 StaticWebAssetsLoader.UseStaticWebAssets(builder.Environment, builder.Configuration);
 
 // Add services to the container.
@@ -41,10 +15,15 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(
+    options.AddPolicy("AllowSpecificOrigins",
         policy =>
         {
-            policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials(); //set the allowed origin  
+            policy
+                .AllowAnyOrigin()
+                //.WithOrigins("http://localhost:53398",
+                //    "https://localhost:53398")
+                .AllowAnyMethod()
+                .AllowAnyHeader(); //set the allowed origin  
         });
 });
 
@@ -70,6 +49,8 @@ else
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowSpecificOrigins");
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();

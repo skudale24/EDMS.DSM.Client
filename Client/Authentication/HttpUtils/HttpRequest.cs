@@ -27,7 +27,7 @@ public class HttpRequest
         httpClient.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
         _ = httpClient.EnableIntercept(_serviceProvider);
         var absoluteUrl = $"{EndPoints.ApiBaseUrl}/{uri}";
-        //var userToken = await _localStorage.GetItemAsStringAsync(StorageConstants.UserToken).ConfigureAwait(false);
+        var userToken = await _localStorage.GetItemAsStringAsync(StorageConstants.UserToken).ConfigureAwait(false);
         //var authState = await _authState.GetAuthenticationStateAsync().ConfigureAwait(false);
 
         //if (authState.User.HasClaim(x => x.Type == ClaimTypes.UserData))
@@ -37,7 +37,7 @@ public class HttpRequest
         //}
 
         //httpClient.DefaultRequestHeaders.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
-        //httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
+        httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
         var response = await httpClient.GetAsync(absoluteUrl).ConfigureAwait(false);
 
@@ -80,7 +80,6 @@ public class HttpRequest
             httpClient.DefaultRequestHeaders.Add(StorageConstants.AspNetUserId, aspnetuserId);
         }
 
-        httpClient.DefaultRequestHeaders.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
         httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
 
@@ -111,7 +110,6 @@ public class HttpRequest
                 httpClient.DefaultRequestHeaders.Add(StorageConstants.AspNetUserId, aspnetuserId);
             }
 
-            httpClient.DefaultRequestHeaders.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
             httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
             StringContent serialized = new(JsonSerializer.Serialize(values), Encoding.UTF8, "application/json");
@@ -149,7 +147,6 @@ public class HttpRequest
         }
 
         httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        httpClient.DefaultRequestHeaders.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
         httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
         StringContent serialized = new(JsonSerializer.Serialize(values), Encoding.UTF8, "application/json");
@@ -180,7 +177,6 @@ public class HttpRequest
 
 
         httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        httpClient.DefaultRequestHeaders.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
         httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
         StringContent serialized = new(JsonSerializer.Serialize(values), Encoding.UTF8, "application/json");
@@ -211,7 +207,6 @@ public class HttpRequest
 
         httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        httpClient.DefaultRequestHeaders.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
         httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
 
@@ -244,7 +239,6 @@ public class HttpRequest
 
         httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-        httpClient.DefaultRequestHeaders.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
         httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
 
@@ -277,7 +271,6 @@ public class HttpRequest
         }
 
         httpClient.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "*");
-        httpClient.DefaultRequestHeaders.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
         httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
         httpClient.DefaultRequestHeaders.Add("User-Agent",
@@ -304,7 +297,6 @@ public class HttpRequest
             httpClient.DefaultRequestHeaders.Add(StorageConstants.AspNetUserId, aspnetuserId);
         }
 
-        httpClient.DefaultRequestHeaders.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
         httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
         var response = await httpClient.DeleteAsync(absoluteUrl).ConfigureAwait(false);
@@ -328,7 +320,6 @@ public class HttpRequest
             httpClient.DefaultRequestHeaders.Add(StorageConstants.AspNetUserId, aspnetuserId);
         }
 
-        httpClient.DefaultRequestHeaders.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
         httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
         var response = await httpClient.GetAsync(absoluteUrl).ConfigureAwait(false);
@@ -349,7 +340,6 @@ public class HttpRequest
 
         var absoluteUrl = $"{EndPoints.LoginPage}/{uri}";
 
-        httpClient.DefaultRequestHeaders.Add("appToken", AppConstants.AppTokenValue);
         httpClient.DefaultRequestHeaders.Add("reftoken", refreshToken);
 
         var response = await httpClient.GetAsync(absoluteUrl).ConfigureAwait(false);
