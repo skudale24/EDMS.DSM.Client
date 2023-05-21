@@ -8,7 +8,7 @@ namespace EDMS.DSM.Server.Models
         public string TemplateName { get; set; } = "";
         public string CompanyName { get; set; } = "";
         public string ActionText { get; set; } = "";
-        public string NewLocalPath { get; set; } = "";
+        public string? NewLocalPath { get; set; } = "";
         public int ProgramId { get; set; } = 2;
         public int TemplateID { get; set; } = 2;
         public int LPCID { get; set; } = 242;

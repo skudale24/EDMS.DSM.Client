@@ -1,7 +1,5 @@
 ﻿@page "/"
 
-@using EDMS.DSM.Client.DTO;
-
 <style>
     .icon-link:hover {
         cursor: pointer;
@@ -144,7 +142,7 @@
                         </div>
                     </MudLink>
                     <MudText Class="ml-2"> | </MudText>
-                    <MudLink OnClick="@(async () => await FetchCommunications())">
+                    <MudLink OnClick="@(async () => await GetCommunicationsList())">
                         <MudIcon Icon="@Icons.Material.Filled.Refresh" Color="@Color.Tertiary" Class="ml-2" Title="Retain filter & refresh"></MudIcon>
                     </MudLink>
                 </div>
@@ -236,7 +234,7 @@
         </TemplateColumn>
     </Columns>
     <LoadingContent>
-        <MudText Typo="Typo.body2" Class="mt-4 mud-text-secondary font-bold">Loading Communications...</MudText>
+        <MudText Typo="Typo.body2" Class="mt-4 mud-text-secondary font-bold">Loading Customer Communications...</MudText>
     </LoadingContent>
     <PagerContent>
         <MudDataGridPager T="CommunicationDTO" />

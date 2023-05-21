@@ -39,6 +39,8 @@ public class HttpRequest
         //httpClient.DefaultRequestHeaders.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
         httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
+        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + userToken);
+
         var response = await httpClient.GetAsync(absoluteUrl).ConfigureAwait(false);
 
         _ = response.EnsureSuccessStatusCode();
@@ -82,6 +84,7 @@ public class HttpRequest
 
         httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
+        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + userToken);
 
         var response = await httpClient.GetAsync(absoluteUrl).ConfigureAwait(false);
         _ = response.EnsureSuccessStatusCode();
@@ -111,6 +114,8 @@ public class HttpRequest
             }
 
             httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
+
+            httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + userToken);
 
             StringContent serialized = new(JsonSerializer.Serialize(values), Encoding.UTF8, "application/json");
 
@@ -241,6 +246,7 @@ public class HttpRequest
 
         httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
+        httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + userToken);
 
         StringContent serialized = new(JsonSerializer.Serialize(values), Encoding.UTF8, "application/json");
 

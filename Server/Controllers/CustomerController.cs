@@ -4,6 +4,7 @@ using EDMS.Data.Constants;
 using EDMS.DSM.Server.Models;
 using EDMS.DSM.Shared.Models;
 using EDMS.Shared.Wrapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
@@ -14,7 +15,7 @@ namespace EDMS.DSM.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomerController : BaseController
     {
         private readonly IConfiguration _configuration;
 
@@ -22,7 +23,10 @@ namespace EDMS.DSM.Server.Controllers
 
         private ApplicationDbContext _context;
 
-        public CustomerController(ApplicationDbContext context, IConfiguration configuration, ILogger<AuthenticationController> logger)
+        public CustomerController(ApplicationDbContext context,
+                                  IHttpContextAccessor httpContextAccessor,
+                                  IConfiguration configuration, 
+                                  ILogger<AuthenticationController> logger) : base(httpContextAccessor, configuration)
         {
             _context = context;
             _configuration = configuration;
@@ -34,8 +38,9 @@ namespace EDMS.DSM.Server.Controllers
         /// </summary>
         /// <param name="programId"></param>
         /// <returns></returns>
-        [HttpGet("List/{programId}")]
-        public async Task<IApiResult> GetCommunications(int programId)
+        [HttpGet("List")]
+        [Authorize]
+        public async Task<IApiResult> GetCommunications()
         {
             var communications = _context.Database.SqlQueryRaw<Communication>($"EXECUTE dbo.[p_Get_HUP_AggregateList4CustomerCommunications]").ToList();
             return ApiResult<List<Communication>>.Success(communications);
@@ -48,6 +53,7 @@ namespace EDMS.DSM.Server.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost("downloadexcelfile")]
+        [Authorize]
         public async Task<IActionResult> DownloadExcelFile([FromBody] DownloadExcelFileRequest request)
         {
             try
@@ -124,6 +130,7 @@ namespace EDMS.DSM.Server.Controllers
         /// <param name="FileName"></param>
         /// <returns></returns>
         [HttpGet("downloadsourcefile/{FileName}")]
+        [Authorize]
         public async Task<IActionResult> DownloadSourceFile(string FileName)
         {
             try
@@ -151,6 +158,7 @@ namespace EDMS.DSM.Server.Controllers
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPut("generateletter")]
+        [Authorize]
         public async Task<IActionResult> GenerateLetter([FromBody] GenerateLetterRequest request)
         {
             try
@@ -198,6 +206,7 @@ namespace EDMS.DSM.Server.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("exportgrid")]
+        [Authorize]
         public async Task<IActionResult> ExportGrid()
         {
             try

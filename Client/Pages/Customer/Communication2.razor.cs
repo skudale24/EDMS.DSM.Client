@@ -66,7 +66,7 @@ public partial class Communication2 : ComponentBase, IDisposable
         isLoading = true;
         StateHasChanged();
 
-        var result = await _customerManager.GetCommunicationsListAsync(2);
+        var result = await _customerManager.GetCommunicationsListAsync();
 
         _ = result.Status
             ? _snackbar.Add(result.Message, Severity.Success)

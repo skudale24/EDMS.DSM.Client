@@ -106,27 +106,14 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                     await _cookieStorageAccessor.WriteLogAsync<string>($"UserToken. {userTokenOut}");
 
                     var claims = GetClaimsFromToken(userTokenOut);
-
-                    foreach (var claim in claims)
-                    {
-                        if (claim.Type == "UserID")
-                        {
-                            int.TryParse(claim.Value, out _generatedById);
-                        }
-                        else if (claim.Type == "ProgramID")
-                        {
-                            int.TryParse(claim.Value, out _programId);
-                        }
-                    }
+                    int.TryParse(claims.FirstOrDefault(c => c.Type == "UserID")?.Value, out _generatedById);
+                    int.TryParse(claims.FirstOrDefault(c => c.Type == "ProgramID")?.Value, out _programId);
 
                     // Use retrieved `userToken` to update authentication state.
                     await _authStateProvider.UpdateAuthenticationStateAsync(userTokenOut, userTokenOut)
                         .ConfigureAwait(false);
-
-                    await FetchCommunications();
-
+                    await GetCommunicationsList();
                     //await GetGridParams();
-
                     return;
                 }
             }
@@ -149,16 +136,6 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             //        }
             //    }
             //}
-
-            //var userToken = await LocalStorage.GetItemAsStringAsync(StorageConstants.UserToken).ConfigureAwait(false);
-
-            //// If the token is null, consider the authentication as anonymous (or non-authorized).
-            //if (userToken == null)
-            //{
-            //    _navManager.NavigateTo($"/login");
-            //}
-
-            ////await _jsRuntime.InvokeAsync<object>("setCorsHeaders");
         }
         catch (Exception ex)
         {
@@ -212,12 +189,16 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     //    }
     //}
 
-    private async Task FetchCommunications()
+    /// <summary>
+    /// Gets all Customer Communications
+    /// </summary>
+    /// <returns></returns>
+    private async Task GetCommunicationsList()
     {
         isLoading = true;
         StateHasChanged();
 
-        var result = await _customerManager.GetCommunicationsListAsync(_programId);
+        var result = await _customerManager.GetCommunicationsListAsync();
 
         _ = result.Status
             ? _snackbar.Add(result.Message, Severity.Success)
@@ -246,6 +227,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             model.LPCID = Convert.ToInt32(item.LPCID);
             model.TemplateFile = item.FilePath;
             model.TemplateID = item.TemplateId;
+            model.TemplateType = item.TemplateType;
             model.ProgramId = _programId;
             model.GeneratedBy = _generatedById;
             var result = await _customerManager.GenerateLetter<GenerateLetterDTO, GenerateLetterDTO>(model);
@@ -253,7 +235,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
             if (response?.Status == true)
             {
-                var items = await _customerManager.GetCommunicationsListAsync(_programId);
+                var items = await _customerManager.GetCommunicationsListAsync();
                 var cRow = items.Result.Where(f => f.BatchId == response.Result.BatchId).FirstOrDefault();
                 item.GeneratedBy = cRow?.GeneratedBy;
                 item.GeneratedDate = cRow?.GeneratedDate;
@@ -314,6 +296,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
         try
         {
+
             var stream = await _uploadManager.DownloadExcelFileAsync<CommunicationDTO>(item);
 
             var fileName = $"CustomerList_{item.TemplateName}_{item.CompanyName}_{DateTime.Now.ToString("MMddyy")}.xlsx";
@@ -361,7 +344,9 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
         try
         {
+
             var result = await _uploadManager.ExportGridAsync();
+
             using DotNetStreamReference streamRef = new(result);
             var fileName = "Tools: Customer Communications.xlsx";
             fileName = fileName.Replace(": ", "_").Replace(" ", "_").Replace("-", "");

@@ -3,7 +3,7 @@
     public class GenerateLetterRequest
     {
         public string TemplateFile { get; set; } = "";
-        public string NewLocalPath { get; set; } = "";
+        public string? NewLocalPath { get; set; } = "";
         public int ProgramId { get; set; }
         public int TemplateID { get; set; } = 2;
         public int LPCID { get; set; } = 242;

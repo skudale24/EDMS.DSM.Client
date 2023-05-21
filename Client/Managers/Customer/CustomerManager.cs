@@ -43,9 +43,9 @@ namespace EDMS.DSM.Managers.Customer
         //    return dataToReturn;
         //}
 
-        public async Task<IListApiResult<List<Communication>>> GetCommunicationsListAsync(int programId)
+        public async Task<IListApiResult<List<Communication>>> GetCommunicationsListAsync()
         {
-            var urlWithParams = $"{CustomerEndpoints.GetCommunications}/{programId}";
+            var urlWithParams = $"{CustomerEndpoints.GetCommunications}";
 
             return await _httpRequest.GetRequestAsync<List<Communication>>(urlWithParams);
         }
