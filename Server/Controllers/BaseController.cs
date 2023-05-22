@@ -12,25 +12,36 @@ namespace EDMS.DSM.Server.Controllers
     public class BaseController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<AuthenticationController> _logger;
         public string AspnetUserId { get; set; } = string.Empty;
         //public string AppToken { get; set; } = string.Empty;
         public long ProgramId { get; set; } = 1;
         public int[] Roles { get; set; }
         public BaseController(IHttpContextAccessor httpContextAccessor,
-                              IConfiguration configuration)
+                              IConfiguration configuration,
+                              ILogger<AuthenticationController> logger)
         {
+            _configuration = configuration;
+            _logger = logger;
+
+            _logger.LogInformation("Inside BaseController: ");
+
             if (httpContextAccessor == null)
             {
-                throw new ArgumentNullException(nameof(httpContextAccessor));
+                //throw new ArgumentNullException(nameof(httpContextAccessor));
+                _logger.LogInformation("httpContextAccessor is null");
+                return;
             }
 
-            _configuration = configuration;
+            _logger.LogInformation("httpContextAccessor is available");
 
             var httpContext = httpContextAccessor.HttpContext;
             var claimsIdentity = httpContext?.User?.Identity as ClaimsIdentity;
 
             if (claimsIdentity != null && claimsIdentity.IsAuthenticated)
             {
+                _logger.LogInformation($"claimsIdentity.IsAuthenticated {claimsIdentity.IsAuthenticated}");
+
                 var claimsData = claimsIdentity.Claims;
                 if (claimsData != null && claimsData.Any())
                 {

@@ -18,7 +18,10 @@ namespace EDMS.DSM.Server.Controllers
         private readonly IConfiguration _configuration;
         public AuthenticationController(IConfiguration configuration,
                                         IHttpContextAccessor httpContextAccessor,
-                                        ILogger<AuthenticationController> logger) : base(httpContextAccessor, configuration)
+                                        ILogger<AuthenticationController> logger) :
+                                            base(httpContextAccessor,
+                                                 configuration,
+                                                 logger)
         {
             _configuration = configuration;
             _logger = logger;

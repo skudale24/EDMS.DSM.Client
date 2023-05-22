@@ -26,7 +26,10 @@ namespace EDMS.DSM.Server.Controllers
         public CustomerController(ApplicationDbContext context,
                                   IHttpContextAccessor httpContextAccessor,
                                   IConfiguration configuration, 
-                                  ILogger<AuthenticationController> logger) : base(httpContextAccessor, configuration)
+                                  ILogger<AuthenticationController> logger) : 
+                                    base(httpContextAccessor, 
+                                         configuration,
+                                         logger)
         {
             _context = context;
             _configuration = configuration;
