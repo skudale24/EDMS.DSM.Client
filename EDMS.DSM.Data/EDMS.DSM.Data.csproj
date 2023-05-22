@@ -42,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="GridColumn.cs" />
+    <Compile Include="GridData.cs" />
+    <Compile Include="GridItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StoredProcedureExecutor.cs" />
   </ItemGroup>

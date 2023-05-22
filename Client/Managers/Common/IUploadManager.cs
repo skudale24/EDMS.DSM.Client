@@ -10,5 +10,5 @@ public interface IUploadManager : IManager
     Task<Stream> DownloadErrorFileAsync(string CSVFileName);
     Task<Stream> DownloadSourceFileAsync(string fileName);
     Task<Stream> DownloadExcelFileAsync<TIn>(TIn communication);
-    Task<Stream> ExportGridAsync();
+    Task<Stream> ExportGridAsync<TIn>(TIn communications, List<GridColumnDTO> gridColumns);
 }

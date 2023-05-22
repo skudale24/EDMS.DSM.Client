@@ -74,8 +74,9 @@
     </tbody>
 </table>*@
 
-<MudDataGrid T="CommunicationDTO" MultiSelection="false" Items="@Elements" SortMode="MudBlazor.SortMode.Single" Filterable="true"
-             QuickFilter="@_quickFilter" Loading="@isLoading" Dense="true" Hover="true" RowsPerPage="50"
+<MudDataGrid T="CommunicationDTO" MultiSelection="false" Items="@Elements" @ref="_grid"
+             SortMode="MudBlazor.SortMode.Single" Filterable="true" QuickFilter="@_quickFilter" 
+             Loading="@isLoading" Dense="true" Hover="true" RowsPerPage="50"
              Hideable="false" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged"
              Striped="true" ShowFilterIcons="true" FixedHeader="true" Height="82vh" Bordered="true" >
     <ToolBarContent>

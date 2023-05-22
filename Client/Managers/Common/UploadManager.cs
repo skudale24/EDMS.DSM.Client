@@ -3,7 +3,7 @@ using EDMS.DSM.Shared.Models;
 using System.Net;
 
 namespace EDMS.DSM.Client.Managers.Common;
-                
+
 public class UploadManager : IUploadManager
 {
     private readonly HttpRequest _httpRequest;
@@ -73,10 +73,17 @@ public class UploadManager : IUploadManager
         return stream;
     }
 
-    public async Task<Stream> ExportGridAsync()
+    public async Task<Stream> ExportGridAsync<TIn>(TIn communications, List<GridColumnDTO> gridColumns)
     {
         var urlWithParams = $"{UploadEndPoints.ExportGrid}";
-        var stream = await _httpRequest.GetStreamAsync(urlWithParams).ConfigureAwait(false);
+
+        var data = new
+        {
+            Communications = communications,
+            GridColumns = gridColumns
+        };
+
+        var stream = await _httpRequest.GetStreamDataAsync(urlWithParams, data).ConfigureAwait(false);
         return stream;
     }
 }

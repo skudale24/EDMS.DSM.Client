@@ -1,4 +1,6 @@
-﻿using GemBox.Spreadsheet;
+﻿using EDMS.DSM.Data;
+using EDMS.DSM.Server.Models;
+using GemBox.Spreadsheet;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -153,79 +155,153 @@ namespace EDM.DataExport
         }
 
 
-        public void ExportListToExcel(string gemBoxKey, DataSet dsExportData, string sheetName, bool wrapText = false)
+        public void ExportListToExcel(GridData uxRadGrid, string gemBoxKey, DataSet dsExportData, string sheetName, bool wrapText = false)
         {
             try
             {
                 string NavUrlPath = string.Empty; //HttpContext.Current.Request.Path;
                 sheetName = GetPlainFileName(sheetName);
 
-                //if (uxRadGrid == null || uxRadGrid.Items.Count == 0) return;
+                if (uxRadGrid == null || uxRadGrid.Communications.Count == 0) return;
                 if (dsExportData == null) return;
                 if (dsExportData.Tables[sheetName] == null) return;
                 int iColSeq = 0;
-                DataTable dt = dsExportData.Tables[sheetName];
+                DataTable dtExportData = dsExportData.Tables[sheetName];
                 //folowing list is as - ColumnName, Aggregate (ASP Format), DataFormatString  (ASP Format), FooterAggregateFormatString  (ASP Format), FooterText
                 List<Tuple<String, String, String, String, String>> lstFormatedColumns = new List<Tuple<String, String, String, String, String>>();
-                if (dt != null)
+                if (dtExportData != null)
                 {
-                    EDM.Common.Log.Info(Module, "ExportToExcel", "## Step-7 : At start ExportToExcel function record count is = " + Convert.ToString(dt.Rows.Count) + ", FileName = " + sheetName);
+                    EDM.Common.Log.Info(Module, "ExportToExcel", "## Step-7 : At start ExportToExcel function record count is = " + Convert.ToString(dtExportData.Rows.Count) + ", FileName = " + sheetName);
                 }
 
-                //foreach (GridColumn col in uxRadGrid.Columns)
+                DataTable dt = dtExportData.Clone(); // Create a new DataTable with the same structure as the original
+
+                foreach (var row in uxRadGrid.Communications)
+                {
+                    var dr = dt.NewRow();
+                    foreach (var col in uxRadGrid.GridColumns)
+                    {
+                        var property = row.GetType().GetProperty(col.DataField);
+                        if (property != null)
+                        {
+                            var value = property.GetValue(row);
+                            if (value != null)
+                                dr[col.DataField] = value;
+                        }
+                    }
+                    dt.Rows.Add(dr);
+                }
+
+                //foreach (var item in uxRadGrid.Communications)
                 //{
-                //    if (col.Visible)
+                //    string filterExpression = $"CompanyName = '{item.CompanyName}'";
+
+                //    DataRow[] filteredRows = dt.Select(filterExpression);
+
+                //    // Copy the filtered rows to the filteredDataTable
+                //    foreach (DataRow row in filteredRows)
                 //    {
-                //        var uniqueName = col.UniqueName == "UserCompanyName" ? "CompanyName" : col.UniqueName;
+                //        filteredDataTable.ImportRow(row);
+                //    }
+
+                //    if (item.TemplateName == )
+                //    if (gridColumn.Visible)
+                //    {
+                //        string uniqueName = gridColumn.UniqueName == "UserCompanyName" ? "CompanyName" : gridColumn.UniqueName;
+
                 //        if (dt.Columns.Contains(uniqueName))
-                //        //if (dt.Columns.Contains(col.UniqueName))
                 //        {
-                //            dt.Columns[uniqueName].SetOrdinal(iColSeq);
-                //            if (dt.Columns.Contains(col.HeaderText) && uniqueName != col.HeaderText)
+                //            // Filter the DataTable based on the row values
+                //            foreach (DataRow row in dt.Rows)
                 //            {
-                //                dt.Columns.Remove(col.HeaderText);
+                //                object cellValue = row[uniqueName]; // Get the value of the specific row and column
+
+                //                // Add your filtering logic here
+                //                // For example, if you want to include rows where the cell value is greater than 10
+                //                if (cellValue is int value && value > 10)
+                //                {
+                //                    dt.ImportRow(row);
+                //                }
                 //            }
-                //            dt.Columns[uniqueName].ColumnName = col.HeaderText;
-
-                //            iColSeq++;
-                //        }
-                //        else if (dt.Columns.Contains(col.HeaderText))
-                //        {
-                //            dt.Columns[col.HeaderText].SetOrdinal(iColSeq);
-                //            dt.Columns[col.HeaderText].ColumnName = col.HeaderText;
-
-                //            iColSeq++;
-                //        }
-                //        string strDataFormatString = "", strAggregate = "", strFooterAggregateFormatString = "", strFooterText = "";
-                //        switch (col.ColumnType)
-                //        {
-                //            case "GridBoundColumn":
-                //                strDataFormatString = ((Telerik.Web.UI.GridBoundColumn)col).DataFormatString;
-                //                strAggregate = ((Telerik.Web.UI.GridBoundColumn)col).Aggregate.ToString();
-                //                strFooterAggregateFormatString = ((Telerik.Web.UI.GridBoundColumn)col).FooterAggregateFormatString;
-                //                strFooterText = ((Telerik.Web.UI.GridBoundColumn)col).FooterText;
-                //                break;
-
-                //            case "GridNumericColumn":
-                //                strDataFormatString = ((Telerik.Web.UI.GridNumericColumn)col).DataFormatString;
-                //                strAggregate = ((Telerik.Web.UI.GridNumericColumn)col).Aggregate.ToString();
-                //                strFooterAggregateFormatString = ((Telerik.Web.UI.GridNumericColumn)col).FooterAggregateFormatString;
-                //                strFooterText = ((Telerik.Web.UI.GridNumericColumn)col).FooterText;
-                //                break;
-                //        }
-                //        if (!String.IsNullOrEmpty(strDataFormatString) || (!String.IsNullOrEmpty(strAggregate) && strAggregate != "None") || !String.IsNullOrEmpty(strFooterAggregateFormatString) || !String.IsNullOrEmpty(strFooterText))
-                //        {
-                //            strAggregate = ConvertASPtoExcelFormat(strAggregate);
-                //            strDataFormatString = ConvertASPtoExcelFormat(strDataFormatString);
-                //            strFooterAggregateFormatString = ConvertASPtoExcelFormat(strFooterAggregateFormatString);
-                //            lstFormatedColumns.Add(new Tuple<String, String, String, String, String>(col.HeaderText, strAggregate, strDataFormatString, strFooterAggregateFormatString, strFooterText));
                 //        }
                 //    }
                 //}
-                //while (iColSeq != dt.Columns.Count)
+
+                //DataTable dt = dtExportData.Clone(); // Create a new DataTable with the same structure as the original
+
+                //foreach (GridColumnRequest gridColumn in uxRadGrid.GridColumns)
                 //{
-                //    dt.Columns.RemoveAt(iColSeq);
+                //    if (gridColumn.Visible)
+                //    {
+                //        string uniqueName = gridColumn.UniqueName == "UserCompanyName" ? "CompanyName" : gridColumn.UniqueName;
+
+                //        if (dt.Columns.Contains(uniqueName))
+                //        {
+                //            // Copy the filtered rows to the new DataTable
+                //            foreach (DataRow row in dt.Rows)
+                //            {
+                //                dt.ImportRow(row);
+                //            }
+                //        }
+                //    }
                 //}
+
+                foreach (GridColumnRequest gridColumn in uxRadGrid.GridColumns)
+                {
+                    if (gridColumn.Visible)
+                    {
+                        var uniqueName = gridColumn.UniqueName == "UserCompanyName" ? "CompanyName" : gridColumn.UniqueName;
+                        if (dt.Columns.Contains(uniqueName))
+                        {
+                            dt.Columns[uniqueName].SetOrdinal(iColSeq);
+                            if (dt.Columns.Contains(gridColumn.HeaderText) && uniqueName != gridColumn.HeaderText)
+                            {
+                                dt.Columns.Remove(gridColumn.HeaderText);
+                            }
+                            dt.Columns[uniqueName].ColumnName = gridColumn.HeaderText;
+                            iColSeq++;
+                        }
+                        else if (dt.Columns.Contains(gridColumn.HeaderText))
+                        {
+                            dt.Columns[gridColumn.HeaderText].SetOrdinal(iColSeq);
+                            dt.Columns[gridColumn.HeaderText].ColumnName = gridColumn.HeaderText;
+                            iColSeq++;
+                        }
+
+                        string strDataFormatString = "", strAggregate = "", strFooterAggregateFormatString = "", strFooterText = "";
+                        switch (gridColumn.ColumnType)
+                        {
+                            case "GridBoundColumn":
+                                //strDataFormatString = ((Telerik.Web.UI.GridBoundColumn)gridColumn).DataFormatString;
+                                //strAggregate = ((Telerik.Web.UI.GridBoundColumn)gridColumn).Aggregate.ToString();
+                                //strFooterAggregateFormatString = ((Telerik.Web.UI.GridBoundColumn)gridColumn).FooterAggregateFormatString;
+                                //strFooterText = ((Telerik.Web.UI.GridBoundColumn)gridColumn).FooterText;
+                                break;
+                            case "GridNumericColumn":
+                                //strDataFormatString = ((Telerik.Web.UI.GridNumericColumn)gridColumn).DataFormatString;
+                                //strAggregate = ((Telerik.Web.UI.GridNumericColumn)gridColumn).Aggregate.ToString();
+                                //strFooterAggregateFormatString = ((Telerik.Web.UI.GridNumericColumn)gridColumn).FooterAggregateFormatString;
+                                //strFooterText = ((Telerik.Web.UI.GridNumericColumn)gridColumn).FooterText;
+                                break;
+                        }
+
+                        if (gridColumn.DataField.Contains("Date"))
+                            strDataFormatString = "{0:MM/dd/yyyy}";
+
+                        if (!string.IsNullOrEmpty(strDataFormatString) || (!string.IsNullOrEmpty(strAggregate) && strAggregate != "None") || !string.IsNullOrEmpty(strFooterAggregateFormatString) || !string.IsNullOrEmpty(strFooterText))
+                        {
+                            strAggregate = ConvertASPtoExcelFormat(strAggregate);
+                            strDataFormatString = ConvertASPtoExcelFormat(strDataFormatString);
+                            strFooterAggregateFormatString = ConvertASPtoExcelFormat(strFooterAggregateFormatString);
+                            lstFormatedColumns.Add(new Tuple<string, string, string, string, string>(gridColumn.HeaderText, strAggregate, strDataFormatString, strFooterAggregateFormatString, strFooterText));
+                        }
+                    }
+                }
+
+                while (iColSeq != dt.Columns.Count)
+                {
+                    dt.Columns.RemoveAt(iColSeq);
+                }
 
                 DataSet ds = new DataSet();
                 ds.Tables.Add(dt.Copy());

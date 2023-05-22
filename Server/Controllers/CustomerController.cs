@@ -1,6 +1,7 @@
 ﻿using EDM.DataExport;
 using EDM.PDFMappingVariables;
 using EDMS.Data.Constants;
+using EDMS.DSM.Data;
 using EDMS.DSM.Server.Models;
 using EDMS.DSM.Shared.Models;
 using EDMS.Shared.Wrapper;
@@ -208,9 +209,9 @@ namespace EDMS.DSM.Server.Controllers
         /// Returns excel file as byte array
         /// </summary>
         /// <returns></returns>
-        [HttpGet("exportgrid")]
+        [HttpPost("exportgrid")]
         [Authorize]
-        public async Task<IActionResult> ExportGrid()
+        public async Task<IActionResult> ExportGrid([FromBody] GridData request)
         {
             try
             {
@@ -229,7 +230,7 @@ namespace EDMS.DSM.Server.Controllers
                     }
                 }
 
-                objExport.ExportListToExcel(SQLConstants.GemBoxKey, DsExportData, sheetName);
+                objExport.ExportListToExcel(request, SQLConstants.GemBoxKey, DsExportData, sheetName);
 
                 var l_sReader = System.IO.File.OpenRead(objExport.FilePath);
                 return (File(l_sReader, "application/octet-stream", Path.GetFileName(objExport.FilePath)));

@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Client\EDMS.DSM.Client.csproj" />
+    <ProjectReference Include="..\EDMS.DSM.Data\EDMS.DSM.Data.csproj" />
     <ProjectReference Include="..\Libs\EDM.CommunicationTemplate\EDM.CommunicationTemplate.csproj" />
     <ProjectReference Include="..\Libs\EDM.DataExport\EDM.DataExport.csproj" />
     <ProjectReference Include="..\Libs\EDM.Navigation\EDM.Navigation.csproj" />
