@@ -217,12 +217,12 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                 item.IsProcessing = false;
                 StateHasChanged();
 
-                await _loadingIndicatorProvider.HoldAsync();
-
                 //TODO: get letter type from backend
                 var letterType = item.FilePath?.Split("__").Skip(1).FirstOrDefault();
                 //string letterType = item.TemplateType; Enum.GetName(typeof(ETemplateType), TemplateType);
                 var downloadResult = await _uploadManager.DownloadSourceFileAsync(response.Result.GeneratedFilePath);
+
+                await _loadingIndicatorProvider.HoldAsync();
 
                 MemoryStream ms = new();
                 await downloadResult.CopyToAsync(ms);

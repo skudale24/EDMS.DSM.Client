@@ -11,8 +11,16 @@ public class TVATheme : MudTheme
             Secondary = Colors.BlueGrey.Darken4,
             Background = Colors.BlueGrey.Lighten5,
             Divider = Colors.BlueGrey.Lighten1,
-            TableHover = "#D7D2CB", //"#8CB8D6", //Colors.BlueGrey.Lighten5,
+            //TableHover = "#4888B5", //"#8CB8D6", //Colors.BlueGrey.Lighten5,
+            TableHover = "#9DB7D3", 
+            OverlayLight = "#fff",
+            HoverOpacity = .5,
+            PrimaryContrastText = Colors.DeepOrange.Lighten1,
+            PrimaryLighten = Colors.DeepOrange.Lighten1,
+            DarkLighten = Colors.DeepOrange.Lighten1,
+            DarkContrastText = Colors.DeepOrange.Lighten1,
             TableLines = "#BBC1DA",
+            TableStriped = "#D3DDEA",
             LinesDefault = Colors.BlueGrey.Lighten5,
             AppbarBackground = "#0072CF",
             DrawerBackground = "#FFF",
@@ -100,7 +108,7 @@ public class TVATheme : MudTheme
                 new Body1
                 {
                     FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
-                    FontSize = "1rem",
+                    FontSize = ".75rem",
                     FontWeight = 400,
                     LineHeight = 1.5,
                     LetterSpacing = ".00938em"

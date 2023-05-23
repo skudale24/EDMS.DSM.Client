@@ -13,7 +13,7 @@ public static class GridExtensions
             CountofApplications = x.CountofApplications,
             FilePath = x.FilePath,
             GeneratedBy = x.GeneratedBy,
-            GeneratedDate = x.GeneratedDate,
+            GeneratedDate = x.GeneratedDate?.Date ?? null,
             LPCID = x.LPCID,
             TemplateId = x.TemplateId,
             TemplateName = x.TemplateName,

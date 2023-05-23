@@ -6,29 +6,64 @@
         color: blue;
         text-decoration: underline;
     }
+
     .mud-main-content {
-        padding: 10px;
+        padding: 0px;
     }
+
     .mud-container {
-        padding-left: 10px;
-        padding-right: 10px;
-        padding-bottom: 10px;
+        padding-left: 0px;
+        padding-right: 0px;
+        padding-bottom: 0px;
+        width: 99.4%;
     }
+
+    .mud-table-container {
+        height: calc(100vh - 83px);
+        border-top: 2px solid #9DB7D3;
+        /*border-image: linear-gradient(to right, #003C7C, #1299A4) 1;
+            border-image-slice: 1;
+            border-radius: 2px;*/
+    }
+
     .mud-toolbar {
-        height: 42px;
+        height: 39px;
+        /*border-bottom: 2px solid #4888B5;*/
     }
+
+    mud-table-row:hover {
+        background-color: #9DB7D3;
+    }
+
+    .mud-table-root .mud-table-body .mud-table-row:hover .mud-table-cell {
+        color: #fff;
+    }
+
+    .mud-table-row:hover td a {
+        /*color: #CFE1E4 !important;*/
+        color: #fff !important;
+    }
+
     .mud-table-cell {
         font-size: 12px !important;
     }
+
     .text-blue {
         color: rgb(0, 58, 112);
     }
+
     .grid-header-col {
-        --tw-bg-opacity: 1;background-color: rgba(255, 255, 255);
+        --tw-bg-opacity: 1;
+        background-color: rgba(255, 255, 255);
     }
+
     .grid-header-col span {
-        font-weight:600;
+        font-weight: 600;
         color: rgb(0, 58, 112);
+    }
+
+    .mud-table-pagination-select .mud-input .mud-input-root {
+        font-size: .75rem;
     }
 </style>
 @*
@@ -75,10 +110,11 @@
 </table>*@
 
 <MudDataGrid T="CommunicationDTO" MultiSelection="false" Items="@Elements" @ref="_grid"
-             SortMode="MudBlazor.SortMode.Single" Filterable="true" QuickFilter="@_quickFilter" 
+             SortMode="MudBlazor.SortMode.Single" QuickFilter="@_quickFilter"
+             Filterable="true" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
              Loading="@isLoading" Dense="true" Hover="true" RowsPerPage="50"
              Hideable="false" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged"
-             Striped="true" ShowFilterIcons="true" FixedHeader="true" Height="82vh" Bordered="true" >
+             Striped="true" ShowFilterIcons="true" FixedHeader="true" Bordered="true">
     <ToolBarContent>
 
         @*<table cellpadding="0" cellspacing="0" width="100%">
@@ -106,24 +142,24 @@
 
 
         @* <div class="d-flex">
-            <div class="align-self-center">
-                <MudText Typo="Typo.h6">Tools: Customer Communications</MudText>
-            </div>
-            <div class="d-flex align-items-center ml-auto">
-                <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-                            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Style="margin-top: 0px !important"></MudTextField>
-                <div class="d-flex align-items-center justify-content-center ml-2 icon-link mt-2">
-                    <MudLink OnClick="@(async () => await ExportGridClicked())">
-                        <div class="d-flex align-items-center justify-content-center">
-                            <MudIcon Icon="@Icons.Custom.FileFormats.FileExcel" Color="@Color.Tertiary" Class="ml-2" Title="Export"></MudIcon>
-                        </div>
-                    </MudLink>
-                    <div class="ml-2"> | </div>
-                    <MudLink OnClick="@(async () => await FetchCommunications())">
-                        <MudIcon Icon="@Icons.Material.Filled.Refresh" Color="@Color.Tertiary" Class="ml-2" Title="Retain filter & refresh"></MudIcon>
-                    </MudLink>
-                </div>
-            </div>
+        <div class="align-self-center">
+        <MudText Typo="Typo.h6">Tools: Customer Communications</MudText>
+        </div>
+        <div class="d-flex align-items-center ml-auto">
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+        AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Style="margin-top: 0px !important"></MudTextField>
+        <div class="d-flex align-items-center justify-content-center ml-2 icon-link mt-2">
+        <MudLink OnClick="@(async () => await ExportGridClicked())">
+        <div class="d-flex align-items-center justify-content-center">
+        <MudIcon Icon="@Icons.Custom.FileFormats.FileExcel" Color="@Color.Tertiary" Class="ml-2" Title="Export"></MudIcon>
+        </div>
+        </MudLink>
+        <div class="ml-2"> | </div>
+        <MudLink OnClick="@(async () => await FetchCommunications())">
+        <MudIcon Icon="@Icons.Material.Filled.Refresh" Color="@Color.Tertiary" Class="ml-2" Title="Retain filter & refresh"></MudIcon>
+        </MudLink>
+        </div>
+        </div>
         </div> *@
 
 
@@ -134,7 +170,8 @@
             </MudItem>
             <MudItem class="d-flex align-items-center ml-auto">
                 <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" Style="margin-top: 0px !important"></MudTextField>
+                              AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"
+                              Style="margin-top: 0px !important;font-size:.75rem; font-weight:500"></MudTextField>
                 <MudSpacer />
                 <div class="d-flex align-items-center justify-content-center ml-2 icon-link mt-2">
                     <MudLink OnClick="@(async () => await ExportGridClicked())">
@@ -238,7 +275,7 @@
         <MudText Typo="Typo.body2" Class="mt-4 mud-text-secondary font-bold">Loading Customer Communications...</MudText>
     </LoadingContent>
     <PagerContent>
-        <MudDataGridPager T="CommunicationDTO" />
+        <MudDataGridPager T="CommunicationDTO" Style="font-size: 12px" />
     </PagerContent>
 </MudDataGrid>
 
