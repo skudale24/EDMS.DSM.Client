@@ -207,7 +207,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                 var items = await _customerManager.GetCommunicationsListAsync();
                 var cRow = items.Result.Where(f => f.BatchId == response.Result.BatchId).FirstOrDefault();
                 item.GeneratedBy = cRow?.GeneratedBy;
-                item.GeneratedDate = cRow?.GeneratedDate;
+                item.GeneratedDate = cRow?.GeneratedDate?.Date ?? null;
                 item.ActionText = "Download PDF";
                 item.GeneratedFilePath = response.Result.GeneratedFilePath;
                 item.BatchId = response.Result.BatchId;
