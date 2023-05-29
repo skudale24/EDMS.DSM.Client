@@ -4,33 +4,33 @@
 
 <AuthorizeView>
     <Authorized>
-        <MudThemeProvider Theme="_theme" DefaultScrollbar="true" @bind-IsDarkMode="@_isDarkMode"/>
+        <MudThemeProvider Theme="_theme" DefaultScrollbar="true" @bind-IsDarkMode="@_isDarkMode" />
         <MudDialogProvider FullWidth="true" CloseOnEscapeKey="false" DisableBackdropClick="true"
-                           Position="DialogPosition.TopCenter" MaxWidth="MaxWidth.Medium"/>
-        <MudSnackbarProvider/>
+                           Position="DialogPosition.TopCenter" MaxWidth="MaxWidth.Medium" />
+        <MudSnackbarProvider />
         <MudLayout>
-           @* <MudDrawer @bind-Open="_drawerOpen" Elevation="25" Width="250px">
-                <NavMenu/>
+            @*<MudDrawer @bind-Open="_drawerOpen" Elevation="25" Width="250px">
+                <NavMenu />
             </MudDrawer>
             <MudAppBar Elevation="25" DisableGutters="true" Dense="true">
-                <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit"
-                               OnClick="@(e => DrawerToggle())" Class="ml-3" Size="Size.Medium"/>
-                <MudHidden Breakpoint="Breakpoint.SmAndDown">
-                </MudHidden>
-                <MudHidden Breakpoint="Breakpoint.Xs">
-                    <MudText Typo="Typo.h6">Welcome to iWork Technologies</MudText>
+            <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit"
+            OnClick="@(e => DrawerToggle())" Class="ml-3" Size="Size.Medium"/>
+            <MudHidden Breakpoint="Breakpoint.SmAndDown">
+            </MudHidden>
+            <MudHidden Breakpoint="Breakpoint.Xs">
+            <MudText Typo="Typo.h6">Welcome to iWork Technologies</MudText>
 
-                </MudHidden>
-                <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
-                    <MudText Typo="Typo.subtitle2">Welcome to EDM</MudText>
+            </MudHidden>
+            <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+            <MudText Typo="Typo.subtitle2">Welcome to EDM</MudText>
 
-                </MudHidden>
-                <MudSpacer/>
+            </MudHidden>
+            <MudSpacer/>
             </MudAppBar>*@
             <MudMainContent>
                 <MudContainer MaxWidth="MaxWidth.False">
 
-                    <PWAUpdater/>
+                    <PWAUpdater />
 
                     <ErrorBoundary @ref="_errorBoundary">
                         <ChildContent>
@@ -52,29 +52,29 @@
         </MudLayout>
     </Authorized>
     <NotAuthorized>
-        <MudThemeProvider Theme="_theme" DefaultScrollbar="true" @bind-IsDarkMode="@_isDarkMode"/>
+        <MudThemeProvider Theme="_theme" DefaultScrollbar="true" @bind-IsDarkMode="@_isDarkMode" />
         <MudDialogProvider FullWidth="true" CloseOnEscapeKey="false" DisableBackdropClick="true"
-                           Position="DialogPosition.TopCenter" MaxWidth="MaxWidth.Medium"/>
-        <MudSnackbarProvider/>
+                           Position="DialogPosition.TopCenter" MaxWidth="MaxWidth.Medium" />
+        <MudSnackbarProvider />
         <MudLayout>
-           @* <MudAppBar Elevation="25" DisableGutters="true" Dense="true">
-                <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit"
-                               OnClick="@(e => DrawerToggle())" Class="ml-3" Size="Size.Medium"/>
-                <MudHidden Breakpoint="Breakpoint.SmAndDown">
-                </MudHidden>
-                <MudHidden Breakpoint="Breakpoint.Xs">
-                    <MudText Typo="Typo.h6">Welcome to EDM </MudText>
+            @* <MudAppBar Elevation="25" DisableGutters="true" Dense="true">
+            <MudIconButton Icon="@Icons.Material.Outlined.Menu" Color="Color.Inherit"
+            OnClick="@(e => DrawerToggle())" Class="ml-3" Size="Size.Medium"/>
+            <MudHidden Breakpoint="Breakpoint.SmAndDown">
+            </MudHidden>
+            <MudHidden Breakpoint="Breakpoint.Xs">
+            <MudText Typo="Typo.h6">Welcome to EDM </MudText>
 
-                </MudHidden>
-                <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
-                    <MudText Typo="Typo.subtitle2">Welcome to iWork</MudText>
+            </MudHidden>
+            <MudHidden Breakpoint="Breakpoint.Xs" Invert="true">
+            <MudText Typo="Typo.subtitle2">Welcome to iWork</MudText>
 
-                </MudHidden>
-                <MudSpacer/>
+            </MudHidden>
+            <MudSpacer/>
             </MudAppBar>*@
             <MudMainContent>
                 <MudContainer MaxWidth="MaxWidth.False">
-                    <PWAUpdater/>
+                    <PWAUpdater />
                     <ErrorBoundary @ref="_errorBoundary">
                         <ChildContent>
                             @Body

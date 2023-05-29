@@ -9,10 +9,10 @@ public class TVATheme : MudTheme
             Primary = "#3d49f5",
             PrimaryDarken = Colors.Amber.Darken4,
             Secondary = Colors.BlueGrey.Darken4,
-            Background = Colors.BlueGrey.Lighten5,
+            Background = "#2c91994d", //Colors.BlueGrey.Lighten5,
             Divider = Colors.BlueGrey.Lighten1,
             //TableHover = "#4888B5", //"#8CB8D6", //Colors.BlueGrey.Lighten5,
-            TableHover = "#9DB7D3", 
+            TableHover = "#2c91994d",
             OverlayLight = "#fff",
             HoverOpacity = .5,
             PrimaryContrastText = Colors.DeepOrange.Lighten1,
@@ -20,22 +20,26 @@ public class TVATheme : MudTheme
             DarkLighten = Colors.DeepOrange.Lighten1,
             DarkContrastText = Colors.DeepOrange.Lighten1,
             TableLines = "#BBC1DA",
-            TableStriped = "#D3DDEA",
+            TableStriped = "#2c91991a",
             LinesDefault = Colors.BlueGrey.Lighten5,
             AppbarBackground = "#0072CF",
             DrawerBackground = "#FFF",
             DrawerText = "#262626",
-            Success = "#06d79c"
+            Success = "#2C9199",
+            Info = "#2C9199",
         };
 
-        LayoutProperties = new LayoutProperties { DefaultBorderRadius = "6px" };
+        LayoutProperties = new LayoutProperties
+        {
+            DefaultBorderRadius = "3px"
+        };
 
         Typography = new Typography
         {
             Default =
                 new Default
                 {
-                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
+                    FontFamily = new[] { "Helvetica Neue", "Helvetica" },
                     FontSize = "12px",
                     FontWeight = 400,
                     LineHeight = 1.43,
@@ -44,7 +48,7 @@ public class TVATheme : MudTheme
             H1 =
                 new H1
                 {
-                    FontFamily = new[] { "Helvetica Neue Bold", "Arial Bold" },
+                    FontFamily = new[] { "Helvetica Neue Bold", "Helvetica", "Arial Bold" },
                     FontSize = "38px",
                     FontWeight = 500,
                     LineHeight = 1.167,
@@ -53,7 +57,7 @@ public class TVATheme : MudTheme
             H2 =
                 new H2
                 {
-                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
+                    FontFamily = new[] { "Helvetica Neue", "Helvetica", "Arial Regular" },
                     FontSize = "34px",
                     FontWeight = 500,
                     LineHeight = 1.2,
@@ -62,7 +66,7 @@ public class TVATheme : MudTheme
             H3 =
                 new H3
                 {
-                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
+                    FontFamily = new[] { "Helvetica Neue", "Helvetica", "Arial Regular" },
                     FontSize = "30px",
                     FontWeight = 500,
                     LineHeight = 1.167,
@@ -71,7 +75,7 @@ public class TVATheme : MudTheme
             H4 =
                 new H4
                 {
-                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
+                    FontFamily = new[] { "Helvetica Neue", "Helvetica", "Arial Regular" },
                     FontSize = "28px",
                     FontWeight = 500,
                     LineHeight = 1.235,
@@ -80,7 +84,7 @@ public class TVATheme : MudTheme
             H5 =
                 new H5
                 {
-                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
+                    FontFamily = new[] { "Helvetica Neue", "Helvetica", "Arial Regular" },
                     FontSize = "26px",
                     FontWeight = 500,
                     LineHeight = 1.334,
@@ -89,8 +93,8 @@ public class TVATheme : MudTheme
             H6 =
                 new H6
                 {
-                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
-                    FontSize = "1rem",
+                    FontFamily = new[] { "Helvetica Neue", "Helvetica" },
+                    FontSize = ".75rem",
                     FontWeight = 600,
                     LineHeight = 1.1,
                     LetterSpacing = ".0075em"
@@ -98,7 +102,7 @@ public class TVATheme : MudTheme
             Button =
                 new Button
                 {
-                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
+                    FontFamily = new[] { "Helvetica Neue", "Helvetica", "Arial Regular" },
                     FontSize = ".75rem",
                     FontWeight = 500,
                     LineHeight = 1.75,
@@ -107,7 +111,7 @@ public class TVATheme : MudTheme
             Body1 =
                 new Body1
                 {
-                    FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
+                    FontFamily = new[] { "Helvetica Neue", "Helvetica" },
                     FontSize = ".75rem",
                     FontWeight = 400,
                     LineHeight = 1.5,
@@ -115,7 +119,7 @@ public class TVATheme : MudTheme
                 },
             Body2 = new Body2
             {
-                FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
+                FontFamily = new[] { "Helvetica Neue", "Helvetica" },
                 FontSize = ".75rem",
                 FontWeight = 400,
                 LineHeight = 1.43,
@@ -123,7 +127,7 @@ public class TVATheme : MudTheme
             },
             Caption = new Caption
             {
-                FontFamily = new[] { "Helvetica Neue", "Arial Regular" },
+                FontFamily = new[] { "Helvetica Neue", "Helvetica", "Arial Regular" },
                 FontSize = ".75rem",
                 FontWeight = 400,
                 LineHeight = 1.66,
@@ -131,7 +135,7 @@ public class TVATheme : MudTheme
             },
             Subtitle2 = new Subtitle2
             {
-                FontFamily = new[] { "Helvetica Neue Bold", "Arial Regular" },
+                FontFamily = new[] { "Helvetica Neue Bold", "Helvetica", "Arial Regular" },
                 FontSize = ".75rem",
                 FontWeight = 500,
                 LineHeight = 1.57,

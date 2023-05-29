@@ -5,14 +5,14 @@ public static class EndPoints
 
 #if DEBUG
     //Visual Studio Dev mode
-    public static string Version = "0.9.0015";
+    public static string Version = "0.1.0019";
     public static string ApiBaseUrl => "";
     public static string APBaseUrl => "http://localhost:53398";
     public static string LoginPage => "https://localhost:7119";
 
 #else
     //Dev server
-    public static string Version = "0.9.0015";
+    public static string Version = "0.1.0019";
     public static string ApiBaseUrl => "";
     public static string APBaseUrl => "https://esadmin.energydatametrics.com";
     public static string LoginPage => "https://baseline.energydatametrics.com/";

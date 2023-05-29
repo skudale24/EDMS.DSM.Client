@@ -7,6 +7,7 @@
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+		<BlazorCacheBootResources>false</BlazorCacheBootResources>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -685,6 +685,13 @@ video {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
+body {
+    font-size: 12px;
+    font-family: "Helvetica Neue", Arial, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+}
+.mud-typography-body2 {
+    font-family: "Helvetica Neue", Arial, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !important;
+}
 .pwa-updater-updatenow-button {
     background-color: transparent;
     border: solid 2px #ffffff80;
@@ -772,4 +779,9 @@ b-pwa-updater { color: white; }
 /* END Loading indicator */
 
 
-.mud-input { font-size: unset; }
+.mud-input { font-size: 12px; }
+
+.mud-typography-h6 {
+        border-bottom: 3px solid #2C9199 !important;
+        padding-bottom: 3px !important;
+    }
