@@ -4,6 +4,7 @@
     :root {
         --version-label-content: "Version @EndPoints.Version";
     }
+
     .icon-link:hover {
         cursor: pointer;
         color: blue;
@@ -24,22 +25,24 @@
     .mud-table-container {
         height: calc(100vh - 83px);
         border-top: 1px solid #2C9199;
-        position:relative;
+        position: relative;
     }
 
     /*.mud-table-toolbar::after {
-        content: '';
-        position: absolute;
-        top: 29px;
-        left: 16px;
-        width: 194px;
-        height: 2px;
-        background: linear-gradient(to right, #2C9199, transparent 50%);
-        background-color: #2C9199;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.6);
-        z-index: 999;
-        /*border-radius: 6px;*/
-    }*/
+                        content: '';
+                        position: absolute;
+                        top: 29px;
+                        left: 16px;
+                        width: 194px;
+                        height: 2px;
+                        background: linear-gradient(to right, #2C9199, transparent 50%);
+                        background-color: #2C9199;
+                        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.6);
+                        z-index: 999;
+                        /*border-radius: 6px;*/
+    }
+
+    */
 
     .mud-table-pagination-toolbar::before {
         content: var(--version-label-content);
@@ -87,10 +90,10 @@
         background-color: rgba(255, 255, 255);
     }
 
-    .grid-header-col span {
-        font-weight: 600;
-        color: rgb(0, 58, 112);
-    }
+        .grid-header-col span {
+            font-weight: 600;
+            color: rgb(0, 58, 112);
+        }
 
     .mud-table-pagination-select .mud-input .mud-input-root {
         font-size: .75rem;
@@ -145,8 +148,8 @@
     </tbody>
 </table>*@
 
-<MudDataGrid T="CommunicationDTO" MultiSelection="false" Items="@Elements" @ref="_grid"
-             SortMode="MudBlazor.SortMode.Single" QuickFilter="@_quickFilter"
+<MudDataGrid T="CommunicationDTO" MultiSelection="false" Items="@Elements" @ref="_grid" SortMode="MudBlazor.SortMode.Single"
+             QuickFilter="@_quickFilter" FilterMode="@DataGridFilterMode.ColumnFilterRow"
              Filterable="true" FilterCaseSensitivity="DataGridFilterCaseSensitivity.CaseInsensitive"
              Loading="@isLoading" Dense="true" Hover="true" RowsPerPage="50"
              Hideable="false" RowClick="@RowClicked" SelectedItemsChanged="@SelectedItemsChanged"
@@ -287,6 +290,46 @@
             <CellTemplate>
                 <MudText Typo="Typo.body2">@context.Item?.GeneratedDate?.ToString("MM/dd/yyyy")</MudText>
             </CellTemplate>
+            <FilterTemplate>
+                <MudIconButton OnClick="@OpenFilter" Icon="@_icon" Size="@Size.Small" />
+                <MudOverlay Visible="@_filterOpen" OnClick="@(() => _filterOpen = false)" />
+                <MudPopover Open="@_filterOpen" AnchorOrigin="Origin.BottomCenter" TransformOrigin="Origin.TopCenter"
+                            Style="width:150px">
+                    <MudGrid>
+                        <MudItem xs="12" sm="6" md="4" lg="4" xl="4">
+                            <MudDatePicker @bind-Date="@FromDate" Placeholder="From Date" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                           DateFormat="dd-MMM-yyyy" DisableToolbar="true" />
+
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="4" lg="4" xl="4">
+                            <MudDatePicker @bind-Date="@ToDate" Placeholder="To Date" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                           DateFormat="dd-MMM-yyyy" DisableToolbar="true" />
+
+                        </MudItem>
+                        <MudItem xs="12" sm="6" md="4" lg="4" xl="4">
+                            <MudButton OnClick="@(() => ClearFilterAsync(context))">Clear</MudButton>
+                            <MudButton Color="@Color.Primary" OnClick="@(() => ApplyFilterAsync(context))">Filter</MudButton>
+                        </MudItem>
+                    </MudGrid>
+                    @*<MudStack Spacing="0">
+                        <MudStack Spacing="0" Style="overflow-y:auto;max-height:250px">
+                            <MudDatePicker @bind-Date="FromDate" Placeholder="From Date" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                           DateFormat="MM/dd/yyyy" DisableToolbar="false" />
+                            <MudDatePicker @bind-Date="ToDate" Placeholder="To Date" Variant="Variant.Outlined" Margin="Margin.Dense"
+                                           DateFormat="MM/dd/yyyy" DisableToolbar="true" />
+                            @foreach (var item in context.Items)
+                            {
+                            <MudCheckBox T="bool" Label="@($"{item.GeneratedDate?.ToString("MM/dd/yyyy")}")" Size="@Size.Small" Checked="@(_selectedItems.Contains(item))"
+                            CheckedChanged="@((value) => SelectedChanged(value, item))" />
+                            }
+                        </MudStack>
+                        <MudStack Row="true">
+                            <MudButton OnClick="@(() => ClearFilterAsync(context))">Clear</MudButton>
+                            <MudButton Color="@Color.Primary" OnClick="@(() => ApplyFilterAsync(context))">Filter</MudButton>
+                        </MudStack>
+                    </MudStack>*@
+                </MudPopover>
+            </FilterTemplate>
         </PropertyColumn>
         <PropertyColumn Property="x => x.GeneratedBy" Title="Letter Generated by" ShowColumnOptions="false"
                         HeaderClass="grid-header-col">
@@ -307,9 +350,9 @@
         </TemplateColumn>
     </Columns>
     @*<LoadingContent>
-        <MudText Typo="Typo.body2" Class="mt-4 mud-text-secondary font-bold">Loading Customer Communications...</MudText>
+    <MudText Typo="Typo.body2" Class="mt-4 mud-text-secondary font-bold">Loading Customer Communications...</MudText>
     </LoadingContent>*@
-    <PagerContent >
+    <PagerContent>
         <MudDataGridPager T="CommunicationDTO" Style="font-size: 12px" />
     </PagerContent>
 </MudDataGrid>

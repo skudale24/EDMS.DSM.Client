@@ -1,9 +1,9 @@
 ﻿using EDMS.DSM.Client.Managers.Menu;
 using EDMS.DSM.Managers.Customer;
 using Microsoft.AspNetCore.Http;
-using MudBlazor;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
+//using static MudBlazor.CategoryTypes;
 
 namespace EDMS.DSM.Client.Pages.Customer;
 
@@ -30,6 +30,13 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     [Inject] private CustomAuthenticationStateProvider _authStateProvider { get; set; } = default!;
 
     private IEnumerable<CommunicationDTO> Elements = new List<CommunicationDTO>();
+    HashSet<CommunicationDTO> _selectedItems = new();
+    HashSet<CommunicationDTO> _filterItems = new();
+    public DateTime? FromDate { get; set; } = DateTime.MinValue;
+    public DateTime? ToDate { get; set; } = DateTime.MaxValue;
+    FilterDefinition<CommunicationDTO> _filterDefinition;
+    bool _selectAll = true;
+    string _icon = Icons.Material.Outlined.FilterAlt;
     private MudDataGrid<CommunicationDTO> _grid;
     protected List<GridColumnDTO> GridColumns { get; set; } = default!;
     private bool isLoading = false;
@@ -39,6 +46,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     private int _programId;
     private int _generatedById;
+    bool _filterOpen = false;
     // custom sort by name length
     private Func<CommunicationDTO, object> _sortBy => x =>
     {
@@ -48,7 +56,45 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             return x.TemplateName;
     };
 
-    // quick filter - filter gobally across multiple columns with the same input
+    void OpenFilter()
+    {
+        _filterOpen = true;
+    }
+
+    private void SelectedChanged(bool value, CommunicationDTO item)
+    {
+        if (value)
+            _selectedItems.Add(item);
+        else
+            _selectedItems.Remove(item);
+
+        if (_selectedItems.Count == Elements.Count())
+            _selectAll = true;
+        else
+            _selectAll = false;
+    }
+
+    private async Task ClearFilterAsync(FilterContext<CommunicationDTO> context)
+    {
+        _selectedItems = Elements.ToHashSet();
+        _filterItems = Elements.ToHashSet();
+        _icon = Icons.Material.Outlined.FilterAlt;
+        await context.Actions.ClearFilterAsync(_filterDefinition);
+        _filterOpen = false;
+    }
+
+    private async Task ApplyFilterAsync(FilterContext<CommunicationDTO> context)
+    {
+        _selectedItems = Elements.Where(x => x.GeneratedDate >= FromDate && x.GeneratedDate <= ToDate).ToHashSet();
+        _filterItems = _selectedItems.ToHashSet();
+        _icon = _filterItems.Count == Elements.Count() ? Icons.Material.Outlined.FilterAlt : Icons.Material.Filled.FilterAlt;
+        await context.Actions.ApplyFilterAsync(_filterDefinition);
+        _filterOpen = false;
+    }
+
+    /// <summary>
+    /// quick filter - filter gobally across multiple columns with the same input
+    /// </summary>
     private Func<CommunicationDTO, bool> _quickFilter => x =>
     {
         if (string.IsNullOrWhiteSpace(_searchString))
@@ -119,23 +165,6 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             }
 
             _navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
-
-            //else
-            //{
-            //    if (HttpContextAccessor.HttpContext != null)
-            //    {
-            //        var headers = HttpContextAccessor.HttpContext.Request.Headers;
-
-            //        if (headers != null)
-            //        {
-            //            var accessTokenHeader = HttpContextAccessor.HttpContext.Request.Headers[StorageConstants.UserToken];
-            //            //if (accessTokenHeader == null)
-            //            //{
-            //            //    return;
-            //            //}
-            //        }
-            //    }
-            //}
         }
         catch (Exception ex)
         {
@@ -159,6 +188,12 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             : _snackbar.Add(result.Message, Severity.Error);
 
         Elements = result.Result.ToCommunicationGrid();
+        _selectedItems = Elements.ToHashSet();
+        _filterItems = Elements.ToHashSet();
+        _filterDefinition = new FilterDefinition<CommunicationDTO>
+        {
+            FilterFunction = x => _filterItems.Contains(x)
+        };
         isLoading = false;
         StateHasChanged();
     }
