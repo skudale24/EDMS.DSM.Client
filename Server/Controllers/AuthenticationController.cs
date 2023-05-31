@@ -3,6 +3,7 @@ using EDMS.Shared.Constants;
 using EDMS.Shared.Wrapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
@@ -63,6 +64,7 @@ namespace EDMS.DSM.Server.Controllers
                 Dictionary<string, string> parsedClaims = ParseClaims(claims);
                 string userId = parsedClaims["UserID"];
                 string programId = parsedClaims["ProgramID"];
+                string sessionExpiration = parsedClaims["SessionExpiration"];
 
                 _logger.LogInformation($"{userId}:{programId}");
 
@@ -72,7 +74,7 @@ namespace EDMS.DSM.Server.Controllers
                 _logger.LogInformation($"{url}");
 
                 // Generate the JWT token (implement your own logic)
-                string jwtToken = GenerateJwtToken(userId, programId);
+                string jwtToken = GenerateJwtToken(userId, programId, sessionExpiration);
 
                 _logger.LogInformation($"{jwtToken}");
 
@@ -117,11 +119,11 @@ namespace EDMS.DSM.Server.Controllers
             string[] claimLines = claimsString.Split('\n');
             foreach (string claimLine in claimLines)
             {
-                string[] keyValue = claimLine.Split(':');
-                if (keyValue.Length == 2)
+                int colonIndex = claimLine.IndexOf(':');
+                if (colonIndex >= 0)
                 {
-                    string key = keyValue[0].Trim();
-                    string value = keyValue[1].Trim();
+                    string key = claimLine.Substring(0, colonIndex).Trim();
+                    string value = claimLine.Substring(colonIndex + 1).Trim();
                     claims[key] = value;
                 }
             }
@@ -134,24 +136,31 @@ namespace EDMS.DSM.Server.Controllers
         /// TODO: Move the Private Key to configuration section
         /// </summary>
         /// <returns></returns>
-        private string GenerateJwtToken(string userId, string programId)
+        private string GenerateJwtToken(string userId, string programId, string sessionExpiration)
         {
-            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:key"]);
-            var claims = new List<Claim>
+            DateTime expires;
+            if (DateTime.TryParseExact(sessionExpiration, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out expires))
             {
-                new Claim("UserID", userId),
-                new Claim("ProgramID", programId),
-            };
-            var token = new JwtSecurityToken(
-                issuer: $"{_configuration["Jwt:Issuer"]}",
-                audience: $"{_configuration["Jwt:Audience"]}",
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-                claims: claims
-            );
-            token.Header.Add("kid", "your_key_id");
-            string jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-            return jwtToken;
+                var key = Encoding.UTF8.GetBytes(_configuration["Jwt:key"]);
+                var claims = new List<Claim>
+                {
+                    new Claim("UserID", userId),
+                    new Claim("ProgramID", programId),
+                };
+                var token = new JwtSecurityToken(
+                    issuer: $"{_configuration["Jwt:Issuer"]}",
+                    audience: $"{_configuration["Jwt:Audience"]}",
+                    expires: expires,
+                    signingCredentials: new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+                    claims: claims
+                );
+                string jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+                return jwtToken;
+            }
+            else
+            {
+                throw new Exception("Invalid token expiry.");
+            }
         }
     }
 }

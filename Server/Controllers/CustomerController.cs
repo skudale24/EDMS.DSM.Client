@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using VTI.Common;
 
@@ -26,9 +27,9 @@ namespace EDMS.DSM.Server.Controllers
 
         public CustomerController(ApplicationDbContext context,
                                   IHttpContextAccessor httpContextAccessor,
-                                  IConfiguration configuration, 
-                                  ILogger<AuthenticationController> logger) : 
-                                    base(httpContextAccessor, 
+                                  IConfiguration configuration,
+                                  ILogger<AuthenticationController> logger) :
+                                    base(httpContextAccessor,
                                          configuration,
                                          logger)
         {
@@ -46,8 +47,29 @@ namespace EDMS.DSM.Server.Controllers
         [Authorize]
         public async Task<IApiResult> GetCommunications()
         {
-            var communications = _context.Database.SqlQueryRaw<Communication>($"EXECUTE dbo.[p_Get_HUP_AggregateList4CustomerCommunications]").ToList();
-            return ApiResult<List<Communication>>.Success(communications);
+            try
+            {
+                //// Get the token from the request headers
+                //var authorizationHeader = HttpContext.Request.Headers["Authorization"];
+                //var token = authorizationHeader.ToString().Replace("Bearer ", "");
+
+                //// Extract the expiration value from the token
+                //var handler = new JwtSecurityTokenHandler();
+                //var jwtToken = handler.ReadJwtToken(token);
+                //var expiration = jwtToken.ValidTo;
+
+                //// Log the expiration value for inspection
+                //Console.WriteLine($"Token Expiration: {expiration}");
+
+                var communications = _context.Database.SqlQueryRaw<Communication>($"EXECUTE dbo.[p_Get_HUP_AggregateList4CustomerCommunications]").ToList();
+                return ApiResult<List<Communication>>.Success(communications);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return ApiResult.Fail(ex.Message);
+                //return StatusCode((int)HttpStatusCode.InternalServerError, ApiResult.Fail(ex.Message));
+            }
         }
 
         /// <summary>

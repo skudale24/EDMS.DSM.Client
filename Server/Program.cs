@@ -28,7 +28,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidIssuer = issuer,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(key))
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(key)),
+        LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken,
+                                     TokenValidationParameters validationParameters) =>
+        {
+            return expires > DateTime.UtcNow;
+        }
     };
 });
 
