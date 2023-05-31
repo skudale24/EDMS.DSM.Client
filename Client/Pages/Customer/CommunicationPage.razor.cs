@@ -75,12 +75,6 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         return false;
     };
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        //_interceptor.RegisterEvent();
-    }
-
     //protected override async Task OnAfterRenderAsync(bool firstRender)
     //{
     //    if (firstRender)
@@ -97,45 +91,39 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     protected override async Task OnInitializedAsync()
     {
+        base.OnInitialized();
+        _interceptor.RegisterEvent();
+
         try
         {
-            if (_navManager.TryGetQueryString(StorageConstants.UserToken, out string userTokenOut))
+            if (_navManager.TryGetQueryString("userId", out _generatedById)
+                && (_navManager.TryGetQueryString("programId", out _programId)))
             {
-                if (!string.IsNullOrWhiteSpace(userTokenOut))
-                {
-                    await _cookieStorageAccessor.WriteLogAsync<string>($"UserToken. {userTokenOut}");
-
-                    var claims = GetClaimsFromToken(userTokenOut);
-                    int.TryParse(claims.FirstOrDefault(c => c.Type == "UserID")?.Value, out _generatedById);
-                    int.TryParse(claims.FirstOrDefault(c => c.Type == "ProgramID")?.Value, out _programId);
-
-                    // Use retrieved `userToken` to update authentication state.
-                    await _authStateProvider.UpdateAuthenticationStateAsync(userTokenOut, userTokenOut)
-                        .ConfigureAwait(false);
-                    await GetCommunicationsList();
-                    GridColumns = GenerateGridColumns();
-                    return;
-                }
+                await GetCommunicationsList();
+                GridColumns = GenerateGridColumns();
+                return;
             }
 
-            _navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
-
-            //else
+            //if (_navManager.TryGetQueryString(StorageConstants.UserToken, out string userTokenOut))
             //{
-            //    if (HttpContextAccessor.HttpContext != null)
+            //    if (!string.IsNullOrWhiteSpace(userTokenOut))
             //    {
-            //        var headers = HttpContextAccessor.HttpContext.Request.Headers;
+            //        await _cookieStorageAccessor.WriteLogAsync<string>($"UserToken. {userTokenOut}");
 
-            //        if (headers != null)
-            //        {
-            //            var accessTokenHeader = HttpContextAccessor.HttpContext.Request.Headers[StorageConstants.UserToken];
-            //            //if (accessTokenHeader == null)
-            //            //{
-            //            //    return;
-            //            //}
-            //        }
+            //        var claims = GetClaimsFromToken(userTokenOut);
+            //        int.TryParse(claims.FirstOrDefault(c => c.Type == "UserID")?.Value, out _generatedById);
+            //        int.TryParse(claims.FirstOrDefault(c => c.Type == "ProgramID")?.Value, out _programId);
+
+            //        // Use retrieved `userToken` to update authentication state.
+            //        await _authStateProvider.UpdateAuthenticationStateAsync(userTokenOut, userTokenOut)
+            //            .ConfigureAwait(false);
+            //        await GetCommunicationsList();
+            //        GridColumns = GenerateGridColumns();
+            //        return;
             //    }
             //}
+
+            _navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
         }
         catch (Exception ex)
         {
@@ -344,7 +332,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     void IDisposable.Dispose()
     {
-        //_interceptor.DisposeEvent();
+        _interceptor.DisposeEvent();
     }
 
     private List<Claim> GetClaimsFromToken(string token)
