@@ -57,6 +57,12 @@
     <Compile Include="MailMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EDM.Setting\EDM.Setting.csproj">
+      <Project>{729f8366-f5e2-4c1e-857c-d37a4f270bab}</Project>
+      <Name>EDM.Setting</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

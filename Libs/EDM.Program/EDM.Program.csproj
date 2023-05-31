@@ -66,6 +66,10 @@
       <Project>{8B5B38FF-5E68-4A44-8C5C-E59884DCC503}</Project>
       <Name>EDM.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EDM.Setting\EDM.Setting.csproj">
+      <Project>{729f8366-f5e2-4c1e-857c-d37a4f270bab}</Project>
+      <Name>EDM.Setting</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
