@@ -23,7 +23,7 @@
 
     .mud-table-container {
         height: calc(100vh - 83px);
-        border-top: 1px solid #2C9199;
+        border-top: 3px solid #2C9199;
         position:relative;
     }
 
@@ -73,10 +73,10 @@
         font-size: 12px !important;
     }
 
-    .mud-typography-h6 {
+    /*.mud-typography-h6 {
         border-bottom: 3px solid #2C9199;
         padding-bottom: 3px;
-    }
+    }*/
 
     .text-blue {
         color: rgb(0, 58, 112);
@@ -98,8 +98,8 @@
 
     .custom-linear-progress {
         /* Customize the color styles here */
-        --mud-linear-progress-color: #2C9199;
-        --mud-linear-progress-background-color: #2C9199;
+        --mud-linear-progress-color: "#2C9199 !important";
+        --mud-linear-progress-background-color: "#2C9199 !important";
     }
 </style>
 @*
@@ -262,7 +262,7 @@
                 <MudStack Row>
                     @if (context.Item?.IsProcessing == true)
                     {
-                        <MudProgressLinear Class="custom-linear-progress" Indeterminate="true">
+                        <MudProgressLinear Class="custom-linear-progress" Indeterminate="true" Color="Color.Secondary">
                         </MudProgressLinear>
                     }
                     @if (context.Item?.IsProcessing == false)
