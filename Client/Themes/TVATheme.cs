@@ -1,4 +1,6 @@
-﻿namespace EDMS.DSM.Client.Themes;
+﻿using MudBlazor.Utilities;
+
+namespace EDMS.DSM.Client.Themes;
 
 public class TVATheme : MudTheme
 {
@@ -11,22 +13,27 @@ public class TVATheme : MudTheme
             Secondary = Colors.BlueGrey.Darken4,
             Background = "#2c91994d", //Colors.BlueGrey.Lighten5,
             Divider = Colors.BlueGrey.Lighten1,
-            //TableHover = "#4888B5", //"#8CB8D6", //Colors.BlueGrey.Lighten5,
-            TableHover = "#2c91994d",
             OverlayLight = "#fff",
-            HoverOpacity = .5,
             PrimaryContrastText = Colors.DeepOrange.Lighten1,
             PrimaryLighten = Colors.DeepOrange.Lighten1,
             DarkLighten = Colors.DeepOrange.Lighten1,
             DarkContrastText = Colors.DeepOrange.Lighten1,
-            TableLines = "#BBC1DA",
-            TableStriped = "#2c91991a",
+            HoverOpacity = .5,
             LinesDefault = Colors.BlueGrey.Lighten5,
             AppbarBackground = "#0072CF",
             DrawerBackground = "#FFF",
             DrawerText = "#262626",
-            Success = "#2C9199",
-            Info = "#2C9199",
+            TableLines = "#BBC1DA",
+            TableStriped = "#2c91991a",
+            TableHover = "#2c91994d",
+            Success = "rgba(106, 144, 51, 0.2)",
+            Info = "rgba(68, 125, 174, 0.2)",
+            Warning = "rgba(229, 96, 39, 0.2)",
+            Error = "rgba(255, 80, 80, 0.2)",
+            SuccessContrastText = "rgb(0, 58, 112)",
+            InfoContrastText = "rgb(0, 58, 112)",
+            WarningContrastText = "rgb(0, 58, 112)",
+            ErrorContrastText = "rgb(0, 58, 112)",
         };
 
         LayoutProperties = new LayoutProperties
