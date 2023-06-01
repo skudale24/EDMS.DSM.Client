@@ -1,7 +1,5 @@
 ﻿using EDMS.DSM.Client.Managers.Menu;
 using EDMS.DSM.Managers.Customer;
-using Microsoft.AspNetCore.Http;
-using MudBlazor;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -19,15 +17,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     [Inject] private ISnackbar _snackbar { get; set; } = default!;
 
-    [Inject] IHttpContextAccessor HttpContextAccessor { get; set; } = default!;
-
     [Inject] private NavigationManager _navManager { get; set; } = default!;
-
-    [Inject] public INavManager NavManager { get; set; } = default!;
-
-    [Inject] private CookieStorageAccessor _cookieStorageAccessor { get; set; } = default!;
-
-    [Inject] private CustomAuthenticationStateProvider _authStateProvider { get; set; } = default!;
 
     private IEnumerable<CommunicationDTO> Elements = new List<CommunicationDTO>();
     private MudDataGrid<CommunicationDTO> _grid;
@@ -39,6 +29,8 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     private int _programId;
     private int _generatedById;
+    string APRedirectUrl = $"{EndPoints.APBaseUrl}/Index.aspx";
+
     // custom sort by name length
     private Func<CommunicationDTO, object> _sortBy => x =>
     {
@@ -75,24 +67,18 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         return false;
     };
 
-    //protected override async Task OnAfterRenderAsync(bool firstRender)
-    //{
-    //    if (firstRender)
-    //    {
-    //        if (HttpContextAccessor.HttpContext != null)
-    //        {
-    //            var headers = HttpContextAccessor.HttpContext.Request.Headers;
-    //            //var authorizationHeader = headers["Authorization"];
-    //            var accessTokenHeader = headers["AccessToken"];
-    //            // Use headers as needed
-    //        }
-    //    }
-    //}
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        //if (firstRender)
+        //{
+        //    _interceptor.RegisterEvent();
+        //}
+    }
 
     protected override async Task OnInitializedAsync()
     {
         base.OnInitialized();
-        _interceptor.RegisterEvent();
+        //_interceptor.RegisterEvent();
 
         try
         {
@@ -137,18 +123,26 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     /// <returns></returns>
     private async Task GetCommunicationsList()
     {
-        isLoading = true;
-        StateHasChanged();
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
 
-        var result = await _customerManager.GetCommunicationsListAsync();
+            var result = await _customerManager.GetCommunicationsListAsync();
 
-        _ = result.Status
-            ? _snackbar.Add(result.Message, Severity.Success)
-            : _snackbar.Add(result.Message, Severity.Error);
+            _ = result.Status
+                ? _snackbar.Add(result.Message, Severity.Success)
+                : _snackbar.Add(result.Message, Severity.Error);
 
-        Elements = result.Result.ToCommunicationGrid();
-        isLoading = false;
-        StateHasChanged();
+            Elements = result.Result.ToCommunicationGrid();
+            isLoading = false;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            await SetTopFrameUrl(APRedirectUrl);
+            //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
+        }
     }
 
     private List<GridColumnDTO> GenerateGridColumns()
@@ -227,7 +221,9 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                 item.IsProcessing = false;
                 StateHasChanged();
 
-                _ = _snackbar.Add($"We are currently unable to generate the Communication Letter requested by you at this time. <br> \r\n {response?.Message}", Severity.Warning);
+                _ = _snackbar.Add($"We are currently unable to generate the Communication Letter requested by you at this time.", Severity.Warning);
+                await SetTopFrameUrl(APRedirectUrl);
+                //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
             }
         }
         catch (Exception ex)
@@ -237,8 +233,10 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             item.IsProcessing = false;
             StateHasChanged();
 
-            _ = _snackbar.Add($"We are currently unable to generate the Communication Letter requested by you at this time. {ex.Message} : {ex.StackTrace}", Severity.Warning);
+            _ = _snackbar.Add($"We are currently unable to generate the Communication Letter requested by you.", Severity.Warning);
             await _loadingIndicatorProvider.ReleaseAsync();
+            await SetTopFrameUrl(APRedirectUrl);
+            //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
         }
     }
 
@@ -266,6 +264,8 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         {
             //_ = _snackbar.Add("We are facing some issues generating the excel file. Please try again later.", Severity.Warning);
             await _loadingIndicatorProvider.ReleaseAsync();
+            await SetTopFrameUrl(APRedirectUrl);
+            //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
         }
     }
 
@@ -290,8 +290,10 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         }
         catch (Exception ex)
         {
-            _ = _snackbar.Add($"We are currently unable to get the file requested by you. \r\n {ex.Message}", Severity.Warning);
+            _ = _snackbar.Add($"We are currently unable to get the file requested by you.", Severity.Warning);
             await _loadingIndicatorProvider.ReleaseAsync();
+            await SetTopFrameUrl(APRedirectUrl);
+            //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
         }
     }
 
@@ -301,7 +303,6 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
         try
         {
-
             IEnumerable<CommunicationDTO> data = _grid.FilteredItems;
 
             var result = await _uploadManager.ExportGridAsync(data, GridColumns);
@@ -315,7 +316,9 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         catch (Exception ex)
         {
             await _loadingIndicatorProvider.ReleaseAsync();
-            _ = _snackbar.Add($"We are currently unable to export the grid as requested by you. \r\n {ex.Message}", Severity.Warning);
+            _ = _snackbar.Add($"We are currently unable to export the grid as requested by you.", Severity.Warning);
+            await SetTopFrameUrl(APRedirectUrl);
+            //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
         }
     }
 
@@ -341,5 +344,10 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         var jwtToken = handler.ReadJwtToken(token);
 
         return jwtToken.Claims.ToList();
+    }
+
+    private async Task SetTopFrameUrl(string url)
+    {
+        await _jsRuntime.InvokeVoidAsync("setTopFrameUrl", url);
     }
 }

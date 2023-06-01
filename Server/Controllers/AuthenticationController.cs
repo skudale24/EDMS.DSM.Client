@@ -133,7 +133,6 @@ namespace EDMS.DSM.Server.Controllers
 
         /// <summary>
         /// Generates the Access (JWT) token using the Private Key
-        /// TODO: Move the Private Key to configuration section
         /// </summary>
         /// <returns></returns>
         private string GenerateJwtToken(string userId, string programId, string sessionExpiration)

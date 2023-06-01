@@ -120,3 +120,11 @@ window.addEventListener('message', event => {
         localStorage.setItem('_z', data.token);
     }
 });
+
+window.setTopFrameUrl = function (url) {
+    if (window.top && window.top !== window.self) {
+        window.top.location.href = url;
+    } else {
+        window.location.href = url;
+    }
+};

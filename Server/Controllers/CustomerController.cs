@@ -4,6 +4,7 @@ using EDMS.Data.Constants;
 using EDMS.DSM.Data;
 using EDMS.DSM.Server.Models;
 using EDMS.DSM.Shared.Models;
+using EDMS.Shared.Constants;
 using EDMS.Shared.Wrapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -161,7 +162,8 @@ namespace EDMS.DSM.Server.Controllers
         {
             try
             {
-                string? uploadFilePath = _configuration["UploadFilePath"];
+                var uploadFilePathKey = SettingKeyConstants.GetSettingKey(SettingKeys.UploadFilePath);
+                var uploadFilePath = _context.Database.SqlQueryRaw<string>($"select [Value] from Setting where [Key] = '{uploadFilePathKey}'").FirstOrDefault();
 
                 var decodedFileName = WebUtility.UrlDecode(FileName).Replace("/", "\\");
 
@@ -252,7 +254,10 @@ namespace EDMS.DSM.Server.Controllers
                     }
                 }
 
-                objExport.ExportListToExcel(request, SQLConstants.GemBoxKey, DsExportData, sheetName);
+                var gemBoxKey = SettingKeyConstants.GetSettingKey(SettingKeys.GemBoxKey);
+                var gemBoxKeyValue = _context.Database.SqlQueryRaw<string>($"select [Value] from Setting where [Key] = '{gemBoxKey}'").FirstOrDefault();
+
+                objExport.ExportListToExcel(request, gemBoxKeyValue, DsExportData, sheetName);
 
                 var l_sReader = System.IO.File.OpenRead(objExport.FilePath);
                 return (File(l_sReader, "application/octet-stream", Path.GetFileName(objExport.FilePath)));

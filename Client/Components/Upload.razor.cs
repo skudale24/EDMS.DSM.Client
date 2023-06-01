@@ -7,10 +7,10 @@ public partial class Upload
 {
     private readonly Func<Organization, string> converter = O => O.OrgDisplayName;
 
-    private readonly List<string> OtherFileTypes = Enum.GetValues(typeof(UploadFileTypes)).Cast<UploadFileTypes>()
-        .Where(W => W <= UploadFileTypes.transportation).Select(S => S.ToString()).ToList();
+    private readonly List<string> OtherFileTypes = Enum.GetValues(typeof(SettingKeys)).Cast<SettingKeys>()
+        .Where(W => W <= SettingKeys.UploadFilePath).Select(S => S.ToString()).ToList();
 
-    private readonly Func<UploadFileTypes?, string> uploadFileTypesConverter = O => O.ToString();
+    private readonly Func<SettingKeys?, string> uploadFileTypesConverter = O => O.ToString();
 
     private readonly List<string> UploadFileTypesList = Enum.GetValues(typeof(PricingUploadFileType))
         .Cast<PricingUploadFileType>()
@@ -107,7 +107,7 @@ public partial class Upload
             return;
         }
 
-        var csvString = CSVSampleConstants.GetCSVDownloadString(Enum.Parse<UploadFileTypes>(UploadFor));
-        await _jsRuntime.InvokeVoidAsync("SaveFileAsCSV", csvString, $"{UploadFor}_sample.csv").ConfigureAwait(false);
+        //var csvString = CSVSampleConstants.GetCSVDownloadString(Enum.Parse<UploadFileTypes>(UploadFor));
+        //await _jsRuntime.InvokeVoidAsync("SaveFileAsCSV", csvString, $"{UploadFor}_sample.csv").ConfigureAwait(false);
     }
 }
