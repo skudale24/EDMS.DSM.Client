@@ -10,7 +10,7 @@ public class TVATheme : MudTheme
         {
             Primary = "#3d49f5",
             PrimaryDarken = Colors.Amber.Darken4,
-            Secondary = Colors.BlueGrey.Darken4,
+            Secondary = "#2c91991a", //Colors.BlueGrey.Darken4,
             Background = "#2c91994d", //Colors.BlueGrey.Lighten5,
             Divider = Colors.BlueGrey.Lighten1,
             OverlayLight = "#fff",
@@ -27,7 +27,7 @@ public class TVATheme : MudTheme
             TableStriped = "#2c91991a",
             TableHover = "#2c91994d",
             Success = "rgba(106, 144, 51, 0.2)",
-            Info = "rgba(68, 125, 174, 0.2)",
+            Info = "#2C9199", //rgba(68, 125, 174, 0.2)",
             Warning = "rgba(229, 96, 39, 0.2)",
             Error = "rgba(255, 80, 80, 0.2)",
             SuccessContrastText = "rgb(0, 58, 112)",
