@@ -1,7 +1,7 @@
-﻿using EDMS.DSM.Client.Managers.Menu;
-using EDMS.DSM.Managers.Customer;
+﻿using EDMS.DSM.Managers.Customer;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 
 namespace EDMS.DSM.Client.Pages.Customer;
 
@@ -87,33 +87,19 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             {
                 await GetCommunicationsList();
                 GridColumns = GenerateGridColumns();
-                return;
             }
-
-            //if (_navManager.TryGetQueryString(StorageConstants.UserToken, out string userTokenOut))
-            //{
-            //    if (!string.IsNullOrWhiteSpace(userTokenOut))
-            //    {
-            //        await _cookieStorageAccessor.WriteLogAsync<string>($"UserToken. {userTokenOut}");
-
-            //        var claims = GetClaimsFromToken(userTokenOut);
-            //        int.TryParse(claims.FirstOrDefault(c => c.Type == "UserID")?.Value, out _generatedById);
-            //        int.TryParse(claims.FirstOrDefault(c => c.Type == "ProgramID")?.Value, out _programId);
-
-            //        // Use retrieved `userToken` to update authentication state.
-            //        await _authStateProvider.UpdateAuthenticationStateAsync(userTokenOut, userTokenOut)
-            //            .ConfigureAwait(false);
-            //        await GetCommunicationsList();
-            //        GridColumns = GenerateGridColumns();
-            //        return;
-            //    }
-            //}
-
-            _navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
+            else
+            {
+                _navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
+            }
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
         {
-            _ = _snackbar.Add($"We are currently unable to display the Customer Communications at this time. \r\n {ex.Message} : {ex.StackTrace}", Severity.Warning);
+            await HandleUnauthorizedException();
+        }
+        catch (Exception)
+        {
+            await HandleException("We are currently unable to display the Customer Communications at this time.");
         }
     }
 
@@ -138,10 +124,13 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             isLoading = false;
             StateHasChanged();
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
         {
-            await SetTopFrameUrl(APRedirectUrl);
-            //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
+            await HandleUnauthorizedException();
+        }
+        catch (Exception)
+        {
+            await HandleException("We are currently unable to display the Customer Communications at this time.");
         }
     }
 
@@ -171,7 +160,6 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             item.IsProcessing = true;
             // Disable the button
             item.IsButtonDisabled = true;
-
             StateHasChanged();
 
             GenerateLetterDTO model = new();
@@ -205,13 +193,11 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                 var downloadResult = await _uploadManager.DownloadSourceFileAsync(response.Result.GeneratedFilePath);
 
                 await _loadingIndicatorProvider.HoldAsync();
-
                 MemoryStream ms = new();
                 await downloadResult.CopyToAsync(ms);
                 var fileName = $"{DateTime.Now.ToString("yyyyMMdd")}_CC{letterType}";
                 ms.Position = 0;
                 await _jsRuntime.InvokeVoidAsync("OpenFileAsPDF", ms.GetBuffer(), fileName);
-
                 await _loadingIndicatorProvider.ReleaseAsync();
             }
             else
@@ -223,20 +209,19 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
                 _ = _snackbar.Add($"We are currently unable to generate the Communication Letter requested by you at this time.", Severity.Warning);
                 await SetTopFrameUrl(APRedirectUrl);
-                //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
             }
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            await HandleUnauthorizedException();
+        }
+        catch (Exception)
         {
             // Enable the button again
             item.IsButtonDisabled = false;
             item.IsProcessing = false;
             StateHasChanged();
-
-            _ = _snackbar.Add($"We are currently unable to generate the Communication Letter requested by you.", Severity.Warning);
-            await _loadingIndicatorProvider.ReleaseAsync();
-            await SetTopFrameUrl(APRedirectUrl);
-            //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
+            await HandleException("We are currently unable to generate the Communication Letter requested by you.");
         }
     }
 
@@ -247,25 +232,23 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     /// <returns></returns>
     private async Task DownloadExcel(CommunicationDTO item)
     {
-        await _loadingIndicatorProvider.HoldAsync();
-
         try
         {
-
+            await _loadingIndicatorProvider.HoldAsync();
             var stream = await _uploadManager.DownloadExcelFileAsync<CommunicationDTO>(item);
-
             var fileName = $"CustomerList_{item.TemplateName}_{item.CompanyName}_{DateTime.Now.ToString("MMddyy")}.xlsx";
             fileName = fileName.Replace(": ", "_").Replace(" ", "_").Replace("-", "");
             using DotNetStreamReference streamRef = new(stream);
             await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
             await _loadingIndicatorProvider.ReleaseAsync();
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
         {
-            //_ = _snackbar.Add("We are facing some issues generating the excel file. Please try again later.", Severity.Warning);
-            await _loadingIndicatorProvider.ReleaseAsync();
-            await SetTopFrameUrl(APRedirectUrl);
-            //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
+            await HandleUnauthorizedException();
+        }
+        catch (Exception)
+        {
+            await HandleException("We are facing some issues generating the excel file. Please try again later.");
         }
     }
 
@@ -288,37 +271,36 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
             await _loadingIndicatorProvider.ReleaseAsync();
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
         {
-            _ = _snackbar.Add($"We are currently unable to get the file requested by you.", Severity.Warning);
-            await _loadingIndicatorProvider.ReleaseAsync();
-            await SetTopFrameUrl(APRedirectUrl);
-            //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
+            await HandleUnauthorizedException();
+        }
+        catch (Exception)
+        {
+            await HandleException("We are currently unable to get the file requested by you. Please try after some time.");
         }
     }
 
     protected async Task ExportGridClicked()
     {
-        await _loadingIndicatorProvider.HoldAsync();
-
         try
         {
-            IEnumerable<CommunicationDTO> data = _grid.FilteredItems;
-
+            await _loadingIndicatorProvider.HoldAsync();
+            var data = _grid.FilteredItems;
             var result = await _uploadManager.ExportGridAsync(data, GridColumns);
-
             using DotNetStreamReference streamRef = new(result);
             var fileName = "Tools: Customer Communications.xlsx";
             fileName = fileName.Replace(": ", "_").Replace(" ", "_").Replace("-", "");
             await _jsRuntime.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
             await _loadingIndicatorProvider.ReleaseAsync();
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
         {
-            await _loadingIndicatorProvider.ReleaseAsync();
-            _ = _snackbar.Add($"We are currently unable to export the grid as requested by you.", Severity.Warning);
-            await SetTopFrameUrl(APRedirectUrl);
-            //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
+            await HandleUnauthorizedException();
+        }
+        catch (Exception)
+        {
+            await HandleException("We are currently unable to export the grid as requested by you.");
         }
     }
 
@@ -350,4 +332,18 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     {
         await _jsRuntime.InvokeVoidAsync("setTopFrameUrl", url);
     }
+
+    async Task HandleUnauthorizedException()
+    {
+        await _loadingIndicatorProvider.ReleaseAsync();
+        await SetTopFrameUrl(APRedirectUrl);
+        //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
+    }
+
+    async Task HandleException(string message)
+    {
+        await _loadingIndicatorProvider.ReleaseAsync();
+        _ = _snackbar.Add(message, Severity.Warning);
+    }
+
 }
