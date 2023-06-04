@@ -158,7 +158,6 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         try
         {
             item.IsProcessing = true;
-            // Disable the button
             item.IsButtonDisabled = true;
             StateHasChanged();
 
@@ -182,7 +181,6 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                 item.GeneratedFilePath = response.Result.GeneratedFilePath;
                 item.BatchId = response.Result.BatchId;
 
-                // Enable the button again
                 item.IsButtonDisabled = false;
                 item.IsProcessing = false;
                 StateHasChanged();
@@ -202,13 +200,10 @@ public partial class CommunicationPage : ComponentBase, IDisposable
             }
             else
             {
-                // Enable the button again
                 item.IsButtonDisabled = false;
                 item.IsProcessing = false;
                 StateHasChanged();
-
-                _ = _snackbar.Add($"We are currently unable to generate the Communication Letter requested by you at this time.", Severity.Warning);
-                await SetTopFrameUrl(APRedirectUrl);
+                await HandleException("We are currently unable to generate the Communication Letter requested by you.");
             }
         }
         catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
@@ -217,7 +212,6 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         }
         catch (Exception)
         {
-            // Enable the button again
             item.IsButtonDisabled = false;
             item.IsProcessing = false;
             StateHasChanged();
