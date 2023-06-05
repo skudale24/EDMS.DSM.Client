@@ -22,20 +22,6 @@ public class UploadManager : IUploadManager
         return res;
     }
 
-    public Task<IListApiResult<List<CommonUploadDto>>> SearchAsync(CommonUploadFilter commonUploadFilter, int orgId)
-    {
-        var queryString = HttpExtensions.GenerateQueryString(commonUploadFilter);
-        var urlWithParams = $"{UploadEndPoints.GetUploads}/{orgId}/?{queryString}";
-
-        return _httpRequest.GetRequestAsync<List<CommonUploadDto>>(urlWithParams);
-    }
-
-    public Task<IListApiResult<List<CommonUploadDto>>> GetUploadsAsync(int orgId)
-    {
-        var urlWithParams = $"{UploadEndPoints.GetUploads}/{orgId}/";
-        return _httpRequest.GetRequestAsync<List<CommonUploadDto>>(urlWithParams);
-    }
-
     public Task<IApiResult> DeleteAsync(int id)
     {
         var url = $"{UploadEndPoints.Delete}/{id}";
@@ -48,14 +34,6 @@ public class UploadManager : IUploadManager
         var response = await _httpRequest.PostRequestAsync<string, ApiResult>(url, string.Empty).ConfigureAwait(false);
 
         return response;
-    }
-
-    public async Task<Stream> DownloadErrorFileAsync(string CSVFileName)
-    {
-        var urlWithParams = $"{UploadEndPoints.DownloadErrorFile}/{CSVFileName}/";
-        var stream = await _httpRequest.GetStreamAsync(urlWithParams).ConfigureAwait(false);
-
-        return stream;
     }
 
     public async Task<Stream> DownloadSourceFileAsync(string fileName)
