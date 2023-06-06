@@ -35,29 +35,19 @@ public class HttpInterceptorService
 
     private async Task InterceptRequestAsync(object? sender, HttpClientInterceptorEventArgs e)
     {
-        var authState = await _authState.GetAuthenticationStateAsync().ConfigureAwait(false);
+        var userToken = await _localStorage.GetItemAsStringAsync(StorageConstants.UserToken).ConfigureAwait(false);
 
-        _logger.LogInformation("Checking token validity...");
+        var info = GridExtensions.GetUserInfoFromToken(userToken);
 
-
-        if (authState.User.HasClaim(x => x.Type.Equals(ClaimTypes.Expiration)))
+        _logger.LogInformation($"{info.AspnetUserId}|{info.ProgramId}|{info.Expires}|{info.TimeOutMinutes}");
+        _logger.LogInformation(DateTime.UtcNow.ToString());
+        if (info != null)
         {
-            _logger.LogInformation(
-                $"Claims Expiry value  : {authState.User.Claims.First(c => c.Type == ClaimTypes.Expiration)?.Value}");
-
-
-            var expiry = long.Parse(authState.User.Claims.Single(x => x.Type == ClaimTypes.Expiration).Value);
-            //_logger.LogInformation("Token expiry {0}", expiry);
-            //_logger.LogInformation("Current Time ticks {0}", DateTime.UtcNow.Ticks);
-            //_logger.LogInformation("Expiry Time ticks {0}", expiry - new TimeSpan(0, 0, 5, 0).Ticks);
-
-            if (expiry - new TimeSpan(0, 0, 5, 0).Ticks < DateTime.UtcNow.Ticks)
+            _logger.LogInformation("Checking token validity...");
+            if (info.Expires - DateTime.UtcNow < TimeSpan.FromMinutes(3))
             {
                 _logger.LogInformation("Refreshing token...");
-                if (authState.User.HasClaim(x => x.Type == ClaimTypes.UserData))
-                {
-                    RefreshUserToken(authState.User.Claims.Single(x => x.Type == ClaimTypes.UserData).Value);
-                }
+                RegenerateUserToken(info);
             }
         }
     }
@@ -160,6 +150,23 @@ public class HttpInterceptorService
                 // Redirect to "500 Internal Server Error" screen from here...
                 break;
         }
+    }
+
+    private async void RegenerateUserToken(UserInfoDto userInfoDto)
+    {
+        _interceptor.BeforeSendAsync -= InterceptRequestAsync;
+
+        var res = await _userManager.RegenerateUserTokenAsync(userInfoDto).ConfigureAwait(false);
+
+        _logger.LogInformation($"Regenerated usertoken {res.userToken}");
+
+        await _localStorage.SetItemAsStringAsync(StorageConstants.UserToken, res.userToken).ConfigureAwait(false);
+
+        var info = GridExtensions.GetUserInfoFromToken(res.userToken);
+        _logger.LogInformation($"{info.AspnetUserId}|{info.ProgramId}|{info.Expires}|{info.TimeOutMinutes}");
+        _logger.LogInformation(DateTime.UtcNow.ToString());
+
+        _interceptor.BeforeSendAsync += InterceptRequestAsync;
     }
 
     private async void RefreshUserToken(string aspnetuserId)

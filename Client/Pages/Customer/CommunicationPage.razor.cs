@@ -78,7 +78,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     protected override async Task OnInitializedAsync()
     {
         base.OnInitialized();
-        //_interceptor.RegisterEvent();
+        _interceptor.RegisterEvent();
 
         try
         {
@@ -314,14 +314,6 @@ public partial class CommunicationPage : ComponentBase, IDisposable
         _interceptor.DisposeEvent();
     }
 
-    private List<Claim> GetClaimsFromToken(string token)
-    {
-        var handler = new JwtSecurityTokenHandler();
-        var jwtToken = handler.ReadJwtToken(token);
-
-        return jwtToken.Claims.ToList();
-    }
-
     private async Task SetTopFrameUrl(string url)
     {
         await _jsRuntime.InvokeVoidAsync("setTopFrameUrl", url);
@@ -331,7 +323,6 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     {
         await _loadingIndicatorProvider.ReleaseAsync();
         await SetTopFrameUrl(APRedirectUrl);
-        //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
     }
 
     async Task HandleException(string message)

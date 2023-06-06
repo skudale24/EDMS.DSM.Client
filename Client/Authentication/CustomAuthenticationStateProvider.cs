@@ -1,4 +1,6 @@
-﻿namespace EDMS.DSM.Client.Authentication;
+﻿using System.Text.Json;
+
+namespace EDMS.DSM.Client.Authentication;
 
 public class CustomAuthenticationStateProvider : AuthenticationStateProvider
 {
@@ -46,10 +48,22 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider
         }
     }
 
-    public async Task UpdateAuthenticationStateAsync(string userToken, string refreshToken)
+    public async Task UpdateAuthenticationStateAsync(string userToken, string refreshToken, UserInfoDto userInfoDto)
     {
         if (!string.IsNullOrEmpty(userToken) && !string.IsNullOrEmpty(refreshToken))
         {
+            var userData = JsonSerializer.Serialize(userInfoDto);
+
+            var claimsList = new List<Claim>
+            {
+                new(ClaimTypes.Name, "user"),
+                new(ClaimTypes.Role, "user"),
+                new(ClaimTypes.UserData, userData),
+                new(ClaimTypes.Expiration, userInfoDto.ExpiryTime.ToString())
+            };
+
+            _user = new ClaimsPrincipal(new ClaimsIdentity(claimsList, "CustomAuth"));
+
             await _localStorage.SetItemAsStringAsync(StorageConstants.UserToken, userToken).ConfigureAwait(false);
             await _localStorage.SetItemAsStringAsync(StorageConstants.RefreshToken, refreshToken).ConfigureAwait(false);
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(_user)));
@@ -75,21 +89,17 @@ public class CustomAuthenticationStateProvider : AuthenticationStateProvider
         identity?.AddClaim(new Claim(ClaimTypes.Expiration, userData.expiryTime.ToString()));
     }
 
-    public void UpdateAuthenticationState(IEnumerable<string>? userPermissions, UserInfoDto userInfoDto)
+    public void UpdateAuthenticationState(UserInfoDto userInfoDto)
     {
-        if (null == userPermissions)
-        {
-            return;
-        }
+        var userData = JsonSerializer.Serialize(userInfoDto);
 
         var claimsList = new List<Claim>
         {
             new(ClaimTypes.Name, "user"),
             new(ClaimTypes.Role, "user"),
-            new(ClaimTypes.UserData, userInfoDto.AspnetUserId),
+            new(ClaimTypes.UserData, userData),
             new(ClaimTypes.Expiration, userInfoDto.ExpiryTime.ToString())
         };
-        claimsList.AddRange(userPermissions.Select(per => new Claim(ClaimTypes.Role, per)));
 
         _user = new ClaimsPrincipal(new ClaimsIdentity(claimsList, "CustomAuth"));
 

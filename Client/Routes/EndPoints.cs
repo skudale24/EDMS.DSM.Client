@@ -32,6 +32,7 @@ public static class UserEndPoints
     public const string Organizations = "api/v1/user/organizations";
     public const string IsUserTokenValid = "api/v1/user/token/valid";
     public const string RefreshUserToken = "api/authentication/refresh";
+    public const string RegenerateUserToken = "api/authentication/regenerate";
 }
 
 public static class UploadEndPoints

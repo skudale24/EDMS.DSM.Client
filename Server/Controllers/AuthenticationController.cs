@@ -1,4 +1,6 @@
-﻿using EDMS.DSM.Server.Models;
+﻿using EDMS.DSM.Server.DTO;
+using EDMS.DSM.Server.Models;
+using EDMS.DSM.Server.Security;
 using EDMS.Shared.Constants;
 using EDMS.Shared.Wrapper;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +44,7 @@ namespace EDMS.DSM.Server.Controllers
 
                 if (string.IsNullOrEmpty(preparedClaimsBase64))
                 {
-                    // Claims not found in the request header, handle the error
+                    // Claims not found in the request header
                     return BadRequest(new APIResponse { Message = "Claims not provided" });
                 }
 
@@ -65,18 +67,15 @@ namespace EDMS.DSM.Server.Controllers
                 string userId = parsedClaims["UserID"];
                 string programId = parsedClaims["ProgramID"];
                 string sessionExpiration = parsedClaims["SessionExpiration"];
-
-                _logger.LogInformation($"{userId}:{programId}");
-
-                // Construct the URL with the user ID appended as a query string parameter
+                _logger.LogInformation($"{sessionExpiration} {userId}:{programId}");
                 string url = $"{_configuration["CCGridUrl"]}";
-
                 _logger.LogInformation($"{url}");
 
-                // Generate the JWT token (implement your own logic)
+                // Generate the JWT token
                 string jwtToken = GenerateJwtToken(userId, programId, sessionExpiration);
-
+                var refreshToken = GenerateRefreshToken(sessionExpiration);
                 _logger.LogInformation($"{jwtToken}");
+                _logger.LogInformation($"{refreshToken.Token}");
 
                 // Return the URL and JWT token in the response header
                 Response.Headers.Add("X-URL", url);
@@ -91,6 +90,100 @@ namespace EDMS.DSM.Server.Controllers
                 _logger.LogError($"{ex.Message} : {ex.StackTrace}");
                 return StatusCode((int)HttpStatusCode.InternalServerError, ApiResult.Fail(ex.Message));
             }
+        }
+
+        [HttpPost("Regenerate")]
+        public async Task<IApiResult> RegenerateToken([FromBody] UserInfoDto userInfoDto)
+        {
+            try
+            {
+                int UT = 24;
+
+                _logger.LogInformation($"{userInfoDto.ExpiryTime} {userInfoDto.AspnetUserId}:{userInfoDto.ProgramId}");
+
+                string sessionExpiration = DateTime.Now.AddMinutes(userInfoDto.TimeOutMinutes).ToString("yyyy-MM-dd HH:mm:ss");
+
+                // Generate the JWT token
+                string userToken = GenerateJwtToken(userInfoDto.AspnetUserId.ToString(), userInfoDto.ProgramId, sessionExpiration);
+                
+                _logger.LogInformation($"{userToken}");
+
+                Response.Headers.Add(StorageConstants.UserToken, userToken);
+
+                return ApiResult<UserInfoDto>.Success(new UserInfoDto
+                {
+                    UserToken = userToken,
+                    ExpiryTime = DateTime.UtcNow.AddHours(UT).Ticks
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{ex.Message} : {ex.StackTrace}");
+                return ApiResult<UserInfoDto>.Fail(ex.Message);
+            }
+        }
+
+        [HttpGet("refresh")]
+        public async Task<IApiResult> RefreshToken([FromQuery] string aspnetUserId, [FromHeader] string reftoken)
+        {
+            string userId = "";
+            string programId = "";
+            string sessionExpiration = DateTime.Now.AddDays(2).ToString("yyyy-MM-dd HH:mm:ss");
+            var refreshToken = GenerateRefreshToken(sessionExpiration);
+            string userToken = GenerateJwtToken(userId, programId, sessionExpiration);
+
+            //Take expiry hours from db
+            int UT = 24;
+            int RT = 7;
+
+            //    var r2 = _dbcontext.ConfigurationData.FirstOrDefault(c => c.groupkey == AuthConstants.DExpiry &&
+            //                   c.configkey == AuthConstants.RT)?.configvalue;
+
+            //    if (!string.IsNullOrEmpty(r2))
+            //    {
+            //        RT = int.Parse(r2);
+            //    }
+
+            //Validate and Create refresh Token
+            //RefreshToken refreshToken = await _loginService.RefreshTokenAsync(aspnetUserId, reftoken, RT);
+
+            //if (refreshToken == null || string.IsNullOrEmpty(refreshToken.Token))
+            //{
+            //    _httpContextAccessor.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            //    return (ApiResult.Fail("Unauthorized User."));
+
+            //}
+
+            //    long orgId = await _userRepo.UserOrgId(appToken);
+
+            //    //Add logic for checking if existing usertoken is valid in redis cache if valid return same else create new
+
+
+            //    var r1 = (_dbcontext.ConfigurationData.FirstOrDefault(c => c.groupkey == AuthConstants.HExpiry &&
+            //    c.configkey == AuthConstants.UT)?.configvalue);
+            //    if (!string.IsNullOrEmpty(r1))
+            //    {
+            //        UT = int.Parse(r1);
+            //    }
+
+            //    //Generate new user token  
+            //var _loginExpiryDateTime = Security.SecurityToken.DateTimeToUnixTimestamp(DateTime.UtcNow.AddHours(UT));
+            //var _securityToken = new Security.SecurityToken(_loginExpiryDateTime, aspnetUserId, 1, "");
+            //string userToken = _securityToken.Encryption();
+
+            UserInfoDto userInfo = new()
+            {
+                //UserName = string.Concat(userdata.firstname, " ", userdata.lastname),
+                //EmailAddress = userdata.emailaddress,
+                AspnetUserId = aspnetUserId,
+                //OrgId = orgId,
+                UserToken = userToken,
+                RefreshToken = refreshToken,
+                //UserId = aspnetUserId,
+                ExpiryTime = DateTime.UtcNow.AddHours(UT).Ticks
+            };
+
+            return (ApiResult<UserInfoDto>.Success(userInfo));
         }
 
         /// <summary>
@@ -137,14 +230,20 @@ namespace EDMS.DSM.Server.Controllers
         /// <returns></returns>
         private string GenerateJwtToken(string userId, string programId, string sessionExpiration)
         {
-            DateTime expires;
-            if (DateTime.TryParseExact(sessionExpiration, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out expires))
+
+            if (DateTime.TryParseExact(sessionExpiration, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime expires))
             {
                 var key = Encoding.UTF8.GetBytes(_configuration["Jwt:key"]);
+
+                TimeSpan timeoutDuration = expires - DateTime.Now;
+                int timeoutInMinutes = (int)timeoutDuration.TotalMinutes + 1;
+
                 var claims = new List<Claim>
                 {
                     new Claim("UserID", userId),
                     new Claim("ProgramID", programId),
+                    new Claim("exp", expires.ToString(), ClaimValueTypes.Integer),
+                    new Claim("timeout", timeoutInMinutes.ToString(), ClaimValueTypes.Integer),
                 };
                 var token = new JwtSecurityToken(
                     issuer: $"{_configuration["Jwt:Issuer"]}",
@@ -155,6 +254,21 @@ namespace EDMS.DSM.Server.Controllers
                 );
                 string jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
                 return jwtToken;
+            }
+            else
+            {
+                throw new Exception("Invalid token expiry.");
+            }
+        }
+
+        private RefreshToken GenerateRefreshToken(string sessionExpiration)
+        {
+            DateTime expires;
+            if (DateTime.TryParseExact(sessionExpiration, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out expires))
+            {
+                int expiryInDays = expires.Subtract(DateTime.Now).Days;
+                RefreshToken refreshToken = Security.SecurityToken.CreateRefreshToken(expiryInDays);
+                return refreshToken;
             }
             else
             {

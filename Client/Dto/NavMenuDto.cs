@@ -23,10 +23,10 @@ public class CachePermissionsDto
 
 public class UserInfoDto
 {
-    public long UserId { get; set; }
+    //public long UserId { get; set; }
     public string AspnetUserId { get; set; } = string.Empty;
     public string UserName { get; set; } = string.Empty;
-    public string EmailAddress { get; set; } = string.Empty;
+    public string ProgramId { get; set; } = string.Empty;
     public string MobileNumber { get; set; } = string.Empty;
     public long OrgId { get; set; }
     public string UserToken { get; set; } = string.Empty;
@@ -34,7 +34,9 @@ public class UserInfoDto
     public string LatestVersion { get; set; } = string.Empty;
     public long ExpiryTime { get; set; } = 0;
     public bool IsInternal { get; set; }
-    public List<object> yardLocations { get; set; }
+    public DateTime Expires { get; set; }
+    public int TimeOutMinutes { get; set; } = 0;
+
 }
 
 //public class RefreshToken

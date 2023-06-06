@@ -9,16 +9,19 @@ public class HttpRequest
     private readonly ILocalStorageService _localStorage;
     private readonly NavigationManager _navManager;
     private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<HttpInterceptorService> _logger;
 
     public HttpRequest(IServiceProvider serviceProvider,
         CustomAuthenticationStateProvider authState, ILocalStorageService localStorage,
-        IHttpClientFactory httpClientFactory, NavigationManager navManager)
+        IHttpClientFactory httpClientFactory, NavigationManager navManager, 
+        ILogger<HttpInterceptorService> logger)
     {
         _serviceProvider = serviceProvider;
         _localStorage = localStorage;
         _httpClientFactory = httpClientFactory;
         _navManager = navManager;
-        _authState = authState;
+        _authState = authState; 
+        _logger = logger;
     }
 
     public async Task<IListApiResult<T>> GetRequestAsync<T>(string uri)
@@ -28,15 +31,7 @@ public class HttpRequest
         _ = httpClient.EnableIntercept(_serviceProvider);
         var absoluteUrl = $"{EndPoints.ApiBaseUrl}/{uri}";
         var userToken = await _localStorage.GetItemAsStringAsync(StorageConstants.UserToken).ConfigureAwait(false);
-        //var authState = await _authState.GetAuthenticationStateAsync().ConfigureAwait(false);
 
-        //if (authState.User.HasClaim(x => x.Type == ClaimTypes.UserData))
-        //{
-        //    var aspnetuserId = authState.User.Claims.Single(x => x.Type == ClaimTypes.UserData).Value;
-        //    httpClient.DefaultRequestHeaders.Add(StorageConstants.AspNetUserId, aspnetuserId);
-        //}
-
-        //httpClient.DefaultRequestHeaders.Add(AppConstants.AppTokenHeaderKey, AppConstants.AppTokenValue);
         httpClient.DefaultRequestHeaders.Add(AppConstants.UserTokenHeaderKey, userToken);
 
         httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + userToken);
@@ -349,6 +344,36 @@ public class HttpRequest
         httpClient.DefaultRequestHeaders.Add("reftoken", refreshToken);
 
         var response = await httpClient.GetAsync(absoluteUrl).ConfigureAwait(false);
+
+        _ = response.EnsureSuccessStatusCode();
+
+        if (response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var res1 = JsonSerializer.Deserialize<Root>(content);
+            return res1.result;
+        }
+
+        _navManager.NavigateTo("/logout");
+
+        return null;
+    }
+
+    public async Task<TokenResult> AuthGetRequestDataAsync<TIn>(string uri, TIn values)
+    {
+        using var httpClient = _httpClientFactory.CreateClient("MyHttpClient");
+
+        var refreshToken =
+            await _localStorage.GetItemAsStringAsync(StorageConstants.RefreshToken).ConfigureAwait(false);
+
+        var absoluteUrl = $"{EndPoints.LoginPage}/{uri}";
+
+        StringContent serialized = new(JsonSerializer.Serialize(values), Encoding.UTF8, "application/json");
+
+        _logger.LogInformation($"Calling {absoluteUrl}");
+        _logger.LogInformation(serialized.ToString());
+
+        var response = await httpClient.PostAsync(absoluteUrl, serialized).ConfigureAwait(false);
 
         _ = response.EnsureSuccessStatusCode();
 

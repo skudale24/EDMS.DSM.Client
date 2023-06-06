@@ -20,7 +20,7 @@ public partial class Logout : ComponentBase
     {
         await base.OnInitializedAsync().ConfigureAwait(false);
 
-        await AuthStateProvider.UpdateAuthenticationStateAsync(string.Empty, string.Empty).ConfigureAwait(false);
+        await AuthStateProvider.UpdateAuthenticationStateAsync(string.Empty, string.Empty, null).ConfigureAwait(false);
         NavigationManager.NavigateTo("/login");
     }
 }

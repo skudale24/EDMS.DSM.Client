@@ -64,7 +64,7 @@ public partial class NavMenu : ComponentBase, IDisposable
                 LoggedUserName = userdata.UserName;
                 LatestVersion = userdata.LatestVersion;
 
-                _authStateProvider.UpdateAuthenticationState(claims, userdata);
+                //_authStateProvider.UpdateAuthenticationState(claims, userdata);
             }
 
 

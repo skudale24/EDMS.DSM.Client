@@ -22,6 +22,13 @@ public class UserManager : IUserManager
         return data;
     }
 
+    public async Task<TokenResult> RegenerateUserTokenAsync<TIn>(TIn values)
+    {
+        var urlWithParams = $"{UserEndPoints.RegenerateUserToken}";
+        var data = await _httpRequest.AuthGetRequestDataAsync<TIn>(urlWithParams, values).ConfigureAwait(false);
+        return data;
+    }
+
     Task<IApiResult<bool>> IUserManager.IsUserTokenValidAsync(string userToken)
     {
         throw new NotImplementedException();

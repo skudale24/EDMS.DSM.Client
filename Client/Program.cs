@@ -5,7 +5,7 @@ builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 //builder.Services.AddSocialMediaSharing();
 builder.AddClientServices();
-builder.Logging.SetMinimumLevel(LogLevel.None);
+builder.Logging.SetMinimumLevel(LogLevel.Trace);
 
 // Authorization/authentication services registration.
 builder.Services.AddScoped<CustomAuthenticationStateProvider>();
