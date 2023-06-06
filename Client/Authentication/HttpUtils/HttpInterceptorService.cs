@@ -44,7 +44,8 @@ public class HttpInterceptorService
         if (info != null)
         {
             _logger.LogInformation("Checking token validity...");
-            if (info.Expires - DateTime.UtcNow < TimeSpan.FromMinutes(3))
+            if (info.Expires - DateTime.UtcNow < TimeSpan.FromMinutes(3)
+                && info.Expires > DateTime.UtcNow)
             {
                 _logger.LogInformation("Refreshing token...");
                 RegenerateUserToken(info);
