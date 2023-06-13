@@ -37,6 +37,8 @@ namespace EDMS.DSM.Server.Controllers
             _context = context;
             _configuration = configuration;
             _logger = logger;
+
+            SQLConstants.ConnectionString = _configuration.GetConnectionString("Default");
         }
 
         /// <summary>
