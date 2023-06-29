@@ -1,5 +1,8 @@
 ﻿@page "/"
 
+@using Toolbelt.Blazor.PWA.Updater.Service
+@inject IPWAUpdaterService PWAUpdaterService
+
 <style>
     :root {
         --version-label-content: "Version @EndPoints.Version";

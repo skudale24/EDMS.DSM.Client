@@ -69,10 +69,16 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        //if (firstRender)
-        //{
-        //    _interceptor.RegisterEvent();
-        //}
+        if (firstRender)
+        {
+            this.PWAUpdaterService.NextVersionIsWaiting += PWAUpdaterService_NextVersionIsWaiting;
+            //_interceptor.RegisterEvent();
+        }
+    }
+
+    private async void PWAUpdaterService_NextVersionIsWaiting(object? sender, EventArgs e)
+    {
+        await this.PWAUpdaterService.SkipWaitingAsync();
     }
 
     protected override async Task OnInitializedAsync()
@@ -311,6 +317,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
     void IDisposable.Dispose()
     {
+        this.PWAUpdaterService.NextVersionIsWaiting -= PWAUpdaterService_NextVersionIsWaiting;
         _interceptor.DisposeEvent();
     }
 
@@ -328,7 +335,10 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     async Task HandleException(string message)
     {
         await _loadingIndicatorProvider.ReleaseAsync();
-        _ = _snackbar.Add(message, Severity.Warning);
+
+        _navManager.NavigateTo("/message");
+
+        //_ = _snackbar.Add(message, Severity.Warning);
     }
 
 }
