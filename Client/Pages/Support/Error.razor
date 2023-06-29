@@ -1,0 +1,18 @@
+﻿@page "/message"
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="d-flex justify-center flex-grow-1 gap-4" Style="margin-top:50px">
+    <div class="d-flex flex-column mud-width-full">
+        <MudPaper Elevation="25" Class="pa-8" Width="100%" MaxWidth="500px">
+            <MudText Typo="Typo.h5" Class="d-flex justify-center">Information</MudText>
+
+            @if (!string.IsNullOrEmpty(Errormessage))
+            {
+                <MudAlert Severity="Severity.Warning">@Errormessage</MudAlert>
+            }
+        </MudPaper>
+    </div>
+</MudContainer>
+
+@code {
+    public string Errormessage { get; set; } = default!;
+}
