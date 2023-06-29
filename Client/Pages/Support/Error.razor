@@ -15,4 +15,13 @@
 
 @code {
     public string Errormessage { get; set; } = default!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Errormessage = "Some error has occurred on the Grid. Please try again.";
+        }
+    }
+
 }
