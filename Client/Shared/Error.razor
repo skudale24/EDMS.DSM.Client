@@ -1,0 +1,50 @@
+﻿@page "/errorpage"
+
+@inject NavigationManager _navManager
+
+<MudGrid>
+    <MudItem xs="12" md="12" sm="12" lg="12" xl="12">
+        <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">
+            An error occurred while processing your request.
+        </MudAlert>
+    </MudItem>
+    <MudItem xs="12" md="12" sm="12" lg="12" xl="12">
+        <MudButton OnClick="@(() => GoToHome())" ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Outlined">
+            Reload
+        </MudButton>
+    </MudItem>
+</MudGrid>
+
+@code {
+    public string Errormessage { get; set; } = default!;
+    private int _programId;
+    private int _generatedById;
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+
+        if (_navManager.TryGetQueryString(StorageConstants.UserId, out _generatedById)
+            && (_navManager.TryGetQueryString(StorageConstants.ProgramId, out _programId)))
+        {
+        }
+        else
+        {
+            //await SetTopFrameUrl(APRedirectUrl);
+            //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            Errormessage = "An error occurred while processing your request.";
+        }
+    }
+
+    protected void GoToHome()
+    {
+        _navManager.NavigateTo($"/?{StorageConstants.UserId}={_generatedById}&{StorageConstants.ProgramId}={_programId}", true, true);
+    }
+}

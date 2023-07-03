@@ -88,15 +88,16 @@ public partial class CommunicationPage : ComponentBase, IDisposable
 
         try
         {
-            if (_navManager.TryGetQueryString("userId", out _generatedById)
-                && (_navManager.TryGetQueryString("programId", out _programId)))
+            if (_navManager.TryGetQueryString(StorageConstants.UserId, out _generatedById)
+                && (_navManager.TryGetQueryString(StorageConstants.ProgramId, out _programId)))
             {
                 await GetCommunicationsList();
                 GridColumns = GenerateGridColumns();
             }
             else
             {
-                _navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
+                await SetTopFrameUrl(APRedirectUrl);
+                //_navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
             }
         }
         catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.Unauthorized)
@@ -336,7 +337,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     {
         await _loadingIndicatorProvider.ReleaseAsync();
 
-        _navManager.NavigateTo("/message");
+        _navManager.NavigateTo($"/errorpage?{StorageConstants.UserId}={_generatedById}&{StorageConstants.ProgramId}={_programId}", true, true);
 
         //_ = _snackbar.Add(message, Severity.Warning);
     }

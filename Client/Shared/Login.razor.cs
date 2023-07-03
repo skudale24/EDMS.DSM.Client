@@ -48,7 +48,7 @@ public partial class Login : ComponentBase
                     // Use retrieved `userToken` to update authentication state.
                     await _authStateProvider.UpdateAuthenticationStateAsync(userTokenOut, userTokenOut, userInfoDto);
 
-                    _navManager.NavigateTo($"/?userId={_generatedById}&programId={_programId}", true, true);
+                    _navManager.NavigateTo($"/?{StorageConstants.UserId}={_generatedById}&{StorageConstants.ProgramId}={_programId}", true, true);
 
                     return;
                 }

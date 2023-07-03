@@ -39,12 +39,17 @@
                         <ErrorContent Context="Exception">
                             @if (Exception is HttpRequestException || Exception.InnerException is HttpRequestException)
                             {
-                                _navManager.NavigateTo("/logout");
+                                _navManager.NavigateTo($"{EndPoints.APBaseUrl}/Index.aspx");
+                                @*_navManager.NavigateTo("/logout");*@
                             }
-                            <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">
+                            else
+                            {
+                                _navManager.NavigateTo($"/errorpage");
+                            }
+                           @* <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">
                                 Oops something went wrong !!!
                                 <MudButton OnClick="@_errorBoundary.Recover">Reload</MudButton>
-                            </MudAlert>
+                            </MudAlert>*@
                         </ErrorContent>
                     </ErrorBoundary>
                 </MudContainer>
