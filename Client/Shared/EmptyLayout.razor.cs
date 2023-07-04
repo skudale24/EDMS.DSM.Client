@@ -2,7 +2,7 @@ namespace EDMS.DSM.Client.Shared;
 
 public partial class EmptyLayout : LayoutComponentBase
 {
-    private readonly TVATheme _theme = new();
+    private readonly TVAErrorTheme _theme = new();
     private bool _drawerOpen = true;
     private ErrorBoundary? _errorBoundary = new();
     private bool _isDarkMode;

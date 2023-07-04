@@ -1,21 +1,26 @@
-﻿@page "/errorpage"
+﻿@*@page "/"*@
+@page "/errorpage"
+
+@layout EmptyLayout
 
 @inject NavigationManager _navManager
 
-
-<MudImage Fluid="true" Src="images/error.jpg" Alt="Something went wrong" Class="rounded-lg" />
-<MudGrid>
-    <MudItem xs="12" md="12" sm="12" lg="12" xl="12">
-        <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">
-            An error occurred while processing your request.
-        </MudAlert>
-    </MudItem>
-    <MudItem xs="12" md="12" sm="12" lg="12" xl="12">
-        <MudButton OnClick="@(() => GoToHome())" ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Outlined">
-            Reload
-        </MudButton>
+<MudGrid Justify="Justify.Center">
+    <MudItem>
+        <MudStack Justify="Justify.Center" AlignItems="AlignItems.Center">
+            <MudImage Fluid="true" Src="images/error.jpg" Alt="Something went wrong"
+                      Width="400" Height="300" Class="rounded-lg" />
+            <MudGrid Justify="Justify.Center">
+                <MudItem xs="12" md="12" sm="12" lg="12" xl="12" Class="d-flex justify-center">
+                    <MudButton OnClick="@(() => GoToHome())" ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Outlined">
+                        Reload
+                    </MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudStack>
     </MudItem>
 </MudGrid>
+
 
 @code {
     public string Errormessage { get; set; } = default!;
