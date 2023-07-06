@@ -188,10 +188,6 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                 item.GeneratedFilePath = response.Result.GeneratedFilePath;
                 item.BatchId = response.Result.BatchId;
 
-                item.IsButtonDisabled = false;
-                item.IsProcessing = false;
-                StateHasChanged();
-
                 //TODO: get letter type from backend
                 var letterType = item.FilePath?.Split("__").Skip(1).FirstOrDefault();
                 //string letterType = item.TemplateType; Enum.GetName(typeof(ETemplateType), TemplateType);
@@ -204,6 +200,11 @@ public partial class CommunicationPage : ComponentBase, IDisposable
                 ms.Position = 0;
                 await _jsRuntime.InvokeVoidAsync("OpenFileAsPDF", ms.GetBuffer(), fileName);
                 await _loadingIndicatorProvider.ReleaseAsync();
+                StateHasChanged();
+
+                item.IsButtonDisabled = false;
+                item.IsProcessing = false;
+                StateHasChanged();
             }
             else
             {
@@ -337,7 +338,7 @@ public partial class CommunicationPage : ComponentBase, IDisposable
     {
         await _loadingIndicatorProvider.ReleaseAsync();
 
-        _navManager.NavigateTo($"/errorpage?{StorageConstants.UserId}={_generatedById}&{StorageConstants.ProgramId}={_programId}", true, true);
+        _navManager.NavigateTo($"/errorpage?{StorageConstants.UserId}={_generatedById}&{StorageConstants.ProgramId}={_programId}");
 
         //_ = _snackbar.Add(message, Severity.Warning);
     }
