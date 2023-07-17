@@ -58,7 +58,7 @@ builder.Host.UseSerilog((hostContext, services, configuration) =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("PolicyName", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+    options.AddPolicy("AllowSpecificOrigins", builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().SetIsOriginAllowed(origin => true));
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default")),
@@ -83,16 +83,13 @@ else
 }
 
 app.UseHttpsRedirection();
-
-app.UseCors("AllowSpecificOrigins");
-
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
-app.UseAuthentication();
-
 app.UseRouting();
+app.UseCors("AllowSpecificOrigins");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
